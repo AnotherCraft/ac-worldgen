@@ -1,0 +1,15 @@
+build/
+.vs/
+*.pdb
+*.iobj
+*.exp
+*.ipdb
+*.ilk
+**/.antlr/
+lib/
+
+src/ac-client.pro.user
+
+.idea/
+dist/
+third_party/
