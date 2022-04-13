@@ -47,7 +47,6 @@ ExternalProject_Add(
         CMAKE_ARGS ${EXTERNAL_ARGS}
         -D WITH_STATIC_CRT=OFF
         -D "CMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/install/antlr"
-        -D "MSVC_RUNTIME_LIBRARY=MultiThreaded$<$<CONFIG:Debug>:Debug>DLL"
 )
 
 # ===========================================
@@ -58,7 +57,6 @@ ExternalProject_Add(x_ac_worldgen
         BUILD_ALWAYS ON
         STEP_TARGETS build
         CMAKE_ARGS ${EXTERNAL_ARGS}
-        -D "WASMER_DIR=$ENV{WASMER_DIR}"
         )
 
 add_custom_target(ac_worldgen_nodeploy DEPENDS x_ac_worldgen-build)
@@ -67,27 +65,15 @@ add_custom_target(ac_worldgen_deploy ALL DEPENDS openxr antlr tracy yamlcpp x_ac
 # ===========================================
 # Dummy target for intellisense
 # ===========================================
-set(QT_USE_OPENGL ON)
-find_package(Qt6 COMPONENTS Widgets Qml Gui OpenGL Quick Concurrent QuickControls2 ShaderTools REQUIRED CONFIG)
+find_package(Qt6 COMPONENTS Concurrent REQUIRED CONFIG)
 qt_add_executable(x_ac_worldgen_dummy WIN32 EXCLUDE_FROM_ALL)
 get_target_property(qtcore_binlocation Qt6::Core LOCATION)
 get_filename_component(qtcore_location ${qtcore_binlocation} DIRECTORY)
 set(qt_include_location "${qtcore_location}/../include")
 target_include_directories(x_ac_worldgen_dummy PRIVATE
-        "${qt_include_location}/QtWidgets"
-        "${qt_include_location}/QtQml"
-        "${qt_include_location}/QtQuick"
-        "${qt_include_location}/QtQuickWidgets"
-        "${qt_include_location}/QtQuickControls2"
-        "${qt_include_location}/QtGui"
-        "${qt_include_location}/QtOpenGL"
         "${qt_include_location}/QtConcurrent"
         )
-target_compile_definitions(x_ac_worldgen_dummy PRIVATE
-        "PROGRAM_VERSION=\"XX\""
-        "PROGRAM_NAME_VERSION=\"XX\""
-        "PLATFORM_ID=\"${OS_STRING}_${PLATFORM_STRING}\""
-        )
+
 file(
         GLOB_RECURSE ac_client_src CONFIGURE_DEPENDS
         "${PROJECT_BASE_DIR}/src/*.cc"
@@ -97,13 +83,10 @@ file(
 target_compile_definitions(x_ac_worldgen_dummy PRIVATE TRACY_ENABLE)
 target_sources(x_ac_worldgen_dummy PRIVATE ${ac_client_src})
 target_sources(x_ac_worldgen_dummy PRIVATE "${PROJECT_BASE_DIR}/qt6.natvis")
+target_precompile_headers(x_ac_worldgen_dummy PRIVATE "${PROJECT_BASE_DIR}/src/pch.h")
 target_include_directories(x_ac_worldgen_dummy PRIVATE "${PROJECT_BASE_DIR}/src")
 target_include_directories(x_ac_worldgen_dummy SYSTEM PRIVATE
         "${PROJECT_BASE_DIR}/include"
         "${PROJECT_BASE_DIR}/deps/tracy"
-        "${PROJECT_BASE_DIR}/deps/openfbx/src"
-        "${PROJECT_BASE_DIR}/deps/soloud/include"
-        "${CMAKE_BASE_DIR}/install/yamlcpp/include"
-        "${CMAKE_BASE_DIR}/install/openxr/include"
-        "$ENV{WASMER_DIR}/include"
+        "${CMAKE_BASE_DIR}/install/antlr/include"
         )
