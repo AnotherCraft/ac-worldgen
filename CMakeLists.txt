@@ -60,7 +60,7 @@ ExternalProject_Add(x_ac_worldgen
         )
 
 add_custom_target(ac_worldgen_nodeploy DEPENDS x_ac_worldgen-build)
-add_custom_target(ac_worldgen_deploy ALL DEPENDS openxr antlr tracy yamlcpp x_ac_worldgen)
+add_custom_target(ac_worldgen_deploy ALL DEPENDS antlr tracy x_ac_worldgen)
 
 # ===========================================
 # Dummy target for intellisense

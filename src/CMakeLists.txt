@@ -24,7 +24,7 @@ find_package(Qt6 COMPONENTS Concurrent REQUIRED CONFIG)
 # ===========================================
 set(CMAKE_AUTOMOC ON)
 
-qt_add_executable(${target} WIN32)
+qt_add_executable(${target})
 
 target_compile_definitions(${target} PRIVATE QT_DISABLE_DEPRECATED_BEFORE=0x060200)
 target_link_libraries(${target} PRIVATE Qt6::Concurrent)

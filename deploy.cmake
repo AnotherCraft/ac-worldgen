@@ -15,6 +15,7 @@ if (1)
             "--qmldir" "${PROJECT_SOURCE_DIR}/qml"
             --qmldir "${PROJECT_SOURCE_DIR}/src"
             --compiler-runtime
+            --no-translations
     )
     message(STATUS "Qt deployed.")
 endif ()
