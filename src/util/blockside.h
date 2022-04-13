@@ -5,6 +5,8 @@
 #include "bitset.h"
 #include "defines.h"
 
+#include "util/blockworldpos.h"
+
 #define BLOCK_SIDES(I, A) I(A, Xminus) I(A, Xplus) I(A, Yminus) I(A, Yplus) I(A, Zminus) I(A, Zplus)
 #define SPECIAL_BLOCK_SIDES(I, A) I(A, Xcenter) I(A, Ycenter) I(A, Zcenter)
 #define BLOCK_SIDE_ALIASES(I, A) I(A, Up, Zplus) I(A, Down, Zminus)

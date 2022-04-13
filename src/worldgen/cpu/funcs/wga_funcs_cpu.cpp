@@ -1,6 +1,7 @@
 #include "wga_funcs_cpu.h"
 
 #include "util/iterators.h"
+#include "util/macroutils.h"
 
 #include "../supp/wga_fillfunc_cpu.h"
 
@@ -78,7 +79,7 @@ QHash<WorldGenAPI::FunctionID, WGA_Funcs_CPU::Func> WGA_Funcs_CPU::functions() {
 #undef IMPL_INLINE_ARG
 #undef IMPL_INLINE_ARG2
 
-#include "server/world/worldgen/util/wg_macro_undef.h"
+#include "worldgen/util/wg_macro_undef.h"
 
 		return result;
 	}();

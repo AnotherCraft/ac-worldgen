@@ -1,5 +1,6 @@
 #pragma once
 
+#include "pch.h"
 #include "util/blockorientation.h"
 
 #include "wga_grammarsymbol.h"

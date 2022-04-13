@@ -22,6 +22,8 @@ find_package(Qt6 COMPONENTS Concurrent REQUIRED CONFIG)
 # ===========================================
 # Executable
 # ===========================================
+set(CMAKE_AUTOMOC ON)
+
 qt_add_executable(${target} WIN32)
 
 target_compile_definitions(${target} PRIVATE QT_DISABLE_DEPRECATED_BEFORE=0x060200)

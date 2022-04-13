@@ -23,16 +23,6 @@ class ANTLRErrorHandler : public antlr4::BaseErrorListener {
 WGLCompiler::WGLCompiler() {
 	context_ = std::make_unique<WGLContext>();
 	context_->compiler = this;
-
-	connect(global, &Global::sigReloadWorld, this, [this] { compile(); });
-
-	genFunc_ = [this](WorldGenAPI &api) {
-		WGLAPIContext ctx;
-		ctx.api = &api;
-
-		for(const auto &cmd: context_->apiCommands())
-			cmd(ctx);
-	};
 }
 
 void WGLCompiler::clear() {
@@ -43,6 +33,11 @@ void WGLCompiler::clear() {
 void WGLCompiler::addFile(const WGLFilePtr &file) {
 	ASSERT(!files_.contains(file));
 	files_ += file;
+}
+
+QString WGLCompiler::lookupFile(const QString &filename) {
+	// TODO
+	throw;
 }
 
 void WGLCompiler::compile() {

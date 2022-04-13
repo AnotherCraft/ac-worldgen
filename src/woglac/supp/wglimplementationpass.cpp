@@ -1,8 +1,6 @@
 #include "wglimplementationpass.h"
 
-#include "common/util/container/iterators.h"
-#include "common/game/game/game.h"
-#include "common/block/blocktype.h"
+#include "util/iterators.h"
 
 #include "../wglcompiler.h"
 
@@ -222,7 +220,7 @@ void WGLImplementationPass::enterComponentIncludeStatement(WoglacParser::Compone
 	WGLSymbol *sym = ctx_->astSymbolMapping[ctx];
 
 	ASSERT(voxParser_.isEmpty());
-	voxParser_.parseFile(ctx_->compiler->lookupContext().lookupFile(WGLUtils::stringLiteral(ctx->file)));
+	voxParser_.parseFile(ctx_->compiler->lookupFile(WGLUtils::stringLiteral(ctx->file)));
 
 	currentScope_ += sym;
 }
@@ -534,13 +532,13 @@ WGLImplementationPass::ExpressionResult WGLImplementationPass::expression(Woglac
 	Q_UNUSED(deps);
 
 	if(auto e = ctx->block) {
-		const GameManagedUID uid = Identifier::fromString(QString::fromStdString(e->getText()));
+		const QString uid = QString::fromStdString(e->getText());
 
 		/*BlockType *block = game()->managers.blockType.getBlockTypeByUID(uid);
 		if(!block)
 			throw WoglacSemanticError(QStringLiteral("Unknown block uid '%1'").arg(uid), this, ctx);*/
 
-		return EXPRESSION_RESULT(ValueType::Block, ctx.api->constBlock(game()->managers.blockType.getType(uid)));
+		return EXPRESSION_RESULT(ValueType::Block, ctx.api->constBlock(uid));
 	}
 
 	if(auto e = ctx->num) {

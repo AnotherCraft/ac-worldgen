@@ -18,7 +18,7 @@ void WGA_StructureFuncs_CPU::spawn2D(Api api, Key key, DH <VT::Block> result, V 
 				continue;
 
 			spawnList += SpawnRec{
-				key.origin + BlockWorldPos(i % chunkSize.x(), i / chunkSize.x(), z),
+				key.origin + BlockWorldPos(i % chunkSize, i / chunkSize, z),
 				api->mapToSymbol<WGA_Rule>(entryRuleHandle[ix])
 			};
 		}
@@ -40,14 +40,14 @@ void WGA_StructureFuncs_CPU::localPos(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key
 	const BlockTransformMatrix m = api->structureGen->currentDataContext()->localToWorldMatrix().nonScalingInverted();
 	const BlockWorldPos base = m * result.worldPos(key.origin, 0);
 	const BlockWorldPos vx = (m * result.worldPos(key.origin, 1)) - base;
-	const BlockWorldPos vy = (m * result.worldPos(key.origin, chunkSize.x())) - base;
+	const BlockWorldPos vy = (m * result.worldPos(key.origin, chunkSize)) - base;
 	const BlockWorldPos vz = (m * result.worldPos(key.origin, chunkSurface)) - base;
 
 	{
 		int i = 0;
-		for(int z = 0; z < chunkSize.z(); z++) {
-			for(int y = 0; y < chunkSize.y(); y++) {
-				for(int x = 0; x < chunkSize.x(); x++) {
+		for(int z = 0; z < chunkSize; z++) {
+			for(int y = 0; y < chunkSize; y++) {
+				for(int x = 0; x < chunkSize; x++) {
 					result[i++] = (base + vx * x + vy * y + vz * z).to<float>();
 				}
 			}
@@ -71,7 +71,7 @@ void WGA_StructureFuncs_CPU::distanceTo(Api api, Key key, DH <VT::Float> result,
 void WGA_StructureFuncs_CPU::_spawn(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key key, DH <VT::Block> result, V <VT::Float> maxRadius, V <VT::Float> seed, const WGA_StructureFuncs_CPU::SpawnFunc &spawnFunc) {
 	ZoneScoped;
 
-	ASSERT(result.size == subChunkVolume);
+	ASSERT(result.size == chunkVolume);
 
 	for(int i = 0; i < result.size; i++)
 		result[i] = blockID_undefined;
@@ -90,7 +90,7 @@ void WGA_StructureFuncs_CPU::_spawn(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key k
 		SpawnList spawnList;
 		spawnFunc(api, key, spawnList);
 
-		const WorldGen::Seed seedV = static_cast<WorldGen::Seed>(WGA_ValueWrapper_CPU<VT::Float>(seed).constValue());
+		const WorldGenSeed seedV = static_cast<WorldGenSeed>(WGA_ValueWrapper_CPU<VT::Float>(seed).constValue());
 
 		WGA_StructureGenerator_CPU structGen(*api);
 
@@ -125,7 +125,7 @@ void WGA_StructureFuncs_CPU::_spawn(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key k
 				ASSERT(schr.associativeData.isEmpty());
 
 				const auto dt = schr.flatData.constData();
-				for(int i = 0; i < subChunkVolume; i++) {
+				for(int i = 0; i < chunkVolume; i++) {
 					if(dt[i] != blockID_undefined)
 						result[i] = dt[i];
 				}

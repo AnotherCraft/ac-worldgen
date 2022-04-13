@@ -2,6 +2,7 @@
 
 #include <QMutex>
 
+#include "pch.h"
 #include "wga_grammarsymbol.h"
 
 class WGA_Rule : public WGA_GrammarSymbol {

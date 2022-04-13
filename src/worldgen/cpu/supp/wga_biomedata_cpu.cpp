@@ -47,7 +47,7 @@ void WGA_BiomeData_CPU::calculateFor(WorldGenAPI_CPU &api, const BlockWorldPos &
 	}
 
 	for(int i = 0; i < chunkSurface; i++) {
-		const Vector2I gridRelPos = (pos.xy() & gridSizeMask) + Vector2I(i % chunkSize.x(), i / chunkSize.x());
+		const Vector2I gridRelPos = (pos.xy() & gridSizeMask) + Vector2I(i % chunkSize, i / chunkSize);
 
 		int winningBiome = -1;
 		float largestWeight = std::numeric_limits<float>::lowest();

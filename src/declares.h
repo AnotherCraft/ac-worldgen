@@ -3,6 +3,8 @@
 class WorldGenAPI;
 
 class WGLCompiler;
+class WGLContext;
+class WGLModule;
 
 class WGA_Biome;
 class WGA_Value;

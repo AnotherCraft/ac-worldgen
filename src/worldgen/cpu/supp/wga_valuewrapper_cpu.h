@@ -52,6 +52,10 @@ public:
 		return dataHandle(BlockWorldPos(), subKey)[0];
 	}
 
+	inline auto chunkValue(const ChunkWorldPos &pos, WGA_DataRecord_CPU::SubKey subKey = 0) {
+		return dataHandle(BlockWorldPos::fromChunkBlockIndex(pos, 0, 0), subKey)[0];
+	}
+
 	inline auto sampleAt(const BlockWorldPos &pos, WGA_DataRecord_CPU::SubKey subKey = 0) {
 		return dataHandle(pos & ~(chunkSize - 1), subKey)[pos];
 	}

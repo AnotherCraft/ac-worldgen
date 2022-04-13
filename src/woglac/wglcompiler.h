@@ -2,14 +2,12 @@
 
 #include <QString>
 
+#include "pch.h"
+
 #include "wglfile.h"
 
-class WGLContext;
-class WGLModule;
-
 // Woglac language parser and compiler, outputs a
-class WGLCompiler : public QObject {
-Q_OBJECT
+class WGLCompiler {
 
 public:
 	WGLCompiler();
@@ -18,6 +16,9 @@ public:
 
 public:
 	void addFile(const WGLFilePtr &file);
+
+	// Tries to locate a specified file, throws if failed
+	QString lookupFile(const QString &filename);
 
 public:
 	void compile();

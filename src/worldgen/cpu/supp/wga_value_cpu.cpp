@@ -1,6 +1,6 @@
 #include "wga_value_cpu.h"
 
-#include "common/util/utils/tracyutils.h"
+#include "util/tracyutils.h"
 
 WGA_Value_CPU::WGA_Value_CPU(WorldGenAPI_CPU &api, WGA_Value::ValueType valueType, bool isContextual, const DimensionalityFunc &dimFunc, const WGA_DataRecord_CPU::Ctor &ctor)
 	: api_(api), valueType_(valueType), isContextual_(isContextual), dimFunc_(dimFunc), ctor_(ctor) {
@@ -23,7 +23,7 @@ WGA_DataRecord_CPU::Ptr WGA_Value_CPU::getDataRecord(const BlockWorldPos &origin
 
 	const Dimensionality dim = dimensionality();
 
-	assert((origin & (subChunkSize - 1)) == 0);
+	assert((origin & (chunkSize - 1)) == 0);
 
 	if(dim == Dimensionality::DConst)
 		key.origin = BlockWorldPos();

@@ -1,5 +1,7 @@
 #include "wga_datacache_cpu.h"
 
+#include <QMetaEnum>
+
 #include "util/tracyutils.h"
 #include "util/bytesizeliterals.h"
 #include "util/forit.h"
@@ -30,7 +32,7 @@ WGA_DataCache_CPU::~WGA_DataCache_CPU() {
 }
 
 WGA_DataCache_CPU::DataRecordPtr WGA_DataCache_CPU::get(const WGA_DataRecord_CPU::Key &key, const WGA_DataRecord_CPU::Ctor &ctor) {
-	ASSERT(key.origin.xy() % chunkSize.xy() == 0);
+	ASSERT(key.origin.xy() % chunkSize == 0);
 
 	DataRecordPtr result;
 

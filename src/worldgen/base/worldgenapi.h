@@ -201,7 +201,7 @@ public:
 	static const Functions &functions();
 
 public:
-	WorldGenAPI(size_t seed);
+	WorldGenAPI(WorldGenSeed seed);
 	virtual ~WorldGenAPI();
 
 public:
@@ -228,6 +228,10 @@ public:
 
 	inline WGA_Value *airBlock() {
 		return constBlock(BlockID(0));
+	}
+	inline WGA_Value *constBlock(const QString &uid) {
+		// TODO
+		throw;
 	}
 
 public:

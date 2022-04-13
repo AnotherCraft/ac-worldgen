@@ -13,8 +13,7 @@ bool WGA_StructureOutputData_CPU::SubChunkRecord::shouldUseFlat(int addedRecordC
 		return true;
 
 	if(associativeData.size() + addedRecordCount > associativeDataLimit) {
-	//if(true) {
-		flatData.resize(subChunkVolume, blockID_undefined);
+		flatData.resize(chunkVolume, blockID_undefined);
 
 		auto resh = flatData.data();
 		for(const auto &v : associativeData)

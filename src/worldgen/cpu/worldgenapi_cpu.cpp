@@ -2,16 +2,15 @@
 
 #include <cmath>
 
-#include "common/util/container/iterators.h"
+#include "util/iterators.h"
 
-#include "server/world/worldgen/base/supp/wga_componentnode.h"
+#include "worldgen/base/supp/wga_componentnode.h"
 
-#include "../worldgen_cpu.h"
-#include "worldgen/cpu/supp/wga_biomedata_cpu.h"
-#include "worldgen/cpu/supp/wga_value_cpu.h"
-#include "worldgen/cpu/supp/wga_fillfunc_cpu.h"
-#include "worldgen/cpu/supp/wga_valuewrapper_cpu.h"
-#include "worldgen/cpu/funcs/wga_funcs_cpu.h"
+#include "supp/wga_biomedata_cpu.h"
+#include "supp/wga_value_cpu.h"
+#include "supp/wga_fillfunc_cpu.h"
+#include "supp/wga_valuewrapper_cpu.h"
+#include "funcs/wga_funcs_cpu.h"
 
 #define WGCPUF_ARGS(T) const WGA_DataRecord_CPU::Key &key, WGA_DataHandle_CPU<WGA_Value::ValueType::T> data
 #define DIM_FUNC(D) [] { return WGA_Value::Dimensionality::D; }
@@ -22,8 +21,7 @@ using LocalCache = QHash<WGA_DataRecord_CPU::Key, WGA_DataRecord_CPU::Ptr>;
 thread_local WGA_StructureGenerator_CPU *WorldGenAPI_CPU::structureGen = nullptr;
 thread_local LocalCache *localCache = nullptr;
 
-WorldGenAPI_CPU::WorldGenAPI_CPU(WorldGen_CPU &worldGen)
-	: WorldGenAPI(worldGen) {
+WorldGenAPI_CPU::WorldGenAPI_CPU(WorldGenSeed seed) : WorldGenAPI(seed) {
 
 }
 

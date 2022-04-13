@@ -140,7 +140,7 @@ WGA_StructureOutputData_CPUPtr WGA_StructureGenerator_CPU::generateOutput() {
 				if(block == blockID_undefined)
 					continue;
 
-				const BlockWorldPos subChunkPos = worldPos & ~(subChunkSize - 1);
+				const BlockWorldPos subChunkPos = worldPos & ~(chunkSize - 1);
 
 				auto &srr = result->subChunkRecords[subChunkPos];
 				const ChunkBlockIndex six = worldPos.subChunkBlockIndex(0);
@@ -151,7 +151,7 @@ WGA_StructureOutputData_CPUPtr WGA_StructureGenerator_CPU::generateOutput() {
 					srr.associativeData += std::make_pair(six, block);
 			}
 
-			result->dataSize = iterator(result->subChunkRecords).mapx(sizeof(WGA_StructureOutputData_CPU::SubChunkRecord) + (x.flatData.isEmpty() ? 0 : sizeof(BlockID) * subChunkVolume) + x.associativeData.size() * 4).sum();
+			result->dataSize = iterator(result->subChunkRecords).mapx(sizeof(WGA_StructureOutputData_CPU::SubChunkRecord) + (x.flatData.isEmpty() ? 0 : sizeof(BlockID) * chunkVolume) + x.associativeData.size() * 4).sum();
 		}
 	}
 
