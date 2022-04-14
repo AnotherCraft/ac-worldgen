@@ -34,7 +34,7 @@ includeStatement:
 	'include' file= StringLiteral ';';
 
 variableDefinition:
-	export='export'? type=Type id=extendedIdentifier '=' val=expression ';';
+	exportFlag='export'? type=Type id=extendedIdentifier '=' val=expression ';';
 
 paramDefinition:
 	(targetType=('rule' | 'component') target=extendedIdentifier?)? 'param' type=Type id=Identifier ('?=' defaultValue=expression)? ';';

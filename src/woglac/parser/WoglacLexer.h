@@ -17,9 +17,9 @@ public:
     T__14 = 15, T__15 = 16, T__16 = 17, T__17 = 18, T__18 = 19, T__19 = 20, 
     T__20 = 21, T__21 = 22, T__22 = 23, T__23 = 24, T__24 = 25, T__25 = 26, 
     T__26 = 27, T__27 = 28, T__28 = 29, T__29 = 30, T__30 = 31, T__31 = 32, 
-    T__32 = 33, T__33 = 34, T__34 = 35, LineComment = 36, BlockComment = 37, 
-    Whitespace = 38, Type = 39, BlockLiteral = 40, ComparisonOp = 41, BoolLiteral = 42, 
-    StringLiteral = 43, MultOp = 44, Identifier = 45, NumericLiteral = 46
+    T__32 = 33, T__33 = 34, T__34 = 35, T__35 = 36, LineComment = 37, BlockComment = 38, 
+    Whitespace = 39, Type = 40, BlockLiteral = 41, ComparisonOp = 42, BoolLiteral = 43, 
+    StringLiteral = 44, MultOp = 45, Identifier = 46, NumericLiteral = 47
   };
 
   WoglacLexer(antlr4::CharStream *input);

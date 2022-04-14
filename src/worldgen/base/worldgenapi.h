@@ -138,7 +138,7 @@
   FUNC(compGeq, 2, ((T, a, Float), (ARG, b, 1)), (T, r, Bool), DIM_MAX_ARGS_2, (INLINE, arg1 >= arg2), "") \
 
 class WorldGenAPI {
-Q_GADGET
+	Q_GADGET
 
 public:
 	using Seed = uint32_t;
@@ -177,21 +177,21 @@ public:
 		QString section;
 
 	public:
-		QVector<FunctionArgument> arguments;
+		QVector <FunctionArgument> arguments;
 		FunctionArgument returnValue;
 
 	public:
-		static QString composePrototype(const QString &functionName, const QVector<WGA_Value::ValueType> &argTypes);
+		static QString composePrototype(const QString &functionName, const QVector <WGA_Value::ValueType> &argTypes);
 
 	};
 	struct Functions {
 
 	public:
 		QList<Function> list;
-		QMap<QString, FunctionID> prototypeMapping;
+		QMap <QString, FunctionID> prototypeMapping;
 		QSet<QString> nameSet;
 		QStringList nameList; ///< Ordered name list
-		QMap<QString, QVector<FunctionID>> nameMapping;
+		QMap <QString, QVector<FunctionID>> nameMapping;
 
 	public:
 		/// Generates documentation in markdown format
@@ -201,12 +201,23 @@ public:
 	static const Functions &functions();
 
 public:
-	WorldGenAPI(WorldGenSeed seed);
 	virtual ~WorldGenAPI();
 
 public:
 	inline WorldGenSeed seed() const {
 		return seed_;
+	}
+
+	virtual void setSeed(WorldGenSeed set) {
+		seed_ = set;
+	}
+
+	inline const QHash<QString, BlockID> &blockUIDMapping() const {
+		return blockUIDMapping_;
+	}
+
+	virtual void setBlockUIDMapping(const QHash<QString, BlockID> &set) {
+		blockUIDMapping_ = set;
 	}
 
 public:
@@ -220,9 +231,13 @@ public:
 	inline WGA_Value *airBlock() {
 		return constBlock(BlockID(0));
 	}
+
 	inline WGA_Value *constBlock(const QString &uid) {
-		// TODO
-		throw;
+		const BlockID id = blockUIDMapping_.value(uid, -1);
+		if(id == -1)
+			throw std::exception(QStringLiteral("Block UID '%1' not defined.").arg(uid).toStdString());
+
+		return constBlock(id);
 	}
 
 public:
@@ -245,6 +260,7 @@ public:
 
 private:
 	WorldGenSeed seed_ = 0;
+	QHash<QString, BlockID> blockUIDMapping_;
 
 };
 

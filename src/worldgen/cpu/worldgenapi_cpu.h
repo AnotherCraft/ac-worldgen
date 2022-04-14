@@ -15,7 +15,6 @@ public:
 	using ValueType = WGA_Value::ValueType;
 
 public:
-	WorldGenAPI_CPU(WorldGenSeed seed);
 	virtual ~WorldGenAPI_CPU();
 
 public:

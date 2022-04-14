@@ -56,10 +56,6 @@ const WorldGenAPI::Functions &WorldGenAPI::functions() {
 	return fs;
 }
 
-WorldGenAPI::WorldGenAPI(WorldGenSeed seed) : seed_(seed) {
-
-}
-
 WorldGenAPI::~WorldGenAPI() {
 
 }

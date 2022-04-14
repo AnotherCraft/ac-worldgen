@@ -1,6 +1,9 @@
 // Must place before everything else because of antlr
 #include "supp/wglinclude.h"
 
+#include <QDir>
+#include <QFile>
+
 #include "wglcompiler.h"
 
 #include "supp/wglmodule.h"
@@ -35,9 +38,13 @@ void WGLCompiler::addFile(const WGLFilePtr &file) {
 	files_ += file;
 }
 
-QString WGLCompiler::lookupFile(const QString &filename) {
-	// TODO
-	throw;
+QString WGLCompiler::lookupFile(const QString &filename, antlr4::ParserRuleContext *ctx) {
+	for(const QString &dirn : lookupDirectories_) {
+		if(QFile f(QDir(dirn).absoluteFilePath(filename)); f.exists())
+			return f.fileName();
+	}
+
+	throw WGLError(QStringLiteral("Failed to lookup file '%1'").arg(filename), ctx);
 }
 
 void WGLCompiler::compile() {
@@ -48,7 +55,7 @@ void WGLCompiler::compile() {
 		// Parse files
 		for(const WGLFilePtr &f: files_) {
 			try {
-				QSharedPointer<WGLModule> m(new WGLModule());
+				QSharedPointer <WGLModule> m(new WGLModule());
 
 				m->stream.reset(new std::ifstream());
 				m->stream->open(f->fileName().toStdString(), std::ifstream::in);
@@ -103,4 +110,25 @@ void WGLCompiler::compile() {
 
 		clear();
 	}
+}
+
+QHash<QString, WGA_Value*> WGLCompiler::construct(WorldGenAPI &api) {
+	WGLAPIContext ctx;
+	ctx.api = &api;
+
+	for(const auto &cmd: context_->apiCommands())
+		cmd(ctx);
+
+	QHash<QString, WGA_Value*> r;
+	for(WGLSymbol *sym: context_->rootSymbol->childrenByName()) {
+		if(!sym->isExport)
+			continue;
+
+		if(sym->symbolType() != WGLSymbol::Type::FieldVariable)
+			continue;
+
+		r[sym->name()] = ctx.map<WGA_Value>(sym);
+	}
+
+	return r;
 }

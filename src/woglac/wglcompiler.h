@@ -14,27 +14,27 @@ public:
 
 	void clear();
 
+	inline void setLookupDirectories(const QStringList &set) {
+		lookupDirectories_ = set;
+	}
+
 public:
 	void addFile(const WGLFilePtr &file);
 
 	// Tries to locate a specified file, throws if failed
-	QString lookupFile(const QString &filename);
+	QString lookupFile(const QString &filename, antlr4::ParserRuleContext *ctx);
 
 public:
 	void compile();
 
 public:
-	struct ExportValue {
-		QString name;
-		WGA_Value *value;
-	};
-
-	// Calls appropriate WorldGenAPI functions to construct the worldgen pipeline, returns list of root 
-	QList<ExportValue> construct(WorldGenAPI &api);
+	// Calls appropriate WorldGenAPI functions to construct the worldgen pipeline, returns exports
+	QHash<QString, WGA_Value*> construct(WorldGenAPI &api);
 
 private:
 	QList<WGLFilePtr> files_;
 	std::shared_ptr<WGLContext> context_;
+	QStringList lookupDirectories_;
 
 private:
 	QList<QSharedPointer<WGLModule>> modules_;

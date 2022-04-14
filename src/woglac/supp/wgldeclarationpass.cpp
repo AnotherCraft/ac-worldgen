@@ -97,6 +97,7 @@ void WGLDeclarationPass::enterVariableDefinition(WoglacParser::VariableDefinitio
 			WGLUtils::getSymbolTypeName(effectiveTarget->symbolType())), ctx);
 
 	WGLSymbol *sym = new WGLSymbol(ctx_, directTarget, WGLUtils::identifier(ctx->id->id.back()), symbolType, ctx);
+	sym->isExport = ctx->exportFlag;
 	sym->valueType = WGA_Value::typesByName[WGLUtils::identifier(ctx->type)];
 }
 

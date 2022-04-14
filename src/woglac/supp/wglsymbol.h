@@ -58,6 +58,7 @@ public:
 
 public:
 	WGA_Value::ValueType valueType = WGA_Value::ValueType::Undefined;
+	bool isExport = false;
 
 public:
 	/// Looks for the identifier in the current scope only

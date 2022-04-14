@@ -21,10 +21,6 @@ using LocalCache = QHash<WGA_DataRecord_CPU::Key, WGA_DataRecord_CPU::Ptr>;
 thread_local WGA_StructureGenerator_CPU *WorldGenAPI_CPU::structureGen = nullptr;
 thread_local LocalCache *localCache = nullptr;
 
-WorldGenAPI_CPU::WorldGenAPI_CPU(WorldGenSeed seed) : WorldGenAPI(seed) {
-
-}
-
 WorldGenAPI_CPU::~WorldGenAPI_CPU() {
 	qDeleteAll(symbols_);
 	symbols_.clear();

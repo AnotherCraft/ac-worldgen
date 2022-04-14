@@ -19,8 +19,7 @@ void WGA_BiomeData_CPU::calculateFor(WorldGenAPI_CPU &api, const BlockWorldPos &
 
 		const uint32_t bhash = WorldGen_CPU_Utils::hash(
 			WorldGen_CPU_Utils::hash(seed ^ baseWorldPos.x()) ^ baseWorldPos.y());
-		const Vector2I baseWorldPosOffset = Vector2I(bhash & gridSizeMask,
-		                                             WorldGen_CPU_Utils::hash(bhash ^ 8455123) & gridSizeMask);
+		const Vector2I baseWorldPosOffset = Vector2I(bhash & gridSizeMask, WorldGen_CPU_Utils::hash(bhash ^ 8455123) & gridSizeMask);
 		const Vector2I worldPos = baseWorldPos + baseWorldPosOffset;
 
 		rawBiomes[i] = &api.getChunkBiome(BlockWorldPos(worldPos.x() & ~blockInChunkPosMask, worldPos.y() & ~blockInChunkPosMask, 0));
