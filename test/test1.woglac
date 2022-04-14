@@ -1,0 +1,1 @@
+export Block resultBlock = worldPos()::z() < 20 ? block.dirt : block.air;

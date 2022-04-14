@@ -70,7 +70,7 @@ target_precompile_headers(${target} PRIVATE "${PROJECT_BASE_DIR}/src/pch.h")
 # Resources
 # ===========================================
 if (MSVC)
-    target_compile_options(${target} PRIVATE /Zf /MP $<$<CONFIG:RELEASE>:/O3>)
+    target_compile_options(${target} PRIVATE /Zf /MP)
 
     # Getting warning conflicting use
     target_link_options(${target} PRIVATE /NODEFAULTLIB:LIBCMT)

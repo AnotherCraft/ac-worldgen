@@ -7,6 +7,8 @@
 #include <QThreadPool>
 #include <QTextStream>
 
+#include <iostream>
+
 #include "util/forit.h"
 #include "util/iterators.h"
 
@@ -20,7 +22,7 @@
 QFile qstdout;
 
 int main(int argc, char *argv[]) {
-	qstdout.open(stdout, QIODevice::WriteOnly);
+	qstdout.open(stdout, QIODevice::WriteOnly | QIODevice::Unbuffered);
 
 	const auto msgHandler = +[](QtMsgType type, const QMessageLogContext &context, const QString &msg) {
 		static const QHash<int, QString> msgs{
@@ -37,6 +39,7 @@ int main(int argc, char *argv[]) {
 
 		qstdout.write(QJsonDocument(json).toJson(QJsonDocument::Compact));
 		qstdout.write("\n");
+		qstdout.flush();
 	};
 	qInstallMessageHandler(msgHandler);
 
@@ -88,7 +91,10 @@ int main(int argc, char *argv[]) {
 			wgapi.setSeed(WorldGenSeed(argp.value("seed").toLongLong()));
 
 		// Block mapping
-		wgapi.setBlockUIDMapping(iteratorAssoc(QJsonDocument::fromJson(argp.value("blockMapping").toUtf8()).object()).mapx(std::make_pair(x.first, BlockID(x.second.toInt()))).toHash());
+		auto mapping = iteratorAssoc(QJsonDocument::fromJson(argp.value("blockMapping").toUtf8()).object()).mapx(std::make_pair(x.first, BlockID(x.second.toInt()))).toHash();
+		mapping["block.air"] = blockID_air;
+		mapping["block.undefined"] = blockID_undefined;
+		wgapi.setBlockUIDMapping(mapping);
 	}
 
 	// Compile source files
@@ -112,14 +118,25 @@ int main(int argc, char *argv[]) {
 		return 0;
 	}
 
-	QFile qstdin;
+	QTimer t;
 	{
-		qstdin.open(stdin, QIODevice::ReadOnly | QIODevice::Text);
-		const auto readCommands = [&]() {
-			while(qstdin.bytesAvailable()) {
+		t.setInterval(100);
+		t.callOnTimeout([&]() {
+			qstdout.write(QString("TEST %1\n").arg(std::cin.rdbuf()->in_avail()).toUtf8());
+			qstdout.flush();
+
+			while(std::cin.rdbuf() && std::cin.rdbuf()->in_avail() > 0) {
+				qstdout.write(QString("RDSTART %1\n").arg(std::cin.rdbuf()->in_avail()).toUtf8());
+				qstdout.flush();
+
 				QJsonParseError err;
-				const QByteArray msg = qstdin.readLine();
+				std::string cmsg;
+				std::getline(std::cin, cmsg);
+				QByteArray msg = QByteArray(cmsg.c_str()).trimmed();
 				const QJsonObject json = QJsonDocument::fromJson(msg, &err).object();
+
+				qstdout.write(msg);
+				qstdout.flush();
 
 				if(err.error != QJsonParseError::NoError) {
 					qWarning() << "The command is not a valid JSON message" << err.errorString() << msg;
@@ -155,7 +172,7 @@ int main(int argc, char *argv[]) {
 
 					const auto genf = [val, pos]<WGA_Value::ValueType VT>() {
 						return [val, pos] {
-							auto h = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>(static_cast<WGA_Value_CPU *>(val)).dataHandle(pos);
+							auto h = WGA_ValueWrapper_CPU<VT>(static_cast<WGA_Value_CPU *>(val)).dataHandle(pos);
 							return Data{
 								.data = QByteArray(reinterpret_cast<const char *>(h.data), sizeof(decltype(h)::T) * h.size),
 								.recordCount = h.size
@@ -167,8 +184,10 @@ int main(int argc, char *argv[]) {
 						f = genf.operator ()<WGA_Value::ValueType::Float>();
 					else if(val->valueType() == WGA_Value::ValueType::Block)
 						f = genf.operator ()<WGA_Value::ValueType::Block>();
-					else
+					else {
 						qWarning() << "Unsupported export value type:" << WGA_Value::typeNames[val->valueType()];
+						continue;
+					}
 
 					(void) QtConcurrent::run(&pool, [f, pos, var] {
 						const Data d = f();
@@ -186,17 +205,19 @@ int main(int argc, char *argv[]) {
 							qstdout.write(QJsonDocument(json).toJson(QJsonDocument::Compact));
 							qstdout.write("\n");
 							qstdout.write(payload);
+							qstdout.flush();
 						});
 					});
 				}
 				else
 					qWarning() << "Unknown message type:" << type;
+
+				qstdout.write("RDEND\n");
+				qstdout.flush();
 			}
-		};
-
-		QObject::connect(&qstdin, &QIODevice::readyRead, &app, readCommands);
+		});
+		t.start();
 	}
-
 
 	const int result = app.exec();
 

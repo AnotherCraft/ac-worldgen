@@ -1,0 +1,1 @@
+{"type": "getData", "export": "resultBlock", "x": 0, "y": 0, "z": 0, "valueType": "Block"}
