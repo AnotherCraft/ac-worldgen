@@ -17,7 +17,8 @@ void WGLDeclarationPass::enterScope(WoglacParser::ScopeContext *ctx) {
 			type = SymbolType::Scope;
 
 		sym = new WGLSymbol(ctx_, target, ctx->id ? WGLUtils::identifier(ctx->id->id.back()) : QString(), type, ctx);
-	} else {
+	}
+	else {
 		sym = lookupIdentifier(ctx->id, false);
 		const WGLSymbol::Type targetType = WGLUtils::getSymbolType(ctx->type);
 
@@ -62,10 +63,7 @@ void WGLDeclarationPass::enterParamDefinition(WoglacParser::ParamDefinitionConte
 
 	if(!allowedTargets.contains(+effectiveTarget->symbolType()))
 		throw WGLError(
-			QStringLiteral("Target '%1': symbol type '%2' cannot have local params.").arg(effectiveTarget->fullName(),
-			                                                                              WGLUtils::getSymbolTypeName(
-				                                                                              effectiveTarget->symbolType())),
-			ctx);
+			QStringLiteral("Target '%1': symbol type '%2' cannot have local params.").arg(effectiveTarget->fullName(), WGLUtils::getSymbolTypeName(effectiveTarget->symbolType())), ctx);
 
 	WGLSymbol *sym = new WGLSymbol(ctx_, directTarget, WGLUtils::identifier(ctx->id), SymbolType::StructureParam, ctx);
 	sym->valueType = WGA_Value::typesByName[WGLUtils::identifier(ctx->type)];
@@ -74,8 +72,7 @@ void WGLDeclarationPass::enterParamDefinition(WoglacParser::ParamDefinitionConte
 void WGLDeclarationPass::enterBiomeParamDefinition(WoglacParser::BiomeParamDefinitionContext *ctx) {
 	WGLSymbol *directTarget = lookupIdentifier(ctx->id, true);
 
-	WGLSymbol *sym = new WGLSymbol(ctx_, directTarget, WGLUtils::identifier(ctx->id->id.back()), SymbolType::BiomeParam,
-	                               ctx);
+	WGLSymbol *sym = new WGLSymbol(ctx_, directTarget, WGLUtils::identifier(ctx->id->id.back()), SymbolType::BiomeParam, ctx);
 	sym->valueType = WGA_Value::typesByName[WGLUtils::identifier(ctx->type)];
 }
 

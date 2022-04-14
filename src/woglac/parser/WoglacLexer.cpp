@@ -60,14 +60,14 @@ atn::ATN WoglacLexer::_atn;
 std::vector<uint16_t> WoglacLexer::_serializedATN;
 
 std::vector<std::string> WoglacLexer::_ruleNames = {
-  u8"T__0", u8"T__1", u8"T__2", u8"T__3", u8"T__4", u8"T__5", u8"T__6", 
-  u8"T__7", u8"T__8", u8"T__9", u8"T__10", u8"T__11", u8"T__12", u8"T__13", 
-  u8"T__14", u8"T__15", u8"T__16", u8"T__17", u8"T__18", u8"T__19", u8"T__20", 
-  u8"T__21", u8"T__22", u8"T__23", u8"T__24", u8"T__25", u8"T__26", u8"T__27", 
-  u8"T__28", u8"T__29", u8"T__30", u8"T__31", u8"T__32", u8"T__33", u8"T__34", 
-  u8"T__35", u8"LineComment", u8"BlockComment", u8"Whitespace", u8"Type", 
-  u8"BlockLiteral", u8"ComparisonOp", u8"BoolLiteral", u8"StringLiteral", 
-  u8"MultOp", u8"Identifier", u8"NumericLiteral"
+  "T__0", "T__1", "T__2", "T__3", "T__4", "T__5", "T__6", 
+  "T__7", "T__8", "T__9", "T__10", "T__11", "T__12", "T__13", 
+  "T__14", "T__15", "T__16", "T__17", "T__18", "T__19", "T__20", 
+  "T__21", "T__22", "T__23", "T__24", "T__25", "T__26", "T__27", 
+  "T__28", "T__29", "T__30", "T__31", "T__32", "T__33", "T__34", 
+  "T__35", "LineComment", "BlockComment", "Whitespace", "Type", 
+  "BlockLiteral", "ComparisonOp", "BoolLiteral", "StringLiteral", 
+  "MultOp", "Identifier", "NumericLiteral"
 };
 
 std::vector<std::string> WoglacLexer::_channelNames = {
@@ -75,24 +75,24 @@ std::vector<std::string> WoglacLexer::_channelNames = {
 };
 
 std::vector<std::string> WoglacLexer::_modeNames = {
-  u8"DEFAULT_MODE"
+  "DEFAULT_MODE"
 };
 
 std::vector<std::string> WoglacLexer::_literalNames = {
-  "", u8"'extend'", u8"'namespace'", u8"'rule'", u8"'component'", u8"'biome'", 
-  u8"'{'", u8"'}'", u8"';'", u8"'pragma'", u8"'='", u8"'include'", u8"'export'", 
-  u8"'param'", u8"'?='", u8"'condition'", u8"'+-'", u8"'->'", u8"'::'", 
-  u8"'void'", u8"'!'", u8"':'", u8"'node'", u8"'('", u8"'|'", u8"'-'", u8"')'", 
-  u8"'+'", u8"'area'", u8"'block'", u8"','", u8"'?'", u8"'&&'", u8"'||'", 
-  u8"'.'", u8"'#'", u8"'~'"
+  "", "'extend'", "'namespace'", "'rule'", "'component'", "'biome'", 
+  "'{'", "'}'", "';'", "'pragma'", "'='", "'include'", "'export'", 
+  "'param'", "'?='", "'condition'", "'+-'", "'->'", "'::'", 
+  "'void'", "'!'", "':'", "'node'", "'('", "'|'", "'-'", "')'", 
+  "'+'", "'area'", "'block'", "','", "'?'", "'&&'", "'||'", 
+  "'.'", "'#'", "'~'"
 };
 
 std::vector<std::string> WoglacLexer::_symbolicNames = {
   "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", 
   "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", 
-  "", u8"LineComment", u8"BlockComment", u8"Whitespace", u8"Type", u8"BlockLiteral", 
-  u8"ComparisonOp", u8"BoolLiteral", u8"StringLiteral", u8"MultOp", u8"Identifier", 
-  u8"NumericLiteral"
+  "", "LineComment", "BlockComment", "Whitespace", "Type", "BlockLiteral", 
+  "ComparisonOp", "BoolLiteral", "StringLiteral", "MultOp", "Identifier", 
+  "NumericLiteral"
 };
 
 dfa::Vocabulary WoglacLexer::_vocabulary(_literalNames, _symbolicNames);

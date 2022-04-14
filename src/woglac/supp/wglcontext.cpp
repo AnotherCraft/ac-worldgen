@@ -25,11 +25,6 @@ void WGLContext::clear() {
 	symbolApiCmdDependents_.clear();
 
 	rootSymbol = new WGLSymbol(this, nullptr, QString(), WGLSymbol::Type::Namespace, nullptr);
-
-	addApiCmd(nullptr, {}, [](const WGLAPIContext &ctx) {
-		ctx.api->setResult(nullptr);
-		ctx.api->setChunkZOffset(nullptr);
-	});
 }
 
 void WGLContext::addApiCmd(WGLSymbol *definingSymbol, const DependencyList &dependencies, const WGLContext::APICommand &cmd) {

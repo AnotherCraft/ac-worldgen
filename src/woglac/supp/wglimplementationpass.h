@@ -30,12 +30,9 @@ protected:
 
 	virtual void enterComponentIncludeStatement(WoglacParser::ComponentIncludeStatementContext *ctx) override;
 	virtual void exitComponentIncludeStatement(WoglacParser::ComponentIncludeStatementContext *ctx) override;
-	virtual void
-	enterComponentIncludeStatementBlockParam(WoglacParser::ComponentIncludeStatementBlockParamContext *ctx) override;
-	virtual void
-	enterComponentIncludeStatementNodeParam(WoglacParser::ComponentIncludeStatementNodeParamContext *ctx) override;
-	virtual void
-	exitComponentIncludeStatementNodeParam(WoglacParser::ComponentIncludeStatementNodeParamContext *ctx) override;
+	virtual void enterComponentIncludeStatementBlockParam(WoglacParser::ComponentIncludeStatementBlockParamContext *ctx) override;
+	virtual void enterComponentIncludeStatementNodeParam(WoglacParser::ComponentIncludeStatementNodeParamContext *ctx) override;
+	virtual void exitComponentIncludeStatementNodeParam(WoglacParser::ComponentIncludeStatementNodeParamContext *ctx) override;
 
 	virtual void enterComponentAreaStatement(WoglacParser::ComponentAreaStatementContext *ctx) override;
 	virtual void enterComponentBlockStatement(WoglacParser::ComponentBlockStatementContext *ctx) override;
@@ -74,12 +71,11 @@ private:
 	void componentNodeCommonPart(WGLSymbol *sym, WoglacParser::ComponentNodeStatementCommonPartContext *ctx, WGLSymbol *component, DependencyList &deps, const std::function<void(WGLAPIContext &ctx, WGA_ComponentNode::Config &cfg)> &cfgFunc);
 
 private:
-	ExpressionResult
-	functionCall(const QString &functionName, const QVector<ExpressionResult> &args, antlr4::ParserRuleContext *ctx);
+	ExpressionResult functionCall(const QString &functionName, const QVector <ExpressionResult> &args, antlr4::ParserRuleContext *ctx);
 	ExpressionResult binaryOperation(const QString &op, const ExpressionResult &a, const ExpressionResult &b, antlr4::ParserRuleContext *ctx);
 
 private:
 	VOXParser voxParser_;
-	QVector<BlockWorldPos> componentIncludePositions_;
+	QVector <BlockWorldPos> componentIncludePositions_;
 };
 

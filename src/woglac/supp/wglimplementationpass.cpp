@@ -220,7 +220,7 @@ void WGLImplementationPass::enterComponentIncludeStatement(WoglacParser::Compone
 	WGLSymbol *sym = ctx_->astSymbolMapping[ctx];
 
 	ASSERT(voxParser_.isEmpty());
-	voxParser_.parseFile(ctx_->compiler->lookupFile(WGLUtils::stringLiteral(ctx->file, ctx)));
+	voxParser_.parseFile(ctx_->compiler->lookupFile(WGLUtils::stringLiteral(ctx->file), ctx));
 
 	currentScope_ += sym;
 }

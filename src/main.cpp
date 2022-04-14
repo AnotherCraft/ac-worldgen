@@ -156,7 +156,7 @@ int main(int argc, char *argv[]) {
 					else
 						qWarning() << "Unsupported export value type:" << WGA_Value::typeNames[val->valueType()];
 
-					QtConcurrent::run(&pool, [f, pos] {
+					(void) QtConcurrent::run(&pool, [f, pos] {
 						const Data d = f();
 						const QJsonObject json{
 							{"type",  "data"},

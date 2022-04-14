@@ -19,3 +19,7 @@ class WorldGenAPI_CPU;
 class WGA_DataCache_CPU;
 class WGA_StructureGenerator_CPU;
 class WGA_BiomeData_CPU;
+
+namespace antlr4 {
+	class ParserRuleContext;
+}

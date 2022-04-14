@@ -235,7 +235,7 @@ public:
 	inline WGA_Value *constBlock(const QString &uid) {
 		const BlockID id = blockUIDMapping_.value(uid, -1);
 		if(id == -1)
-			throw std::exception(QStringLiteral("Block UID '%1' not defined.").arg(uid).toStdString());
+			throw std::exception(QStringLiteral("Block UID '%1' not defined.").arg(uid).toStdString().c_str());
 
 		return constBlock(id);
 	}
