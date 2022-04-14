@@ -4,6 +4,7 @@ This is a repository for a worldgen system for AnotherCraft. The system is compl
 
 ## System premise & features
 * The whole thing is based around discretized fields, every variable/value is a field that can have a different value for each voxel in the world.
+  * It's a bit like writing shaders.
 * By doing various operations on these fields (incl. stuff like perlin noises, voronoi stuff, ...), you can achieve some pretty cool results.
 * There's also a little more linearistic **procedural structure generator** system.
   * The system can also **import `.vox` files**.

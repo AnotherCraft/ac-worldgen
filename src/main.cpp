@@ -49,9 +49,10 @@ int main(int argc, char *argv[]) {
 	argp.addOption({{"f", "sourceFile"}, "Source file (accepts multiple)", "sourceFile"});
 	argp.addOption({{"d", "lookupDirectory"}, "Lookup directory for resources (for example .vox files for structure generator, accepts multiple)", "lookupDirectory"});
 	argp.addOption({{"s", "seed"}, "Seed for the worldgen (number)", "seed"});
-	argp.addOption({{"m", "blockMapping"}, "Block UID -> ID mapping in JSON object format.\nBlock UIDs have to be prefixed with 'block.', for example 'block.core.air'.\n\nID 0 is reserved for 'block.air'.\nID 1 is reserved for 'block.undefined'.", "blockMapping"});
+	argp.addOption({{"m", "blockMapping"}, "Block UID (string) -> ID (uint16_t) mapping in JSON object format.\nBlock UIDs have to be prefixed with 'block.', for example 'block.core.air'.\n\nID 0 is reserved for 'block.air'.\nID 1 is reserved for 'block.undefined'.", "blockMapping"});
 	argp.addOption({{"t", "threadCount"}, "Number of threads to use (default: min(idealThreadCount - 2, 4))", "threadCount"});
 	argp.addOption({"functionList", "Emits a function list in the Markdown format and exists the application", "functionList"});
+	argp.addOption({"exportList", "Compiles the source files and prints out the list of exports."});
 
 	argp.process(app);
 
@@ -66,7 +67,7 @@ int main(int argc, char *argv[]) {
 
 		WorldGenAPI::functions().generateDocumentation(ts);
 
-		qInfo() << "Function list exported to " << f.fileName();
+		qstdout.write(QStringLiteral("Function list exported to '%1'.\n").arg(f.fileName()).toUtf8());
 		return 0;
 	}
 
@@ -104,16 +105,24 @@ int main(int argc, char *argv[]) {
 		exports = wgc.construct(wgapi);
 	}
 
+	if(argp.isSet("exportList")) {
+		for(auto it = exports.keyValueBegin(), e = exports.keyValueEnd(); it != e; it++)
+			qstdout.write(QStringLiteral("%1: %2\n").arg(it->first, WGA_Value::typeNames[it->second->valueType()]).toUtf8());
+
+		return 0;
+	}
+
 	QFile qstdin;
 	{
 		qstdin.open(stdin, QIODevice::ReadOnly | QIODevice::Text);
 		const auto readCommands = [&]() {
 			while(qstdin.bytesAvailable()) {
 				QJsonParseError err;
-				const QJsonObject json = QJsonDocument::fromJson(qstdin.readLine(), &err).object();
+				const QByteArray msg = qstdin.readLine();
+				const QJsonObject json = QJsonDocument::fromJson(msg, &err).object();
 
 				if(err.error != QJsonParseError::NoError) {
-					qWarning() << "The command is not a valid JSON message" << err.errorString();
+					qWarning() << "The command is not a valid JSON message" << err.errorString() << msg;
 					continue;
 				}
 
@@ -161,15 +170,16 @@ int main(int argc, char *argv[]) {
 					else
 						qWarning() << "Unsupported export value type:" << WGA_Value::typeNames[val->valueType()];
 
-					(void) QtConcurrent::run(&pool, [f, pos] {
+					(void) QtConcurrent::run(&pool, [f, pos, var] {
 						const Data d = f();
 						const QJsonObject json{
-							{"type",  "data"},
-							{"x",     pos.x()},
-							{"y",     pos.y()},
-							{"z",     pos.z()},
-							{"size",  d.data.size()},
-							{"count", d.recordCount},
+							{"type",        "data"},
+							{"export",      var},
+							{"x",           pos.x()},
+							{"y",           pos.y()},
+							{"z",           pos.z()},
+							{"payloadSize", d.data.size()},
+							{"recordCount", d.recordCount},
 						};
 
 						QTimer::singleShot(0, qApp, [json, payload = d.data] {
