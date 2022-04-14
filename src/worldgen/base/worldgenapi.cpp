@@ -64,36 +64,7 @@ WorldGenAPI::~WorldGenAPI() {
 
 }
 
-bool WorldGenAPI::isReady() const {
-	return result_ && chunkZOffset_;
-}
-
-WGA_Value *WorldGenAPI::chunkZOffset() {
-	if(!chunkZOffset_)
-		throw "api.setChunkZOffset call required before";
-
-	return chunkZOffset_;
-}
-
-void WorldGenAPI::setChunkZOffset(WGA_Value *offset) {
-	ASSERT(!chunkZOffset_);
-	chunkZOffset_ = offset;
-}
-
-WGA_Value *WorldGenAPI::result() {
-	if(!result_)
-		throw "api.setResult call required before";
-
-	return result_;
-}
-
-void WorldGenAPI::setResult(WGA_Value *result) {
-	ASSERT(!result_);
-	result_ = result;
-}
-
-QString
-WorldGenAPI::Function::composePrototype(const QString &functionName, const QVector<WGA_Value::ValueType> &argTypes) {
+QString WorldGenAPI::Function::composePrototype(const QString &functionName, const QVector <WGA_Value::ValueType> &argTypes) {
 	return QStringLiteral("%1(%2)").arg(functionName, iterator(argTypes).mapx(WGA_Value::typeNames[x]).join(", "));
 }
 
@@ -111,8 +82,8 @@ void WorldGenAPI::Functions::generateDocumentation(QTextStream &ts) const {
 
 		ts << QStringLiteral("## `%1` \n").arg(fn);
 
-		QMap<QString, QString> prototypesByDescription;
-		QSet<QString> mentionedPrototypes;
+		QMap <QString, QString> prototypesByDescription;
+		QSet < QString > mentionedPrototypes;
 
 		for(const WorldGenAPI::FunctionID fid: functions.nameMapping[fn]) {
 			const WorldGenAPI::Function &f = functions.list[fid];

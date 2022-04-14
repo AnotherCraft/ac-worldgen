@@ -1,0 +1,15 @@
+{
+	"version": "2.0.0",
+	"configurations": [
+			{
+					"name": "Debug ANTLR4 grammar",
+					"type": "antlr-debug",
+					"request": "launch",
+					"input": "../../../bin/mods/core/worldgen/overworld.woglac",
+					"grammar": "Woglac.g4",
+					"startRule": "module",
+					"printParseTree": true,
+					"visualParseTree": true
+			}
+	]
+}

@@ -23,6 +23,15 @@ public:
 public:
 	void compile();
 
+public:
+	struct ExportValue {
+		QString name;
+		WGA_Value *value;
+	};
+
+	// Calls appropriate WorldGenAPI functions to construct the worldgen pipeline, returns list of root 
+	QList<ExportValue> construct(WorldGenAPI &api);
+
 private:
 	QList<WGLFilePtr> files_;
 	std::shared_ptr<WGLContext> context_;

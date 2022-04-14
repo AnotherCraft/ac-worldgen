@@ -205,18 +205,9 @@ public:
 	virtual ~WorldGenAPI();
 
 public:
-	/// Returns if the api is compiled and set up properly and can spit out chunk data
-	bool isReady() const;
-
 	inline WorldGenSeed seed() const {
 		return seed_;
 	}
-
-	WGA_Value *chunkZOffset();
-	void setChunkZOffset(WGA_Value *offset);
-
-	WGA_Value *result();
-	void setResult(WGA_Value *result);
 
 public:
 	virtual WGA_Value *constFloat(float val) = 0;
@@ -254,8 +245,6 @@ public:
 
 private:
 	WorldGenSeed seed_ = 0;
-	WGA_Value *chunkZOffset_ = nullptr;
-	WGA_Value *result_ = nullptr;
 
 };
 

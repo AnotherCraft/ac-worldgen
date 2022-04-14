@@ -1,0 +1,1 @@
+antlr4 -o ../src/woglac/parser -Dlanguage=Cpp Woglac.g4

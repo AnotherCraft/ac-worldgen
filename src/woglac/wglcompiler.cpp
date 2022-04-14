@@ -96,29 +96,6 @@ void WGLCompiler::compile() {
 				ips.execute(m->ast);
 		}
 
-		// Resolve chunkZOffset & result block
-		{
-			{
-				WGLSymbol *sym = context_->rootSymbol->resolveIdentifier("resultBlock", nullptr, false);
-				if(!sym || sym->symbolType() != WGLSymbol::Type::FieldVariable || sym->valueType != WGA_Value::ValueType::Block)
-					throw WGLError(QStringLiteral("WOGLAC requires a root scope variable Block resultBlock."), nullptr);
-
-				context_->addApiCmd(nullptr, {sym}, [sym](const WGLAPIContext &ctx) {
-					ctx.api->setResult(ctx.map<WGA_Value>(sym));
-				});
-			}
-
-			{
-				WGLSymbol *sym = context_->rootSymbol->resolveIdentifier("chunkZOffset", nullptr, false);
-				if(!sym || sym->symbolType() != WGLSymbol::Type::FieldVariable || sym->valueType != WGA_Value::ValueType::Float)
-					throw WGLError(QStringLiteral("WOGLAC requires a root scope variable Float chunkZOffset."), nullptr);
-
-				context_->addApiCmd(nullptr, {sym}, [sym](const WGLAPIContext &ctx) {
-					ctx.api->setChunkZOffset(ctx.map<WGA_Value>(sym));
-				});
-			}
-		}
-
 		context_->checkCircularDependencies();
 	}
 	catch(const WGLError &e) {

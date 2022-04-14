@@ -1,0 +1,212 @@
+Float z = worldPos.z + 0.5;
+
+// Namespaces
+namespace fields {
+	// Field variables (can have distinct value for each point in the space)
+	Float oceaness = clamp01(valueNoise2D(~64, #46142, randPC(#21891) < 0.8 ? -0.2 : 1.2));
+	Float mountainess = clamp01(valueNoise2D(~32, #51654, randPC(#56481) < 0.5 ? -0.2 : 1.2));
+
+	// In celsius degrees
+	Float temperature =
+		-20
+		+ clamp(valueNoise2D(~64, #1253, randPC(#2511)), 0, 1) * 60
+		+ perlin2D(~32, #5131) * 4 + perlin2D(~8, #6573) * 2 + perlin2D(~2, #3645) * 1 // Small temperature fluctuations
+		;
+
+	// Basically a nameless namespace/scope, used for separating variables
+	{
+
+	}
+}
+
+Float fields.somethingDifferent = 3;
+rule dungeons.Dungeon -> asd;
+extend mod_test.plains param test = 3;
+
+// Functions, no recursion allowed
+Float example(Float v) = abs(v) + 1;
+
+// Define a biome parameter with a default value (can be overriden for each biome type)
+biome param Float chunkZOffsetReserve = 72;
+
+biome param Float test = 3;
+
+biome plains {
+	// Condition for the biome
+	condition fields.oceaness = 5 +- 0.3;
+
+	// Biome variable (must have been defined somwehere)
+	param terrain.rockTerrainZ = 3;
+}
+
+biome plains rule fields.oceaness = 5 +- 0.4;
+
+// Also possible define outside a namespace/biome
+biome plains rule fields.oceaness = 5;
+
+namespace mod_test {
+	biome test {
+
+	}
+}
+
+namespace mod_test {
+	Float a = 3;
+}
+
+extend namespace mod_test {
+	Float x = y + 1;
+}
+
+extend namespace mod_test {
+	Float y = 3;
+}
+
+namespace mod_test Float x = 3;
+
+override mod_test.x = 4;
+override mod_test.x = mod_test.x + 5;
+
+// This also works
+biome mod_test.test condition fields.mountainess = 5 +- 3;
+
+namespace dungeons {
+	structure entrance;
+
+	// structure rules must start with a capital letter
+	rule Dungeon {
+		// Spawn structure "entrance", origin is the "entryPoint" node
+		rule -> entrance::entryPoint {			
+			// Pass the "distance" param to the node
+			// Due to the nature of the params, they are basically dynamic
+			param distance = 10;
+
+			// Randomly rotate the structure in the horizontal axis
+			pragma randomRotateHorizontal = true;
+		}
+	}
+
+	rule Vertical {
+		// State that this rule expects a Float parameter named "distance"
+		// All parameters are passed between structures and roles, but only those declared are accessible in each rule.
+		rule param Float distance;
+
+		// Change a parameter value for all subrules
+		rule param distance = distance - 1;
+
+		// You can define local helper variables
+		Float var = param.distance + 3;
+
+		// You can add a condition for this nonterminal
+		rule condition distance > 1;
+
+		// This rule can expand to hallway1 structure at the shaft binding point
+		rule -> hallway2.shaft;
+
+		rule -> hallway1.shaft {
+			// Override the default param setting statement (using the ORIGINAL input param)
+			param distance = distance - 3;
+
+			// Strength of the rule (default 1)
+			// Rules with strength 2 are twice as probable to be selected than rules with strength 1
+			// If rule fails, the rulette is rolled again for the remaining rules (so a rule with the lowest strength can win by remaining the only rule applicable)
+			// Applies only to the rules with the same priority
+			pragma strength = 2;
+
+			// Priority of the rule (default 1)
+			// Rules with higher priority have absolute precence over rules with lower priority.
+			// No lower-priority rules are used until all higher priority rules are ruled out.
+			pragma priority = 2;
+
+			// Condition for using this expansion rule
+			rule condition distance < 10;
+
+			// You can access fields in the rules. Field coordinates are determined by the rule expansion position.
+			rule condition rockTerrainZ > z;
+		}
+	}
+
+	rule Vertical -> component hall2 node entryPoint {
+	}
+
+	component entrance {
+		// You can declare parameters, exactly like in rules
+		component param Float distance;
+
+		// We can also include block/node/area data from a file
+		// This is a set of two files - one is a json defining stuff like areas etc and the other one is a block map
+		include "dungeon";
+
+		// Area in region 0,0,0 - 1,1,1 (inclusive) with name room
+		// Areas with the same name cannot overlap
+		area (0, 0, 0) (1, 1, 1) room;
+
+		// Explicitly define blocks in the component
+		block (0, 0, 0) (3, 3, 3) = block.air;
+
+		// You can use expressions
+		block (1, 1, 1) = distance > 10 ? block.air : block.bricks;
+
+		// Maybe I could eventually allow ifs and fors here
+
+		// Define nodes rules and component attach to
+		node (0, 0, 0) entryPoint;
+
+		// Define a node that expands according to a rule
+		// The node is oriented downwards (structures attach to the bottom)
+		node (0, 0, -1) (zMinus) shaft -> Vertical;
+
+		node (0, -1, 3) -> rule {
+			rule -> test;
+			rule -> 
+		}
+
+		component condition distance < 5;
+	}
+
+	component hallway1 {
+		area (0, 0, 0) (10, 10, 10) room;
+	}
+
+	component hallway2 {
+		include "hallway2";
+	}
+
+	/*
+		Arguments:
+		1 - maximum structure radius in chunks
+		2 - seed
+		3 - entry nonterminal
+
+		And various overload for the rest
+		4 - (2D Float) - seed height map
+		5 - (2D Bool) - if the component should spawn on the given coordinates
+
+		Or
+		4 - (3D Bool) - if the component should spawn on the given coordinates
+	*/
+	Block outBlock = rule Dungeon(~16, #26323, terrainLevel, rand2D(#2542) > 0.3);
+}
+
+// Output system defined variable 
+Block worldBlock =
+	// If the dungeons block is set, set output to dungeons
+	// ?: is null coalescing operator operator
+	dungeons.block ?:
+	z < biome(weighted).terrainZ ? block.core.dirt :
+	 block.air;
+
+
+namespace test {
+
+}
+
+namespace X {
+	rule test.z {
+
+	}
+}
+
+namespace X.test {
+
+}

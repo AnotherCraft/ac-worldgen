@@ -21,8 +21,7 @@ public:
 	using Type = WGLUtils::SymbolType;
 
 public:
-	WGLSymbol(WGLContext *context, WGLSymbol *parent, const QString &name, Type type,
-	          antlr4::ParserRuleContext *declarationContext);
+	WGLSymbol(WGLContext *context, WGLSymbol *parent, const QString &name, Type type, antlr4::ParserRuleContext *declarationContext);
 
 public:
 	inline const QString &name() const {
