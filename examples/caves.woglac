@@ -1,0 +1,7 @@
+Float caveness = clamp(valueNoise2D(~8, #84354, clamp(randPC(#25454) * 2.5 - 1, 0, 1)) * 2, 0, 1);
+
+Float iso1 = 1 - abs(perlin3D(~4, #4534) + perlin3D(~2, #3343) * 0.5 - 0.2);
+Float iso2 = min(1, 1.2 - abs(perlin3D(~1, #4565)) - abs(perlin3D(~2, #84565)) * 0.5);
+Bool cave = (pow(iso1, 2 + perlin2D(~4, #25433)) * pow(sampleOffset(iso2, float3(16)), 2)) * caveness > 0.85;
+
+export Block resultBlock = cave ? block.air : block.undefined;

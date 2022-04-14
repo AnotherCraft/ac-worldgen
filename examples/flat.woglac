@@ -1,0 +1,6 @@
+// That 0.001 is there because weighted biome variable interpolation introduces some imperfections
+Float z = worldPos()::z() + 0.5;
+
+Float terrainZ = 195;
+
+export Block resultBlock = z < terrainZ ? (rand2D(#342) < 0.5 ? block.core.dirt : block.core.grass) : block.air;

@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
 	argp.addOption({{"f", "sourceFile"}, "Source file (accepts multiple)", "sourceFile"});
 	argp.addOption({{"d", "lookupDirectory"}, "Lookup directory for resources (for example .vox files for structure generator, accepts multiple)", "lookupDirectory"});
 	argp.addOption({{"s", "seed"}, "Seed for the worldgen (number)", "seed"});
-	argp.addOption({{"m", "mapping"}, "Block UID -> ID mapping in JSON object format.\nBlock UIDs have to be prefixed with 'block.', for example 'block.core.air'.\n\nID 0 is reserved for 'block.air'.\nID 1 is reserved for 'block.undefined'.", "mapping"});
+	argp.addOption({{"m", "blockMapping"}, "Block UID -> ID mapping in JSON object format.\nBlock UIDs have to be prefixed with 'block.', for example 'block.core.air'.\n\nID 0 is reserved for 'block.air'.\nID 1 is reserved for 'block.undefined'.", "blockMapping"});
 	argp.addOption({{"t", "threadCount"}, "Number of threads to use (default: min(idealThreadCount - 2, 4))", "threadCount"});
 	argp.addOption({"functionList", "Emits a function list in the Markdown format and exists the application", "functionList"});
 
@@ -87,7 +87,7 @@ int main(int argc, char *argv[]) {
 			wgapi.setSeed(WorldGenSeed(argp.value("seed").toLongLong()));
 
 		// Block mapping
-		wgapi.setBlockUIDMapping(iteratorAssoc(QJsonDocument::fromJson(argp.value("mapping").toUtf8()).object()).mapx(std::make_pair(x.first, BlockID(x.second.toInt()))).toHash());
+		wgapi.setBlockUIDMapping(iteratorAssoc(QJsonDocument::fromJson(argp.value("blockMapping").toUtf8()).object()).mapx(std::make_pair(x.first, BlockID(x.second.toInt()))).toHash());
 	}
 
 	// Compile source files
@@ -130,6 +130,11 @@ int main(int argc, char *argv[]) {
 
 					if(val->symbolType() != WGA_Value::SymbolType::Value) {
 						qWarning() << "Export symbol is not a variable";
+						continue;
+					}
+
+					if(WGA_Value::typeNames[val->valueType()] != json["valueType"].toString()) {
+						qWarning() << QStringLiteral("Export '%1' is of type '%2', but '%3' expected").arg(var, WGA_Value::typeNames[val->valueType()], json["valueType"].toString());
 						continue;
 					}
 

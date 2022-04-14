@@ -1,0 +1,280 @@
+// That 0.001 is there because weighted biome variable interpolation introduces some imperfections
+Float z = worldPos()::z() + 0.5;
+
+namespace fields {
+	Float oceaness = clamp01(valueNoise2D(~64, #46142, randPC(#21891) < 0.8 ? -0.2 : 1.2));
+	Float mountainess = clamp01(valueNoise2D(~32, #51654, randPC(#56481) < 0.5 ? -0.2 : 1.2));
+
+	// In celsius degrees
+	Float temperature =
+		-20
+		+ clamp(valueNoise2D(~64, #1253, randPC(#2511)), 0, 1) * 60
+		+ perlin2D(~32, #5131) * 4 + perlin2D(~8, #6573) * 2 + perlin2D(~2, #3645) * 1 // Small temperature fluctuations
+		;
+
+	Float forestness = clamp01(valueNoise2D(~16, #818, randPC(#5151) < 0.8 ? -0.2 : 1.2));
+}
+
+namespace terrain {
+	Float seaZ = 128;
+
+	// Snow cap variables
+	Float groundLevelTemperature = max(-30, fields.temperature - max(rock.zInterpolated - seaZ, 0) * 0.1);
+	Float snowCapHeight = max(0, groundLevelTemperature * -0.3 - rock.zInterpolatedGradient * 0.8);
+}
+
+namespace biomes {
+	biome param Float chunkZOffsetReserve ?= 72;
+}
+
+// Terrain rock
+namespace terrain.rock {
+	biome param Float z ?= terrain.seaZ;
+	biome param Block blk ?= block.core.stone;
+
+	Float zBase = terrain.seaZ + max(1, 4 + perlin2D(~32, #76) * 16);
+	Float zInterpolated = biome(z, weighted, 2);
+	Float zInterpolatedGradient =
+		sampleGradient2D(zInterpolated, 2)::manhattanLength() * 2
+		+ sampleGradient2D(zInterpolated, 6)::manhattanLength() * 4
+	;
+}
+
+// Terrain soil
+namespace terrain.soil {
+	biome param Float z ?= terrain.rock.zInterpolated - 0.1;
+	biome param Block blk ?= block.core.dirt;
+
+	Float zDefault = terrain.rock.zInterpolated + max(-0.1, 5 + perlin2D(~4, #42341) * 4 - terrain.rock.zInterpolatedGradient * 2);
+	Float zInterpolated = biome(z, weighted, 2) - terrain.snowCapHeight;
+
+	Block blkInterpolated = biome(blk, nearest);
+}
+
+// Terrain ground
+namespace terrain.ground {
+	biome param Block blk ?= z < terrain.seaZ - 0.5 ? terrain.soil.blkInterpolated : block.core.grass;
+
+	Block blkInterpolated = biome(blk, nearest);
+}
+
+// Terrain sediment
+namespace terrain.sediment {
+	biome param Float z ?= terrain.rock.zInterpolated - 1;
+	biome param Block blk ?= block.core.dirt;
+
+	Float zInterpolated =
+		biome(z, weighted, 4)
+		+ max(0, terrain.soil.zInterpolated - terrain.rock.zInterpolated) * 0.8
+		- terrain.snowCapHeight * 0.3
+		;
+	}
+
+
+namespace trees {
+	biome param Bool grandSpawnCondition ?=
+		biome(spawnCondition, nearest)
+		&& poissonDisc2DBool(#2324, biome(treeDistance, weighted, 1))
+
+		// Don't spawn trees directly on rocks
+		&& terrain.groundZ > terrain.rock.zInterpolated
+
+		&& terrain.groundZ > terrain.seaZ
+
+		&& (!biome(requireForestness, nearest) || rand2D(#3532) < fields.forestness)
+		;
+	biome param Bool spawnCondition ?= true;
+	biome param Bool requireForestness ?= true;
+	biome param Float treeDistance ?= 4 + (1 - fields.forestness) * 8;
+	biome param Rule spawnRule ?= OakTree;
+
+	Block resultBlock = spawn2D(biome(spawnRule, nearest), 1, #3622, terrain.groundZ, biome(grandSpawnCondition, nearest));
+
+	rule None {
+		rule -> void;
+	}
+	rule OakTree {
+		rule -> oakTree::origin;
+	}
+
+	component oakTree {
+		node (0, 0, 0) origin;
+
+		block (0, 0, 0) (0, 0, 0) = block.core.sapling.oak;
+	}
+}
+
+/*
+======== BIOMES ==============
+*/
+
+biome biomes.plains {
+	condition fields.oceaness = 0 +- 0.1;
+	condition fields.mountainess = 0 +- 0.3;
+
+	param terrain.rock.z = zBase - 6;
+	param terrain.soil.z = max(terrain.soil.zDefault, zBase + perlin2D(~16, #5645) * 2);
+
+	Float zBase = valueNoise2D(~16, #5121, terrain.rock.zBase) + perlin2D(~4, #454);
+}
+
+biome biomes.hills {
+	condition fields.oceaness = 0 +- 0.1;
+	condition fields.mountainess = 0.5 +- 0.3;
+
+	param terrain.rock.z = rockZ;
+	param terrain.soil.z = terrain.soil.zDefault;
+
+	Float rockZ =
+		terrain.rock.zBase
+		+ smoothMax(abs(perlin2D(~16, #831)), abs(perlin2D(~16, #134)), 0.1) * 96
+		+ perlin2D(~2, #841214) * 2 + perlin2D(~1, #121224) * 1
+		;
+}
+
+biome biomes.mountains {
+	condition fields.oceaness = 0 +- 0.1;
+	condition fields.mountainess = 1 +- 0.3;
+
+	param terrain.rock.z = smoothMax(terrain.rock.zBase + offset, biomes.hills.rockZ, 8);
+	param terrain.soil.z = terrain.soil.zDefault;
+
+	Float warpX = perlin2D(~16, #34353) * 128 + perlin2D(~8, #31252) * 64  + perlin2D(~2, #4542) * 8 + perlin2D(~2, #3544) * 4;
+	Float warpY = perlin2D(~16, #66562) * 128 + perlin2D(~8, #2134) * 64 + perlin2D(~2, #63632) * 8 + perlin2D(~2, #1324) * 4;
+	Float3 warpVec = float3(warpX, warpY, 0);
+
+	Float peakCutoff = clamp(0.1 + perlin2D(~16, #5475) * 0.3, 0, 0.2);
+	Float baseVor1 = smoothMin(voronoi2D(~32, #541, 2, 3) * (1 + peakCutoff), 1, 0.2);
+	Float baseVor2 = smoothMin(pow(voronoi2D(~64, #6417, 2, 3), 0.5) * (1 + peakCutoff), 1, 0.2);
+	Float baseVor = 
+		(
+			smoothMax(baseVor1 - 0.3, 0, 0.2)
+			+ smoothMax(baseVor2 - 0.3, 0, 0.2)
+		)
+		* pow(valueNoise2D(~16, #36364, randPC(#3534) < 0.6 ? 1 : 0), 2) // Somewhere there are mountains and somewhere there aren't
+		; // Main mountain peaks
+		
+	Float mountainsVoronoi =
+		baseVor * 0.7
+		+ pow(baseVor, 3) * (
+			voronoi2D(~16, #36434, 2, 4) * 0.35
+			+ voronoi2D(~8, #5318, 2, 3) * 0.15
+		)
+	;
+
+	Float valWarped = sampleOffset(baseVor, warpVec); // Main mountain peaks
+
+	// Smoth the data because it's quite noisy because of the warping
+	Float val = mix(valWarped, sampleAvg2D(valWarped, 1), 0.3);
+
+	Float offset =
+		val * 128
+		+ (
+			perlin2D(~8, #55178) * 32 + perlin2D(~4, #6332) * 8 + perlin2D(~2, #363) * 2 + perlin2D(~1, #474) * 2
+		) * clamp01(0.2 + baseVor * 0.8)
+		;
+}
+
+biome biomes.ocean {
+	condition fields.oceaness = 1 +- 0.4;
+
+	param terrain.rock.z = rockZ;
+	param terrain.soil.z = soilZ;
+
+	Float rockZ = terrain.seaZ - 16 - pow(max(0, fields.oceaness - 0.5), 2) * 64 + perlin2D(~4, #5106) * 8 + perlin2D(~1, #64343);
+	Float soilZ =
+		terrain.rock.zInterpolated < terrain.seaZ ?
+		terrain.rock.zInterpolated + 2 + max(-0.1, perlin2D(~1, #6818) + perlin2D(~4, #642) * 2 + perlin2D(~16, #9621) * 4) :
+		terrain.soil.zDefault
+		;
+}
+
+biome biomes.beach {
+	condition fields.oceaness = 0.3 +- 0.2;
+	condition fields.mountainess = 0 +- 0.2;
+
+	param terrain.rock.z = biomes.ocean.rockZ;
+	param terrain.soil.z = biomes.ocean.soilZ;
+	param terrain.sediment.z = sedimentZ;
+
+	param terrain.sediment.blk = 1 == 1 ? block.core.sand : block.core.stainedGlass.blue;
+
+	param turfProbability = 0.02;
+
+	param trees.spawnRule = Cactus;
+	param trees.treeDistance = 8;
+	param trees.requireForestness = false;
+
+	param turfBlock =
+		turfBlockRand < 0.33 ? block.core.desertTurf :
+		turfBlockRand < 0.66 ? block.core.desertTurf2 :
+		block.core.desertTurf3;
+
+	Float sedimentZ =
+		max(terrain.rock.zInterpolated + 1 - terrain.rock.zInterpolatedGradient * 0.2, terrain.seaZ)
+		//+ abs(perlin2D(~2, #1816)) + abs(perlin2D(~1, #4643)) * 0.5
+		+ voronoi2DColored(~4, #2524, 10, 2, randPC(#3434) < 0.5 ? 0 : 5)
+		;
+
+	rule Cactus {
+		rule -> cactus::origin;
+	}
+
+	component cactus {
+		param Float minHeight ?= 2;
+		param Float maxHeight ?= 4;
+		param Float height ?= minHeight + randC(localSeed()) * (maxHeight - minHeight);
+
+		node (0, 0, 0) origin;
+
+		block (0, 0, 0) (0, 0, height) = block.core.cactus;
+	}
+}
+
+// ======================== BIOMES END ==============================
+
+Float terrain.groundZ = max(
+	terrain.rock.zInterpolated,
+	max(terrain.soil.zInterpolated, terrain.sediment.zInterpolated)
+);
+
+Float terrainLevel = terrain.groundZ + terrain.snowCapHeight;
+Float chunkZOffset = maxPC(terrainLevel) + biome(biomes.chunkZOffsetReserve, nearest) - 256;
+
+Float turfBlockRand = rand2D(#253);
+biome param Block turfBlock ?=
+	turfBlockRand < 0.33 ? block.core.grassTurf :
+	turfBlockRand < 0.66 ? block.core.grassTurf2 :
+	block.core.grassTurf3
+	;
+
+biome param Float turfProbability ?= 0.1;
+ 
+export Block resultBlock =
+	// Rocks
+	z <= terrain.rock.zInterpolated ? biome(terrain.rock.blk, nearest) :
+
+	// Soil
+	z < terrain.soil.zInterpolated ? (
+		z > terrain.groundZ - 1 ? terrain.ground.blkInterpolated	: terrain.soil.blkInterpolated
+	) :
+
+	// Sediment
+	z < terrain.sediment.zInterpolated ? biome(terrain.sediment.blk, nearestSet) :
+
+	// Sea
+	z < terrain.seaZ ? (z < terrain.seaZ ? block.core.water : block.core.ice) :
+
+	// Snow
+	z < terrain.groundZ + terrain.snowCapHeight ? block.core.snow :
+
+	// Trees
+	trees.resultBlock ?:
+
+	// Grass
+	z < terrain.groundZ + 1 && rand2D(#22531) < biome(turfProbability, nearest) ? biome(turfBlock, nearest) :
+
+	//round(z) == round(terrain.groundZ + 2) && rand2D(#35653) < 0.01 ? block.core.lamp :
+
+	block.air
+	;

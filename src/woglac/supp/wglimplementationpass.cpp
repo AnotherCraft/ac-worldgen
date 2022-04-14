@@ -65,7 +65,7 @@ void WGLImplementationPass::enterRuleExpansionStatement(WoglacParser::RuleExpans
 
 	const QString node = WGLUtils::identifier(ctx->node);
 
-	QList<QPair<QString, QVariant>> pragmaSets;
+	QList < QPair < QString, QVariant >> pragmaSets;
 
 	if(ctx->priority)
 		pragmaSets += {"priority", WGLUtils::numericLiteral(ctx->priority)};
@@ -241,7 +241,7 @@ void WGLImplementationPass::enterComponentIncludeStatementBlockParam(
 	DependencyList deps;
 	const auto val = expression(ctx->val, deps);
 
-	QVector<BlockWorldPos> poss;
+	QVector <BlockWorldPos> poss;
 	for(const VOXParser::VoxelPos &vp: voxParser_.voxels().value(id))
 		poss += BlockWorldPos(vp.x, vp.y, vp.z);
 
@@ -273,10 +273,9 @@ void WGLImplementationPass::enterComponentIncludeStatementNodeParam(WoglacParser
 	DependencyList deps;
 
 	WGLSymbol *node = componentNodeDeclaration(ctx->com, currentScope());
-	componentNodeCommonPart(node, ctx->com, component, deps,
-	                        [pos = componentIncludePositions_.first()](WGLAPIContext &ctx, WGA_ComponentNode::Config &cfg) {
-		                        cfg.position = ctx.api->constFloat3(pos.to<float>());
-	                        });
+	componentNodeCommonPart(node, ctx->com, component, deps, [pos = componentIncludePositions_.first()](WGLAPIContext &ctx, WGA_ComponentNode::Config &cfg) {
+		cfg.position = ctx.api->constFloat3(pos.to<float>());
+	});
 
 	currentScope_ += node;
 }
@@ -562,7 +561,7 @@ WGLImplementationPass::ExpressionResult WGLImplementationPass::expression(Woglac
 	if(ctx->base)
 		return expression(ctx->base, deps);
 
-	QVector<ExpressionResult> args{expression(ctx->arg1, deps)};
+	QVector <ExpressionResult> args{expression(ctx->arg1, deps)};
 	for(const ExpressionResult &arg: iterator(ctx->args->args).mapx(
 		expression(x, deps)))
 		args += arg;
@@ -611,7 +610,7 @@ WGLImplementationPass::ExpressionResult WGLImplementationPass::expression(Woglac
 
 	deps += param;
 
-	QVector<WGLImplementationPass::ExpressionResult> args;
+	QVector <WGLImplementationPass::ExpressionResult> args;
 	args += EXPRESSION_RESULT(param->valueType, ctx.map<WGA_Value>(param));
 
 	for(auto e: ctx->params)
@@ -645,7 +644,7 @@ void WGLImplementationPass::componentNodeCommonPart(WGLSymbol *sym, WoglacParser
 		return ctx ? WGLUtils::identifier(ctx->dir) + WGLUtils::identifier(ctx->sign) : QString();
 	};
 
-	QList<QPair<QString, QVariant>> pragmaSets;
+	QList < QPair < QString, QVariant >> pragmaSets;
 
 	if(ctx->prop && ctx->prop->notAdjacent)
 		pragmaSets += {"adjacent", false};
@@ -683,7 +682,7 @@ void WGLImplementationPass::componentNodeCommonPart(WGLSymbol *sym, WoglacParser
 	});
 }
 
-WGLImplementationPass::ExpressionResult WGLImplementationPass::functionCall(const QString &functionName, const QVector<WGLImplementationPass::ExpressionResult> &args, antlr4::ParserRuleContext *ctx) {
+WGLImplementationPass::ExpressionResult WGLImplementationPass::functionCall(const QString &functionName, const QVector <WGLImplementationPass::ExpressionResult> &args, antlr4::ParserRuleContext *ctx) {
 	const WorldGenAPI::Functions &fs = WorldGenAPI::functions();
 
 	if(!fs.nameSet.contains(functionName))

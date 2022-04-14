@@ -1,0 +1,78 @@
+// That 0.001 is there because weighted biome variable interpolation introduces some imperfections
+Float z = worldPos()::z() + 0.5;
+
+Float terrainZ = 195;
+
+Bool treeDistribution = poissonDisc2DBool(#3524, 4 + perlin2D(~8, #35354)::abs() * /*14*/ 32);
+ 
+component room {
+	param Float size ?= 4;
+	condition size < 16;
+	param Block wallBlock ?= block.core.sand;
+	block (-size/2, 0, -1) (size/2, size, size) = wallBlock; // Walls
+	block (-size/2 + 1, 0 + 1, 0) (size/2 - 1, size - 1, size - 1) = block.air; // Empty inside
+	block (-1, 0, 0) (1, size, 2) = block.air; // Doors
+	block (0, size/2, size - 1) = block.core.lamp;
+	block (0, 0, 0) (0, 2, 1) = block.core.stone; // For sound testing
+	//block(-size/4, size/2)
+	node (0, 0, 0) (y-) entrance;
+	node(0, size, 0) (y+) exit -> NextRoom;
+}
+
+rule NextRoom {
+	rule -> room::entrance {
+		param Float size ?= 4;
+		param size = size + 2;
+	}
+	rule -> void;
+}
+
+rule StoneRooms {
+	rule -> room::entrance {
+		param wallBlock = block.core.stone;
+	}
+}
+
+rule DirtRooms {
+	rule -> room::entrance {
+		param wallBlock = block.core.dirt;
+	}
+}
+
+rule IronRooms {
+	rule -> room::entrance {
+		param wallBlock = block.core.iron;
+	}
+}
+
+rule WoolRooms {
+	rule -> room::entrance {
+		param wallBlock = block.core.wool;
+	}
+}
+
+
+component hub {
+	node (-8, 0, 0) (x-) -> StoneRooms;
+	node (8, 0, 0) (x+) -> DirtRooms;
+	node (0, 8, 0) (y+) -> IronRooms;
+	node (0, -8, 0) (y-) -> WoolRooms;
+	node (0, 0, 0) origin;
+}
+
+rule Hub {
+	rule -> hub::origin;
+}
+
+export Block resultBlock =
+
+	spawn2D(Hub, 8, ~5321, terrainZ, worldPos()::xy() == float2(0, 0)) ?:
+
+	// Grass
+	z < terrainZ ? (rand2D(#342) < 0.5 ? block.core.dirt : block.core.grass) :
+
+	// Trees
+	//z < terrainZ + 1 && treeDistribution ? block.core.sapling.spruce :
+
+	block.air
+	;
