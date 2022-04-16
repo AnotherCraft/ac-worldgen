@@ -41,7 +41,6 @@ void sendMessage(const QJsonObject &json, const QByteArray &payload = {}) {
 	qstdout.write(jsonData);
 	qstdout.write(newline);
 	qstdout.write(payload);
-
 	qstdout.flush();
 };
 
@@ -80,7 +79,7 @@ int main(int argc, char *argv[]) {
 	argp.addOption({{"d", "lookupDirectory"}, "Lookup directory for resources (for example .vox files for structure generator, accepts multiple)", "lookupDirectory"});
 	argp.addOption({{"s", "seed"}, "Seed for the worldgen (number)", "seed"});
 	argp.addOption({{"m", "blockMapping"}, "Block UID (string) -> ID (uint16_t) mapping in JSON object format.\nBlock UIDs have to be prefixed with 'block.', for example 'block.core.air'.\n\nID 0 is reserved for 'block.air'.\nID 1 is reserved for 'block.undefined'.", "blockMapping"});
-	argp.addOption({{"t", "threadCount"}, "Number of threads to use (default: min(idealThreadCount - 2, 4))", "threadCount"});
+	argp.addOption({{"t", "threadCount"}, "Number of worker threads (default: min(idealThreadCount - 2, 4))", "threadCount"});
 	argp.addOption({"functionList", "Emits a function list in the Markdown format and exists the application", "functionList"});
 	argp.addOption({"exportList", "Compiles the source files and prints out the list of exports."});
 
