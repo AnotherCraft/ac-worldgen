@@ -1,15 +1,22 @@
 # AC Worldgen
-![](img/4.png)
 This is a repository for a worldgen system for AnotherCraft. The system is completely standalone and can be used for world generation in any voxel-based game. This is not a hard coded one-trick pony earth-like gen, this is a framework that allows you to easily generate and weak any voxel terrain you desire!
 
-## System premise & features
-* The whole thing is based around discretized fields, every variable/value is a field that can have a different value for each voxel in the world.
-  * It's a bit like writing shaders.
-* By doing various operations on these fields (incl. stuff like perlin noises, voronoi stuff, ...), you can achieve some pretty cool results.
-* There's also a little more linearistic **procedural structure generator** system.
-  * The system can also **import `.vox` files**.
+![](img/4.png)
 
-## System structure
+## System premise & features
+* **Standalone application**, easy to integrate with your project, communicates with the client via the `stdin` and `stdout` pipes (see [the interface documentation](docs/app_interface.md)).
+* **Fully customizable generation** using the WOGLAC programming language.
+* Decently fast, written in C++. Parallel procgen implemented.
+* On demand generation of any part of the world (4-byte integer for X, Y and Z coordinates). 
+* **Open source**.
+
+### Procgen features
+* 2D & 3D Perlin noise, voronoi-based generation.
+* Domain warping (using the `sampleOffset` function with variable offset parameters).
+* Grammar-based structure generation.
+* Can import voxel prefabs in the ˙.vox˙ format.
+
+### System structure
 * WorldGenAPI, which is a parallel-enabled worldgen system backend (can also be used standalone, the generation pipeline can be constructed using API calls)
 * The WOGLAC (WOrldGen Language for AnotherCraft) programming language compiler that compiles the WOGLAC code into WorldGenAPI calls.
   * Language documentation can be found in the [ac-docs repository](https://github.com/AnotherCraft/ac-docs/tree/master/woglac).
@@ -41,4 +48,4 @@ export Block resultBlock = z < terrainZ ? (rand2D(#342) < 0.5 ? block.core.dirt 
 * Tracy
 
 ## TODO
-* Get rid of the Qt dependency (it's not really that necessary)
+* Get rid of the Qt dependency (it's not really that necessary)?
