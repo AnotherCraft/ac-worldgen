@@ -20,28 +20,44 @@
 
 QMutex stdoutMutex;
 QFile qstdout;
+QFile dbgout;
+
+QMutex jobsMutex;
+qsizetype runningJobs = 0;
+bool stdinEnd = false;
+
+void sendMessage(const QJsonObject &json) {
+	const QByteArray jsonData = QJsonDocument(json).toJson(QJsonDocument::Compact);
+
+	static const QByteArray newline = "\n";
+
+	QMutexLocker _ml(&stdoutMutex);
+	qstdout.write(jsonData);
+	qstdout.write(newline);
+	qstdout.flush();
+};
+
+void msgHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg) {
+	static const QHash<int, QString> msgs{
+		{+QtMsgType::QtWarningMsg,  "error"},
+		{+QtMsgType::QtCriticalMsg, "error"},
+		{+QtMsgType::QtFatalMsg,    "error"},
+	};
+
+	const QJsonObject json{
+		{"type",     "message"},
+		{"severity", msgs.value(+type, "info")},
+		{"message",  msg},
+	};
+	sendMessage(json);
+};
 
 int main(int argc, char *argv[]) {
-	qstdout.open(stdout, QIODevice::WriteOnly | QIODevice::Unbuffered);
+	qstdout.open(stdout, QIODevice::WriteOnly);
 
-	const auto msgHandler = +[](QtMsgType type, const QMessageLogContext &context, const QString &msg) {
-		static const QHash<int, QString> msgs{
-			{+QtMsgType::QtWarningMsg,  "error"},
-			{+QtMsgType::QtCriticalMsg, "error"},
-			{+QtMsgType::QtFatalMsg,    "error"},
-		};
+	dbgout.setFileName("dbg.txt");
+	dbgout.open(QIODevice::WriteOnly);
 
-		const QJsonObject json{
-			{"type",     "message"},
-			{"severity", msgs.value(+type, "info")},
-			{"message",  msg},
-		};
-
-		QMutexLocker _ml(&stdoutMutex);
-		qstdout.write(QJsonDocument(json).toJson(QJsonDocument::Compact));
-		qstdout.write("\n");
-		qstdout.flush();
-	};
 	qInstallMessageHandler(msgHandler);
 
 	QCoreApplication app(argc, argv);
@@ -123,16 +139,24 @@ int main(int argc, char *argv[]) {
 	{
 		inputThread = QThread::create([&]() {
 			QFile qstdin;
-			qstdin.open(stdin, QIODevice::ReadOnly | QIODevice::Unbuffered);
+			qstdin.open(stdin, QIODevice::ReadOnly);
 
 			while(true) {
 				if(qstdin.atEnd()) {
-					qApp->quit();
+					QMutexLocker _ml(&jobsMutex);
+					stdinEnd = true;
+					if(!runningJobs)
+						qApp->quit();
 					break;
 				}
 
 				QJsonParseError err;
 				QByteArray msg = qstdin.readLine();
+
+				// Get rid of unkonwn reasons null you get at the end of the string in some cases
+				if(msg.endsWith(0))
+					msg.chop(1);
+
 				const QJsonObject json = QJsonDocument::fromJson(msg, &err).object();
 
 				if(err.error != QJsonParseError::NoError) {
@@ -186,6 +210,11 @@ int main(int argc, char *argv[]) {
 						continue;
 					}
 
+					{
+						QMutexLocker _ml(&jobsMutex);
+						runningJobs++;
+					}
+
 					(void) QtConcurrent::run(&pool, [f, pos, var] {
 						const Data d = f();
 						const QJsonObject json{
@@ -198,15 +227,17 @@ int main(int argc, char *argv[]) {
 							{"recordCount", d.recordCount},
 						};
 
+						sendMessage(json);
+
 						{
-							QMutexLocker _ml(&stdoutMutex);
-							qstdout.write(QJsonDocument(json).toJson(QJsonDocument::Compact));
-							qstdout.write("\n");
-							qstdout.write(d.data);
-							qstdout.flush();
+							QMutexLocker _ml(&jobsMutex);
+							runningJobs--;
+							if(runningJobs == 0 && stdinEnd)
+								qApp->quit();
 						}
 					});
 				}
+
 				else
 					qWarning() << "Unknown message type:" << type;
 			}
