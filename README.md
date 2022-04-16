@@ -1,6 +1,6 @@
 # AC Worldgen
 ![](img/4.png)
-This is a repository for a worldgen system for AnotherCraft. The system is completely standalone and can be used for world generation in any voxel-based game.
+This is a repository for a worldgen system for AnotherCraft. The system is completely standalone and can be used for world generation in any voxel-based game. This is not a hard coded one-trick pony earth-like gen, this is a framework that allows you to easily generate and weak any voxel terrain you desire!
 
 ## System premise & features
 * The whole thing is based around discretized fields, every variable/value is a field that can have a different value for each voxel in the world.
@@ -22,7 +22,7 @@ This is a repository for a worldgen system for AnotherCraft. The system is compl
 * [VS Code extension for WOGLAC](https://github.com/AnotherCraft/ac-woglac-vscode)
 
 ### WOGLAC example code
-See the [examples](example) folder.
+See the [examples](examples) folder.
 ```WOGLAC
 // That 0.001 is there because weighted biome variable interpolation introduces some imperfections
 Float z = worldPos()::z() + 0.5;

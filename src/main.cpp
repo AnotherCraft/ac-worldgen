@@ -6,8 +6,7 @@
 #include <QJsonObject>
 #include <QThreadPool>
 #include <QTextStream>
-
-#include <iostream>
+#include <QMutex>
 
 #include "util/forit.h"
 #include "util/iterators.h"
@@ -19,6 +18,7 @@
 #include "woglac/wglcompiler.h"
 #include "woglac/wglfile.h"
 
+QMutex stdoutMutex;
 QFile qstdout;
 
 int main(int argc, char *argv[]) {
@@ -37,6 +37,7 @@ int main(int argc, char *argv[]) {
 			{"message",  msg},
 		};
 
+		QMutexLocker _ml(&stdoutMutex);
 		qstdout.write(QJsonDocument(json).toJson(QJsonDocument::Compact));
 		qstdout.write("\n");
 		qstdout.flush();
@@ -118,25 +119,21 @@ int main(int argc, char *argv[]) {
 		return 0;
 	}
 
-	QTimer t;
+	QThread *inputThread;
 	{
-		t.setInterval(100);
-		t.callOnTimeout([&]() {
-			qstdout.write(QString("TEST %1\n").arg(std::cin.rdbuf()->in_avail()).toUtf8());
-			qstdout.flush();
+		inputThread = QThread::create([&]() {
+			QFile qstdin;
+			qstdin.open(stdin, QIODevice::ReadOnly | QIODevice::Unbuffered);
 
-			while(std::cin.rdbuf() && std::cin.rdbuf()->in_avail() > 0) {
-				qstdout.write(QString("RDSTART %1\n").arg(std::cin.rdbuf()->in_avail()).toUtf8());
-				qstdout.flush();
+			while(true) {
+				if(qstdin.atEnd()) {
+					qApp->quit();
+					break;
+				}
 
 				QJsonParseError err;
-				std::string cmsg;
-				std::getline(std::cin, cmsg);
-				QByteArray msg = QByteArray(cmsg.c_str()).trimmed();
+				QByteArray msg = qstdin.readLine();
 				const QJsonObject json = QJsonDocument::fromJson(msg, &err).object();
-
-				qstdout.write(msg);
-				qstdout.flush();
 
 				if(err.error != QJsonParseError::NoError) {
 					qWarning() << "The command is not a valid JSON message" << err.errorString() << msg;
@@ -201,25 +198,27 @@ int main(int argc, char *argv[]) {
 							{"recordCount", d.recordCount},
 						};
 
-						QTimer::singleShot(0, qApp, [json, payload = d.data] {
+						{
+							QMutexLocker _ml(&stdoutMutex);
 							qstdout.write(QJsonDocument(json).toJson(QJsonDocument::Compact));
 							qstdout.write("\n");
-							qstdout.write(payload);
+							qstdout.write(d.data);
 							qstdout.flush();
-						});
+						}
 					});
 				}
 				else
 					qWarning() << "Unknown message type:" << type;
-
-				qstdout.write("RDEND\n");
-				qstdout.flush();
 			}
 		});
-		t.start();
+		inputThread->start();
 	}
 
 	const int result = app.exec();
+
+	inputThread->quit();
+	inputThread->wait();
+	delete inputThread;
 
 	return 0;
 }
