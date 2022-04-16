@@ -3,6 +3,10 @@ WOrldGen Language for AnotherCraft or WOGLAC is a language used for describing p
 
 Procedural generation using this system can be fully deterministic - from the same seed, you always get the exact same results (also regardless of in what order you generate the chunks).
 
+### See also
+* [Tutorial](docs/woglac_tutorial.md)
+* [Function list](docs/function_list.md)
+
 ## Core concepts
 The language is declarative, using the functional paradigm. The syntax is loosely inspired by C++, but the syntax is heavily adjusted for the worldgen purpose. Writing in WOGLAC is similar to writing shaders in a way where a single shader invocation corresponds with a generation of a single voxel in the world. You can think of it as either writing the code for all the blocks in the world at once or as writing the code for a single block in the world specifically.
 
@@ -156,10 +160,11 @@ WOGLAC supports standard expression syntax:
 
 ## Function calls
 There are two function call syntaxes:
-* The standard syntax: `function(arg1, arg2, arg3)` 
-* The inline syntax: `arg1::function(arg2, arg3)`
-  * This syntax can be better for some cases, for example `vec::x(), vec::length()`
-  * The function calls can be chained this way easily, for example `vec3::xy()::length()`
+* The standard syntax: `function(arg1, arg2, arg3)`.
+* The inline syntax: `arg1::function(arg2, arg3)`.
+  * This syntax can be better for some cases, for example `vec::x(), vec::length()`.
+  * The function calls can be chained this way easily, for example `vec3::xy()::length()`.
+  * This is similar to the [Uniform function call syntax](https://en.wikipedia.org/wiki/Uniform_Function_Call_Syntax).
 
 ## Pragmas
 > ```g4
