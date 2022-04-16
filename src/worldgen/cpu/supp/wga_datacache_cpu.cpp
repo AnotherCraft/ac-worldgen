@@ -49,12 +49,19 @@ WGA_DataCache_CPU::DataRecordPtr WGA_DataCache_CPU::get(const WGA_DataRecord_CPU
 		//ZoneScopedN("dcCheck");
 		QMutexLocker _ml(&cd.mutex);
 
+		while(cd.wipKeys.contains(key))
+			cd.wipKeyCondition.wait(&cd.mutex);
+
 		if(auto p = cd.cache.get(key)) {
 			result = p;
 			isHit = true;
 		}
-		else if(cd.generatedKeys.contains(key))
-			isMiss = true;
+		else {
+			cd.wipKeys += key;
+
+			if(cd.generatedKeys.contains(key))
+				isMiss = true;
+		}
 	}
 
 	// Not in the cache - we must create it and put it there
@@ -72,6 +79,8 @@ WGA_DataCache_CPU::DataRecordPtr WGA_DataCache_CPU::get(const WGA_DataRecord_CPU
 			QMutexLocker _ml(&cd.mutex);
 			cd.cache.insert(key, result, result->dataSize());
 			cd.generatedKeys.insert(key);
+			cd.wipKeys.remove(key);
+			cd.wipKeyCondition.wakeAll();
 		}
 	}
 	else

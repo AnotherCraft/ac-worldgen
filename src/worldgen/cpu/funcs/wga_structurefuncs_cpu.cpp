@@ -6,9 +6,25 @@
 
 void WGA_StructureFuncs_CPU::spawn2D(Api api, Key key, DH <VT::Block> result, V <VT::Rule> entryRule, V <VT::Float> maxRadius, V <VT::Float> seed, V <VT::Float> spawnZ, V <VT::Bool> spawnCondition) {
 	const auto spawnFunc = [&spawnZ, &spawnCondition, &entryRule](Api api, Key key, SpawnList &spawnList) {
-		const auto spawnZHandle = spawnZ.dataHandle(key.origin);
-		const auto spawnConditionHandle = spawnCondition.dataHandle(key.origin);
-		const auto entryRuleHandle = entryRule.dataHandle(key.origin);
+		ZoneScopedN("spawn2DSpawnFunc");
+
+		WGA_DataHandle_CPU<VT::Float> spawnZHandle;
+		{
+			ZoneScopedN("spawnZHandle");
+			spawnZHandle = spawnZ.dataHandle(key.origin);
+		}
+
+		WGA_DataHandle_CPU<VT::Bool> spawnConditionHandle;
+		{
+			ZoneScopedN("spawnConditionHandle");
+			spawnConditionHandle = spawnCondition.dataHandle(key.origin);
+		}
+
+		WGA_DataHandle_CPU<VT::Rule> entryRuleHandle;
+		{
+			ZoneScopedN("entryRuleHandle");
+			entryRuleHandle = entryRule.dataHandle(key.origin);
+		}
 
 		for(int i = 0; i < chunkSurface; i++) {
 			const BlockWorldPos_T z = spawnZHandle[i];
@@ -85,6 +101,8 @@ void WGA_StructureFuncs_CPU::_spawn(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key k
 	static_cast<WGA_Value_CPU *>(key.symbol)->markAsCrossSampled(1);
 
 	const auto ctor = [&api, &seed, &spawnFunc](const WGA_DataRecord_CPU::Key &key) {
+		ZoneScopedN("genStructure");
+
 		StructureRecPtr rec(new StructureRec());
 
 		SpawnList spawnList;
@@ -95,6 +113,8 @@ void WGA_StructureFuncs_CPU::_spawn(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key k
 		WGA_StructureGenerator_CPU structGen(*api);
 
 		for(const SpawnRec &spawnRec: qAsConst(spawnList)) {
+			ZoneScopedN("processSpawnRec");
+
 			structGen.setup(spawnRec.entryRule, spawnRec.origin, seedV);
 
 			if(!structGen.process())
@@ -116,6 +136,8 @@ void WGA_StructureFuncs_CPU::_spawn(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key k
 		const StructureRecPtr rec = api->getDataRecord(recKey, ctor).staticCast<StructureRec>();
 
 		for(const WGA_StructureOutputData_CPUPtr &struc: qAsConst(rec->data)) {
+			ZoneScopedN("procStructureData");
+
 			if(!struc->subChunkRecords.contains(key.origin))
 				continue;
 

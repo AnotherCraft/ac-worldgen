@@ -5,6 +5,7 @@
 #include <QMutex>
 #include <QReadWriteLock>
 #include <QSharedPointer>
+#include <QWaitCondition>
 
 #include "util/enumutils.h"
 #include "worldgen/base/supp/wga_value.h"
@@ -50,10 +51,18 @@ private:
 private:
 	struct CacheData {
 		WGA_DataCacheInstance_CPU cache;
-		QSet<Key> generatedKeys; /// Set of all already genreated keys, even those that aren't in the cache anymore
+
+		/// Set of all already genreated keys, even those that aren't in the cache anymore
+		QSet<Key> generatedKeys;
+
+		/// Set of keys that are currently being generated
+		QSet<Key> wipKeys;
 
 		//TracyLockable(QMutex, mutex);
 		QMutex mutex;
+
+		/// Condition used for waiting for a record being generated in a different thread
+		QWaitCondition wipKeyCondition;
 	};
 	CacheData cacheData_[+CacheType::_count][cacheDivisions];
 

@@ -62,7 +62,7 @@ wga_fillCtor(const WGA_Value_CPU::DimensionalityFunc &dimFunc, const WGA_FillFun
 
 	return [fillFunc, dimFunc, funcName](const WGA_DataRecord_CPU::Key &key) {
 		// Tracy worldgen profiling
-		// ZoneTransientN(tracyZone, funcName, true);
+		ZoneTransientN(tracyZone, funcName, true);
 
 		const WGA_Value::Dimensionality dim = dimFunc();
 		return dimFillFs[+dim](key, fillFunc);
