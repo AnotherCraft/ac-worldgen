@@ -46,7 +46,8 @@ QHash<WorldGenAPI::FunctionID, WGA_Funcs_CPU::Func> WGA_Funcs_CPU::functions() {
   result[f.id] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) { \
   Q_UNUSED(args) \
   const bool isContextual = DEFER2(CONCAT)(IS_CONTEXTUAL_, M_ARG_1 impl) || iterator(args).anyx(x->isContextual()); \
-  const auto dimFunc = [=] { auto result = dim; ASSERT(result != WGA_Value::Dimensionality::_count); return dim; }; \
+  if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0); /* If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache */ \
+	const auto dimFunc = [=] { auto result = dim; ASSERT(result != WGA_Value::Dimensionality::_count); return dim; }; \
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) { \
   IOTA_F_ ## argCount (ARG_DEF) \
   DEFER2(CONCAT)(IMPL_, M_ARG_1 impl)(PREVENT_EATING_COMMA(M_ARG_1_REST impl), funcName, argCount) \
