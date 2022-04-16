@@ -17,6 +17,7 @@
 
 #include "util/forit.h"
 #include "util/iterators.h"
+#include "util/tracyutils.h"
 
 #include "worldgen/base/worldgenapi.h"
 
@@ -36,6 +37,8 @@ void sendMessage(const QJsonObject &json, const QByteArray &payload = {}) {
 	const QByteArray jsonData = QJsonDocument(json).toJson(QJsonDocument::Compact);
 
 	static const QByteArray newline = "\n";
+
+	Q_ASSERT(payload.size() == json["payloadSize"].toInt());
 
 	QMutexLocker _ml(&stdoutMutex);
 	qstdout.write(jsonData);
@@ -202,6 +205,8 @@ int main(int argc, char *argv[]) {
 
 					const auto genf = [val, pos]<WGA_Value::ValueType VT>() {
 						return [val, pos] {
+							ZoneScopedN("getData");
+
 							auto h = WGA_ValueWrapper_CPU<VT>(static_cast<WGA_Value_CPU *>(val)).dataHandle(pos);
 							return Data{
 								.data = QByteArray(reinterpret_cast<const char *>(h.data), sizeof(WGA_ValueRec_CPU<VT>::T) * h.size),
@@ -253,6 +258,7 @@ int main(int argc, char *argv[]) {
 					qWarning() << "Unknown message type:" << type;
 			}
 		});
+		inputThread->setObjectName("inputThread");
 		inputThread->start();
 	}
 
