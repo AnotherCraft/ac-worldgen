@@ -8,6 +8,13 @@
 #include <QTextStream>
 #include <QMutex>
 
+#ifdef _WINDOWS
+
+#include <fcntl.h>
+#include <io.h>
+
+#endif
+
 #include "util/forit.h"
 #include "util/iterators.h"
 
@@ -20,13 +27,12 @@
 
 QMutex stdoutMutex;
 QFile qstdout;
-QFile dbgout;
 
 QMutex jobsMutex;
 qsizetype runningJobs = 0;
 bool stdinEnd = false;
 
-void sendMessage(const QJsonObject &json) {
+void sendMessage(const QJsonObject &json, const QByteArray &payload = {}) {
 	const QByteArray jsonData = QJsonDocument(json).toJson(QJsonDocument::Compact);
 
 	static const QByteArray newline = "\n";
@@ -34,6 +40,8 @@ void sendMessage(const QJsonObject &json) {
 	QMutexLocker _ml(&stdoutMutex);
 	qstdout.write(jsonData);
 	qstdout.write(newline);
+	qstdout.write(payload);
+
 	qstdout.flush();
 };
 
@@ -53,10 +61,12 @@ void msgHandler(QtMsgType type, const QMessageLogContext &context, const QString
 };
 
 int main(int argc, char *argv[]) {
-	qstdout.open(stdout, QIODevice::WriteOnly);
+#ifdef _WINDOWS
+	// Set stdout mode to binary to prevent unwanted \n -> \r\n in binary data
+	setmode(fileno(stdout), O_BINARY);
+#endif
 
-	dbgout.setFileName("dbg.txt");
-	dbgout.open(QIODevice::WriteOnly);
+	qstdout.open(stdout, QIODevice::WriteOnly);
 
 	qInstallMessageHandler(msgHandler);
 
@@ -195,7 +205,7 @@ int main(int argc, char *argv[]) {
 						return [val, pos] {
 							auto h = WGA_ValueWrapper_CPU<VT>(static_cast<WGA_Value_CPU *>(val)).dataHandle(pos);
 							return Data{
-								.data = QByteArray(reinterpret_cast<const char *>(h.data), sizeof(decltype(h)::T) * h.size),
+								.data = QByteArray(reinterpret_cast<const char *>(h.data), sizeof(WGA_ValueRec_CPU<VT>::T) * h.size),
 								.recordCount = h.size
 							};
 						};
@@ -203,8 +213,10 @@ int main(int argc, char *argv[]) {
 
 					if(val->valueType() == WGA_Value::ValueType::Float)
 						f = genf.operator ()<WGA_Value::ValueType::Float>();
+
 					else if(val->valueType() == WGA_Value::ValueType::Block)
 						f = genf.operator ()<WGA_Value::ValueType::Block>();
+
 					else {
 						qWarning() << "Unsupported export value type:" << WGA_Value::typeNames[val->valueType()];
 						continue;
@@ -227,7 +239,7 @@ int main(int argc, char *argv[]) {
 							{"recordCount", d.recordCount},
 						};
 
-						sendMessage(json);
+						sendMessage(json, d.data);
 
 						{
 							QMutexLocker _ml(&jobsMutex);
