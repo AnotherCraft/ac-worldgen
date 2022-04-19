@@ -1,66 +1,65 @@
 #include "voxparser.h"
 
-#include <QFile>
-#include <QDebug>
+#include <fstream>
+#include <format>
 
 template<typename T>
-T readPrimitive(QBuffer &b) {
-	if(b.pos() > b.size() - static_cast<int>(sizeof(T)))
+T readPrimitive(std::basic_istream<char> &stream) {
+	T result;
+	stream.read(reinterpret_cast<char *>(&result), sizeof(result));
+
+	if(!stream.good())
 		throw "Invalid data (RP)";
 
-	T result;
-	b.read(reinterpret_cast<char *>(&result), sizeof(T));
 	return result;
 }
 
-void VOXParser::parseFile(const QString &file) {
-	QFile f(file);
+void VOXParser::parseFile(const std::string &file) {
+	std::ifstream f;
+	f.open(file, std::ios::in);
 
-	if(!f.open(QIODevice::ReadOnly))
-		throw QStringLiteral("Could not open VOX file '%1' for reading.").arg(file);
+	if(!f.good())
+		throw std::format("Could not open VOX file '{}' for reading.", file);
 
-	parseData(f.readAll());
+	parseData(f);
 }
 
-void VOXParser::parseData(const QByteArray &data) {
+void VOXParser::parseData(std::basic_istream<char> &stream) {
 	clear();
 
-	QBuffer db;
-	db.setData(data);
-	db.open(QIODevice::ReadOnly);
+	std::string prefix;
+	prefix.resize(4);
+	stream.read(prefix.data(), prefix.size());
+	if(prefix != "VOX ")
+		throw "Provided file is not of the VOX file format";
 
-	if(db.read(4) != "VOX ")
-		throw QStringLiteral("Provided file is not of the VOX file format");
-
-	const auto fileVersion = readPrimitive<uint32_t>(db);
+	const auto fileVersion = readPrimitive<uint32_t>(stream);
 	if(fileVersion != 150)
-		throw QStringLiteral("Unsupported vox file format version (%1)").arg(fileVersion);
+		throw std::format("Unsupported vox file format version ({})", fileVersion);
 
 	// Process main chunk
 	{
-		const Chunk mainChunk = readChunk(db);
+		const Chunk mainChunk = readChunk(stream);
 		if(mainChunk.name != "MAIN")
 			throw "MAIN chunk expected";
 
-		if(!db.atEnd())
+		char c;
+		stream.read(&c, 1);
+		if(!stream.eof())
 			throw "There should be nothing left after the main chunk";
 
-		if(!mainChunk.data.isEmpty())
+		if(!mainChunk.data.empty())
 			throw "Main chunk should not have any data";
 
-		QBuffer mb;
-		mb.setData(mainChunk.childrenChunks);
-		mb.open(QIODevice::ReadOnly);
+		std::istringstream mb(mainChunk.childrenChunks);
 
-		while(!mb.atEnd()) {
+		while(!mb.eof()) {
 			const Chunk ch = readChunk(mb);
 
-			if(!ch.childrenChunks.isEmpty())
+			if(!ch.childrenChunks.empty())
 				throw "Invalid data (3)";
 
-			QBuffer cb;
-			cb.setData(ch.data);
-			cb.open(QIODevice::ReadOnly);
+			std::istringstream cb(ch.data);
 
 			if(ch.name == "XYZI") {
 				struct VoxelRec {
@@ -71,9 +70,6 @@ void VOXParser::parseData(const QByteArray &data) {
 					throw "Multiple models are not supported";
 
 				auto numVoxels = readPrimitive<uint32_t>(cb);
-				if(cb.size() - cb.pos() != numVoxels * sizeof(VoxelRec))
-					throw "Invalid data (5)";
-
 				while(numVoxels--) {
 					const VoxelRec voxel = readPrimitive<VoxelRec>(cb);
 					voxels_[voxel.id] += VoxelPos{voxel.x, voxel.y, voxel.z};
@@ -84,7 +80,7 @@ void VOXParser::parseData(const QByteArray &data) {
 			else
 				continue;
 
-			if(!cb.atEnd())
+			if(!cb.eof())
 				throw "Invalid data (4)";
 		}
 	}
@@ -94,19 +90,24 @@ void VOXParser::clear() {
 	voxels_.clear();
 }
 
-VOXParser::Chunk VOXParser::readChunk(QBuffer &b) {
-	if(b.pos() > b.size() - 12)
-		throw "Invalid data (1)";
+VOXParser::Chunk VOXParser::readChunk(std::basic_istream<char> &b) {
 
 	Chunk chunk;
-	chunk.name = b.read(4);
+
+	chunk.name.resize(4);
+	b.read(chunk.name.data(), chunk.name.size());
+
 	const auto dataSize = readPrimitive<uint32_t>(b);
 	const auto childrenSize = readPrimitive<uint32_t>(b);
 
-	if(b.pos() > b.size() - dataSize - childrenSize)
-		throw "Invalid data (2)";
+	chunk.data.resize(dataSize);
+	b.read(chunk.data.data(), dataSize);
 
-	chunk.data = b.read(dataSize);
-	chunk.childrenChunks = b.read(childrenSize);
+	chunk.childrenChunks.resize(childrenSize);
+	b.read(chunk.childrenChunks.data(), childrenSize);
+
+	if(b.eof())
+		throw "Invalid data";
+
 	return chunk;
 }

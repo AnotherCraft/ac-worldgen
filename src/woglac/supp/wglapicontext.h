@@ -3,7 +3,6 @@
 // Must place before everything else because of antlr
 #include "wglinclude.h"
 
-
 #include "worldgen/base/worldgenapi.h"
 
 #include "wglsymbol.h"
@@ -18,13 +17,13 @@ public:
 
 public:
 	template<typename T>
-	T *map(WGLSymbol *sym) const {
+	T *map(const WGLSymbol *sym) const {
 		ASSERT(!sym || symbolMapping_.contains(sym));
-		return sym ? static_cast<T *>(symbolMapping_[sym]) : nullptr;
+		return sym ? static_cast<T *>(symbolMapping_.at(sym)) : nullptr;
 	};
 
 private:
-	QHash<WGLSymbol *, WGA_Symbol *> symbolMapping_;
+	std::unordered_map<const WGLSymbol *, WGA_Symbol *> symbolMapping_;
 
 };
 

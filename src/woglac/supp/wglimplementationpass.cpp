@@ -638,7 +638,7 @@ void WGLImplementationPass::componentNodeCommonPart(WGLSymbol *sym, WoglacParser
 		return ctx ? WGLUtils::identifier(ctx->dir) + WGLUtils::identifier(ctx->sign) : std::string{};
 	};
 
-	std::vector<std::pair<QString, QVariant >> pragmaSets;
+	std::vector<std::pair<std::string, WGA_Symbol::PragmaValue >> pragmaSets;
 
 	if(ctx->prop && ctx->prop->notAdjacent)
 		pragmaSets.push_back({"adjacent", false});
@@ -680,11 +680,11 @@ WGLImplementationPass::ExpressionResult WGLImplementationPass::functionCall(cons
 	if(!fs.nameSet.contains(functionName))
 		throw WGLError(std::format("Function '{}' does not exist.", functionName), ctx);
 
-	const QString prototype = WorldGenAPI::Function::composePrototype(functionName, iterator(args).mapx(x.type).toList());
+	const std::string prototype = WorldGenAPI::Function::composePrototype(functionName, iterator(args).mapx(x.type).toList());
 
 	WorldGenAPI::FunctionID fid;
 	if(const auto i = fs.prototypeMapping.find(prototype); i != fs.prototypeMapping.end())
-		fid = i.second;
+		fid = i->second;
 	else
 		throw WGLError(std::format("Function '{}' does not have overload '{}'.\nAcceptable overloads:\n{}", functionName, prototype, iterator(fs.nameMapping.at(functionName)).mapx(fs.list[x].prototype).join("\n")), ctx);
 
@@ -702,12 +702,12 @@ WGLImplementationPass::ExpressionResult WGLImplementationPass::functionCall(cons
 }
 
 WGLImplementationPass::ExpressionResult WGLImplementationPass::binaryOperation(const std::string &op, const WGLImplementationPass::ExpressionResult &a, const WGLImplementationPass::ExpressionResult &b, antlr4::ParserRuleContext *ctx) {
-	static const QHash<QString, QString> ops{
+	static const std::unordered_map<std::string, std::string> ops{
 		{"+", "add"},
 		{"-", "sub"},
 		{"*", "mult"},
 		{"/", "div"}
 	};
 
-	return functionCall(ops[op], {a, b}, ctx);
+	return functionCall(ops.at(op), {a, b}, ctx);
 }

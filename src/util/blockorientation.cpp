@@ -1,22 +1,23 @@
+
 #include "blockorientation.h"
 
-static const QHash<QString, BlockSide> strToSide{
-	{"x+",      BlockSide::Xplus},
-	{"x-",      BlockSide::Xminus},
-	{"y+",      BlockSide::Yplus},
-	{"y-",      BlockSide::Yminus},
-	{"z+",      BlockSide::Zplus},
-	{"z-",      BlockSide::Zminus},
-	{QString(), BlockSide::_cnt}
+static const std::unordered_map<std::string, BlockSide> strToSide{
+	{"x+", BlockSide::Xplus},
+	{"x-", BlockSide::Xminus},
+	{"y+", BlockSide::Yplus},
+	{"y-", BlockSide::Yminus},
+	{"z+", BlockSide::Zplus},
+	{"z-", BlockSide::Zminus},
+	{"",   BlockSide::_cnt}
 };
 
 BlockOrientation::BlockOrientation() {
 
 }
 
-BlockOrientation::BlockOrientation(const QString &facing, const QString &rotation) {
-	facing_ = strToSide[facing];
-	upDirection_ = strToSide[rotation];
+BlockOrientation::BlockOrientation(const std::string &facing, const std::string &rotation) {
+	facing_ = strToSide.at(facing);
+	upDirection_ = strToSide.at(rotation);
 
 	validate();
 }
@@ -34,7 +35,7 @@ BlockOrientation BlockOrientation::adjacent() const {
 
 BlockOrientation BlockOrientation::nextUpVariant() const {
 	if(!isSpecified())
-		return BlockOrientation();
+		return {};
 
 	int up = +upDirection_;
 
@@ -97,19 +98,19 @@ BlockTransformMatrix BlockOrientation::transformToMatch(const BlockOrientation &
 	return result;
 }
 
-QString BlockOrientation::toString() const {
+std::string BlockOrientation::toString() const {
 	if(!isSpecified())
-		return QStringLiteral("(unspecified)");
+		return "(unspecified)";
 
-	static const QHash<int, QString> sideToStr = [] {
-		QHash<int, QString> result;
+	static const std::unordered_map<int, std::string> sideToStr = [] {
+		std::unordered_map<int, std::string> result;
 		for(auto it = strToSide.begin(), end = strToSide.end(); it != end; it++)
-			result[+it.value()] = it.key();
+			result[+it->second] = it->first;
 
 		return result;
 	}();
 
-	return sideToStr[+facing_] + sideToStr[+upDirection_];
+	return sideToStr.at(+facing_) + sideToStr.at(+upDirection_);
 }
 
 void BlockOrientation::validate() {

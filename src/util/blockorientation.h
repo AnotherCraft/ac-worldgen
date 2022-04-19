@@ -24,7 +24,7 @@ public:
 
 public:
 	BlockOrientation();
-	BlockOrientation(const QString &facing, const QString &rotation = QString());
+	BlockOrientation(const std::string &facing, const std::string &rotation = {});
 	BlockOrientation(BlockSide facing, BlockSide rotation);
 
 public:
@@ -47,10 +47,10 @@ public:
 	}
 
 public:
-	QString toString() const;
+	std::string toString() const;
 
 public:
-	inline bool operator==(const BlockOrientation &other) const {
+	inline bool operator ==(const BlockOrientation &other) const {
 		return facing_ == other.facing_ && upDirection_ == other.upDirection_;
 	}
 
@@ -61,7 +61,3 @@ private:
 	BlockSide facing_ = BlockSide::_cnt, upDirection_ = BlockSide::_cnt;
 
 };
-
-inline size_t qHash(const BlockOrientation &ori, size_t seed = 0) {
-	return qHashMulti(seed, +ori.facing_, +ori.upDirection_);
-}

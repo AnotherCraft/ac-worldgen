@@ -1,8 +1,8 @@
 // Must place before everything else because of antlr
 #include "supp/wglinclude.h"
 
-#include <QDir>
-#include <QFile>
+#include <fstream>
+#include <format>
 
 #include "wglcompiler.h"
 
@@ -37,10 +37,11 @@ void WGLCompiler::addFile(const WGLFilePtr &file) {
 	files_.push_back(file);
 }
 
-QString WGLCompiler::lookupFile(const std::string &filename, antlr4::ParserRuleContext *ctx) {
-	for(const QString &dirn: lookupDirectories_) {
-		if(ifstream f(dirn + "/" + filename); f.good())
-			return f.fileName();
+std::string WGLCompiler::lookupFile(const std::string &filename, antlr4::ParserRuleContext *ctx) {
+	for(const std::string &dirn: lookupDirectories_) {
+		const std::string filePath = dirn + "/" + filename;
+		if(std::ifstream f(filePath); f.good())
+			return filePath;
 	}
 
 	throw WGLError(std::format("Failed to lookup file '{}'", filename), ctx);
@@ -77,7 +78,7 @@ void WGLCompiler::compile() {
 				modules_.push_back(m);
 			}
 			catch(const WGLError &e) {
-				throw std::exception(std::format("Error when compiling WOGLAC file '{}': {}", f->fileName(), e.message()));
+				throw std::exception(std::format("Error when compiling WOGLAC file '{}': {}", f->fileName(), e.message()).c_str());
 			}
 		}
 
@@ -102,9 +103,7 @@ void WGLCompiler::compile() {
 		context_->checkCircularDependencies();
 	}
 	catch(const WGLError &e) {
-		qWarning().noquote() << "WOGLAC error: " << e.message();
-
-		clear();
+		throw std::exception(std::format("WOGLAC error: {}", e.message()).c_str());
 	}
 }
 
@@ -116,7 +115,9 @@ std::unordered_map<std::string, WGA_Value *> WGLCompiler::construct(WorldGenAPI 
 		cmd(ctx);
 
 	std::unordered_map<std::string, WGA_Value *> r;
-	for(WGLSymbol *sym: context_->rootSymbol->childrenByName()) {
+	for(const auto &i: context_->rootSymbol->childrenByName()) {
+		const WGLSymbol *sym = i.second;
+
 		if(!sym->isExport)
 			continue;
 

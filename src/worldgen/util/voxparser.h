@@ -14,8 +14,8 @@ public:
 	};
 
 public:
-	void parseFile(const QString &file);
-	void parseData(const QByteArray &data);
+	void parseFile(const std::string &filePath);
+	void parseData(std::basic_istream<char> &stream);
 
 public:
 	inline const auto &voxels() const {
@@ -30,13 +30,13 @@ public:
 
 private:
 	struct Chunk {
-		QByteArray name;
-		QByteArray data;
-		QByteArray childrenChunks;
+		std::string name;
+		std::string data;
+		std::string childrenChunks;
 	};
 
 private:
-	Chunk readChunk(QBuffer &b);
+	Chunk readChunk(std::basic_istream<char> &b);
 
 private:
 	QHash<uint8_t, QVector<VoxelPos>> voxels_;

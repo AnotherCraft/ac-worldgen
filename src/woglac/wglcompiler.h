@@ -23,7 +23,7 @@ public:
 	void addFile(const WGLFilePtr &file);
 
 	// Tries to locate a specified file, throws if failed
-	QString lookupFile(const std::string &filename, antlr4::ParserRuleContext *ctx);
+	std::string lookupFile(const std::string &filename, antlr4::ParserRuleContext *ctx);
 
 public:
 	void compile();
