@@ -254,7 +254,7 @@ int main(int argc, char *argv[]) {
 					const Data d = f();
 					std::unique_lock _ul(stdoutMutex);
 
-					std::cout << std::format("data {} {} {} {} {}\n", var, pos.x(), pos.y(), pos.z(), d.data.size());
+					std::cout << std::format("data {} {} {} {} {}\n", pos.x(), pos.y(), pos.z(), var, d.data.size());
 					std::cout.write(d.data.data(), d.data.size());
 					std::cout.flush();
 				};
