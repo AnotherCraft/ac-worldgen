@@ -156,23 +156,25 @@ int main(int argc, char *argv[]) {
 
 		for(size_t i = 0; i < threadCount; i++) {
 			pool.push_back(std::thread([] {
-				std::function < void() > job;
+				while(true) {
+					std::function < void() > job;
 
-				{
-					std::unique_lock lock(jobsMutex);
-					while(jobs.empty())
-						newJobCondition.wait(lock);
+					{
+						std::unique_lock lock(jobsMutex);
+						while(jobs.empty())
+							newJobCondition.wait(lock);
 
-					job = jobs.front();
-					jobs.pop();
-				}
+						job = jobs.front();
+						jobs.pop();
+					}
 
-				job();
+					job();
 
-				{
-					std::unique_lock lock(jobsMutex);
-					runningJobs--;
-					jobEndCondition.notify_all();
+					{
+						std::unique_lock lock(jobsMutex);
+						runningJobs--;
+						jobEndCondition.notify_all();
+					}
 				}
 			}));
 		}
@@ -195,14 +197,14 @@ int main(int argc, char *argv[]) {
 				const auto valp = exports.find(var);
 				if(valp == exports.end()) {
 					std::unique_lock _l(stdoutMutex);
-					std::cout << "message Export does not exist: " << var << "\n";
+					std::cerr << "Export does not exist: " << var << "\n";
 					continue;
 				}
 				WGA_Value *val = valp->second;
 
 				if(val->symbolType() != WGA_Value::SymbolType::Value) {
 					std::unique_lock _l(stdoutMutex);
-					std::cout << "Export symbol is not a variable\n";
+					std::cerr << "Export symbol is not a variable\n";
 					continue;
 				}
 
@@ -210,7 +212,7 @@ int main(int argc, char *argv[]) {
 				std::cin >> valueType;
 				if(WGA_Value::typeNames.at(val->valueType()) != valueType) {
 					std::unique_lock _ul(stdoutMutex);
-					std::cout << std::format("Export '{}' is of type '{}', but '{}' expected.\n", var, WGA_Value::typeNames.at(val->valueType()), valueType);
+					std::cerr << std::format("Export '{}' is of type '{}', but '{}' expected.\n", var, WGA_Value::typeNames.at(val->valueType()), valueType);
 					return 1;
 				}
 
@@ -244,7 +246,7 @@ int main(int argc, char *argv[]) {
 
 				else {
 					std::unique_lock _l(stdoutMutex);
-					std::cout << std::format("Unsupported export value type: {}", WGA_Value::typeNames.at(val->valueType()));
+					std::cerr << std::format("Unsupported export value type: {}", WGA_Value::typeNames.at(val->valueType()));
 					return 1;
 				}
 
@@ -252,8 +254,9 @@ int main(int argc, char *argv[]) {
 					const Data d = f();
 					std::unique_lock _ul(stdoutMutex);
 
-					std::cout << "data " << var << ' ' << pos.x() << ' ' << pos.y() << ' ' << pos.z() << ' ' << d.data.size() << "\n";
+					std::cout << std::format("data {} {} {} {} {}\n", var, pos.x(), pos.y(), pos.z(), d.data.size());
 					std::cout.write(d.data.data(), d.data.size());
+					std::cout.flush();
 				};
 
 				{
@@ -283,7 +286,7 @@ int main(int argc, char *argv[]) {
 
 	}
 	catch(const std::exception &e) {
-		std::cout << "message " << e.what();
+		std::cerr << e.what() << "\n";
 		for(std::thread &t: pool)
 			t.detach();
 		return 1;
