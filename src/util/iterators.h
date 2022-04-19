@@ -56,17 +56,6 @@ public:
 		return r;
 	}
 
-	template<typename = void>
-	auto toHash() {
-		QHash<typename T::first_type, typename T::second_type> r;
-		while(impl.has()) {
-			auto p = take();
-			r.insert(p.first, p.second);
-		}
-
-		return r;
-	}
-
 public:
 	template<typename F>
 	inline auto map(const F &func) const {
@@ -127,9 +116,9 @@ public:
 	/// Returns iterator of std::pair(qsizetype, originalValue) - pair.first is index
 	inline auto enumerate() const {
 		struct I {
-			using T = std::pair<qsizetype, Iterator::T>;
+			using T = std::pair<size_t, Iterator::T>;
 			Impl sub;
-			qsizetype ix = 0;
+			size_t ix = 0;
 
 			inline bool has() const { return sub.has(); }
 
@@ -261,9 +250,9 @@ public:
 
 };
 
-auto iteratorIota(qsizetype n = -1) {
+auto iteratorIota(size_t n = -1) {
 	struct I {
-		using T = qsizetype;
+		using T = size_t;
 		const T n;
 		T i = 0;
 

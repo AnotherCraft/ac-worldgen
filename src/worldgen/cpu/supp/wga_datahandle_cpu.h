@@ -3,8 +3,6 @@
 #include "wga_valuerecs_cpu.h"
 #include "worldgen/cpu/worldgenapi_cpu.h"
 
-#include <QSharedPointer>
-
 template<WGA_Value::ValueType type>
 struct WGA_DataHandle_CPU {
 
@@ -14,7 +12,7 @@ public:
 public:
 	std::shared_ptr<WGA_DataRecord_CPU> handle;
 	T *data = nullptr;
-	int size = 0;
+	size_t size = 0;
 	int flag = 0;
 
 public:

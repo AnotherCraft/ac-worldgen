@@ -23,8 +23,6 @@ public:
 
 template<WGA_Funcs_CPU::VT t>
 void WGA_SamplingFuncs_CPU::sampleOffset(Api api, Key key, DH <t> result, V <t> value, V <VT::Float3> offsetv) {
-	Q_UNUSED(api)
-
 	value.v->markAsCrossSampled(0);
 
 	auto offseth = offsetv.dataHandle(key.origin);
@@ -35,8 +33,6 @@ void WGA_SamplingFuncs_CPU::sampleOffset(Api api, Key key, DH <t> result, V <t> 
 
 template<WGA_Funcs_CPU::VT t>
 void WGA_SamplingFuncs_CPU::sampleAt(Api api, Key key, DH <t> result, V <t> value, V <VT::Float3> posv) {
-	Q_UNUSED(api)
-
 	value.v->markAsCrossSampled(0);
 
 	DH <VT::Float3> posh = posv.dataHandle(key.origin);
@@ -46,8 +42,6 @@ void WGA_SamplingFuncs_CPU::sampleAt(Api api, Key key, DH <t> result, V <t> valu
 
 template<WGA_Funcs_CPU::VT t>
 void WGA_SamplingFuncs_CPU::sampleAt(Api api, Key key, DH <t> result, V <t> value, V <VT::Float2> posv) {
-	Q_UNUSED(api)
-
 	value.v->markAsCrossSampled(0);
 
 	DH <VT::Float2> posh = posv.dataHandle(key.origin);
@@ -57,8 +51,6 @@ void WGA_SamplingFuncs_CPU::sampleAt(Api api, Key key, DH <t> result, V <t> valu
 
 template<WGA_Funcs_CPU::VT t>
 void WGA_SamplingFuncs_CPU::sampleAvg2D(Api api, Key key, DH <t> result, V <t> value, V <VT::Float> dist) {
-	Q_UNUSED(api)
-
 	value.v->markAsCrossSampled(0);
 
 	// Each sampling point will have its own separate cache

@@ -5,6 +5,7 @@
 #include <random>
 
 #include "util/assert.h"
+#include "util/hashutils.h"
 
 #define VECTOR_COMPONENT_OP(expr) Vector<T, D> result; for(int i = 0; i < D; i++) result[i] = expr; return result
 #define VECTOR_COMPONENT_OP_RT(RT, expr) RT result; for(int i = 0; i < D; i++) result[i] = expr; return result
@@ -232,11 +233,11 @@ public:
 
 public:
 	constexpr V min(const V &other) const {
-		VECTOR_COMPONENT_OP(qMin(data[i], other[i]));
+		VECTOR_COMPONENT_OP(std::min(data[i], other[i]));
 	}
 
 	constexpr V max(const V &other) const {
-		VECTOR_COMPONENT_OP(qMax(data[i], other[i]));
+		VECTOR_COMPONENT_OP(std::max(data[i], other[i]));
 	}
 
 	constexpr inline V clamp(const V &minv, const V &maxv) const {
@@ -507,12 +508,12 @@ OP(%)
 template<typename T, int D>
 struct std::hash<Vector<T, D>> {
 	size_t operator ()(const Vector<T, D> &v) const {
-		size_t result = 0;
+		size_t r = 0;
 		const auto h = std::hash<T>{};
 		for(const T &c: v.data)
-			result ^= h(c);
+			HashUtils::combineHash(r, h(c));
 
-		return result;
+		return r;
 	}
 };
 

@@ -19,7 +19,7 @@ const WGA_Rule::CompiledExpansionList &WGA_Rule::compiledExpansionList() {
 	if(compiledReady_)
 		return compiledExpansions_;
 
-	for(WGA_RuleExpansion *e: qAsConst(expansions_)) {
+	for(WGA_RuleExpansion *e: expansions_) {
 		const float priority = std::get<float>(e->pragma("priority"));
 		const float probabilityRatio = std::get<float>(e->pragma("probabilityRatio"));
 

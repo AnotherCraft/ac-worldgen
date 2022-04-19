@@ -1,11 +1,11 @@
 #pragma once
 
-#include <QtDebug>
-
 #include "blockside.h"
 
+#include "util/hashutils.h"
+
 struct BlockOrientation {
-	friend inline size_t qHash(const BlockOrientation &ori, size_t seed);
+	friend struct std::hash<BlockOrientation>;
 
 public:
 	enum class TransformFlags {
@@ -60,4 +60,11 @@ private:
 private:
 	BlockSide facing_ = BlockSide::_cnt, upDirection_ = BlockSide::_cnt;
 
+};
+
+template<>
+struct std::hash<BlockOrientation> {
+	inline size_t operator ()(const BlockOrientation &o) const {
+		return HashUtils::multiHash(+o.facing_, +o.upDirection_);
+	}
 };

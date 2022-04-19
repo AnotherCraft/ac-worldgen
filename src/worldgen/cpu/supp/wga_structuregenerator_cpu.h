@@ -111,7 +111,7 @@ public:
 		int currentExpansionNodeIndex = -1;
 
 	};
-	using RuleExpansionStatePtr = QSharedPointer<RuleExpansionState>;
+	using RuleExpansionStatePtr = std::shared_ptr<RuleExpansionState>;
 
 	struct ComponentExpansionState {
 
@@ -121,10 +121,10 @@ public:
 		WGA_ComponentNode *entryNode = nullptr;
 
 		/// Hash incorporates component type and transform matrix
-		uint placementHash = 0;
+		size_t placementHash = 0;
 
 	};
-	using ComponentExpansionStatePtr = QSharedPointer<ComponentExpansionState>;
+	using ComponentExpansionStatePtr = std::shared_ptr<ComponentExpansionState>;
 
 public:
 	WGA_StructureGenerator_CPU(WorldGenAPI_CPU &api);

@@ -29,7 +29,7 @@ WGLSymbol::WGLSymbol(WGLContext *context, WGLSymbol *parent, const std::string &
 
 	ASSERT(!desc_.empty());
 
-	context_.allSymbols += this;
+	context_.allSymbols.push_back(this);
 
 	if(declarationAst_)
 		context_.astSymbolMapping[declarationAst_] = this;

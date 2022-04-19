@@ -1,6 +1,6 @@
 #pragma once
 
-#include <QString>
+#include <string>
 
 #ifdef QT_DEBUG
 #define ASSERT(cond, ...) ((cond) ? static_cast<void>(0) : assertError(#cond, __FILE__, __LINE__, __VA_ARGS__))
@@ -14,4 +14,4 @@ struct AssertFailureException {
 
 };
 
-void assertError(const char *assert, const char *file, int line, const QString &msg = QString());
+void assertError(const char *assert, const char *file, int line, const std::string &msg = {});

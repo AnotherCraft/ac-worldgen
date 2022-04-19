@@ -1,11 +1,8 @@
 #pragma once
 
-// Must place before everything else because of antlr
-#include "wglinclude.h"
+#include <string>
 
-#include <QString>
-#include <QList>
-#include <QHash>
+#include "wglinclude.h"
 
 #include "worldgen/base/supp/wga_value.h"
 

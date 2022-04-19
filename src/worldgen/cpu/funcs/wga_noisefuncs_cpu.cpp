@@ -1,5 +1,7 @@
 #include "wga_noisefuncs_cpu.h"
 
+#include <cmath>
+
 // So that things aren't screwed up when transitioning from negative to positive numbers
 static constexpr auto ofst = std::numeric_limits<int32_t>::max();
 
@@ -114,8 +116,7 @@ void WGA_NoiseFuncs_CPU::perlin2D(WGA_Funcs_CPU::Api api, Key key, DH <VT::Float
 	}
 }
 
-void
-WGA_NoiseFuncs_CPU::perlin3D(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key key, DH <WGA_Value::ValueType::Float> result, V <WGA_Value::ValueType::Float> octaveSizev, V <WGA_Value::ValueType::Float> seedv) {
+void WGA_NoiseFuncs_CPU::perlin3D(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key key, DH <WGA_Value::ValueType::Float> result, V <WGA_Value::ValueType::Float> octaveSizev, V <WGA_Value::ValueType::Float> seedv) {
 	const uint32_t octaveSize = static_cast<uint32_t>(octaveSizev.constValue());
 	const Seed seed = api->seed() ^ static_cast<Seed>(seedv.constValue());
 
@@ -124,8 +125,8 @@ WGA_NoiseFuncs_CPU::perlin3D(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key key, DH 
 	const Vector3F originProgress = (chunkPos % octaveSize).to<float>() / octaveSize;
 	const float progressCoef = 1.0f / (octaveSize * chunkSize);
 
-	static const QVector<V3F> graidentVariants = [] {
-		QVector<V3F> r;
+	static const std::vector<V3F> graidentVariants = [] {
+		std::vector<V3F> r;
 
 		// 12
 		for(int zeroD = 0; zeroD < 3; zeroD++) {
@@ -134,7 +135,7 @@ WGA_NoiseFuncs_CPU::perlin3D(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key key, DH 
 				vec[zeroD] = (sigs & 1) ? 1 : -1;
 				vec[(zeroD + 1) % 3] = (sigs & 2) ? 1 : -1;
 
-				r += vec;
+				r.push_back(vec);
 			}
 		}
 		return r;
@@ -294,7 +295,7 @@ void WGA_NoiseFuncs_CPU::voronoi2DColored(WGA_Funcs_CPU::Api api, Key key, DH <V
 					float weightedSum = 0;
 					float weightsSum = 0;
 					for(int j = 0; j < maxCnt; j++) {
-						const float weight = qMax<float>(0, 1.42f - distances[j]);
+						const float weight = std::max<float>(0, 1.42f - distances[j]);
 						weightedSum += voronoiColorings[j] * weight;
 						weightsSum += weight;
 					}
@@ -313,7 +314,7 @@ void WGA_NoiseFuncs_CPU::voronoi2DColored(WGA_Funcs_CPU::Api api, Key key, DH <V
 					float weightedSum = 0;
 					float weightsSum = 0;
 					for(int j = 0; j < maxCnt; j++) {
-						const float weight = qMax<float>(0, 1.42f - distances[j]);
+						const float weight = std::max<float>(0, 1.42f - distances[j]);
 						weightedSum += voronoiColorings[j] * borderDistance * weight;
 						weightsSum += weight;
 					}
@@ -448,7 +449,7 @@ void WGA_NoiseFuncs_CPU::poissonDisc2DBool(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU
 	};
 
 	struct Rec {
-		QVarLengthArray<Node, 128> nodes;
+		std::vector<Node> nodes;
 	};
 
 	using RecPtr = WGA_DataRecordT_CPU<Rec>::Ptr;
@@ -475,34 +476,34 @@ void WGA_NoiseFuncs_CPU::poissonDisc2DBool(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU
 		};
 
 
-		QVarLengthArray<RecPtr, 9> conditionRecs;
+		std::vector<RecPtr> conditionRecs;
 
 		const Vector2<bool> isOdd = ((key.origin.xy().to<uint32_t>() / static_cast<uint32_t>(chunkSize)) % 2).componentEqual(1);
 
 		// 3 - load from diagonal too
 		if(isOdd.x() && isOdd.y()) {
-			conditionRecs += getRecord(1, 1);
-			conditionRecs += getRecord(-1, 1);
-			conditionRecs += getRecord(1, -1);
-			conditionRecs += getRecord(-1, -1);
+			conditionRecs.push_back(getRecord(1, 1));
+			conditionRecs.push_back(getRecord(-1, 1));
+			conditionRecs.push_back(getRecord(1, -1));
+			conditionRecs.push_back(getRecord(-1, -1));
 		}
 
 		// Odd Y - load from top and bottom neighbours
 		if(isOdd.y()) {
-			conditionRecs += getRecord(0, 1);
-			conditionRecs += getRecord(0, -1);
+			conditionRecs.push_back(getRecord(0, 1));
+			conditionRecs.push_back(getRecord(0, -1));
 		}
 
 		// Odd X - load from left and right neighbours
 		if(isOdd.x()) {
-			conditionRecs += getRecord(1, 0);
-			conditionRecs += getRecord(-1, 0);
+			conditionRecs.push_back(getRecord(1, 0));
+			conditionRecs.push_back(getRecord(-1, 0));
 		}
 
 		RecPtr recPtr(new WGA_DataRecordT_CPU<Rec>());
 		Rec &rec = recPtr->data;
 
-		conditionRecs += recPtr;
+		conditionRecs.push_back(recPtr);
 
 		const Vector2F originF = key.origin.xy().to<float>();
 		Seed seed = WorldGen_CPU_Utils::hash(key.origin.to<uint32_t>(), baseSeed);
@@ -517,7 +518,7 @@ void WGA_NoiseFuncs_CPU::poissonDisc2DBool(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU
 			node.pos.y() += static_cast<float>(seed % 2048) / 2048 * chunkSize;
 
 			const BlockWorldPos blockPos(node.pos.x(), node.pos.y(), key.origin.z());
-			node.radius = qBound<float>(1, radius.sampleAt(blockPos), chunkSize);
+			node.radius = std::max<float>(1.0f, std::min<float>(radius.sampleAt(blockPos), chunkSize));
 
 			bool collision = false;
 			for(const RecPtr &cRec: conditionRecs) {
@@ -538,7 +539,7 @@ void WGA_NoiseFuncs_CPU::poissonDisc2DBool(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU
 			if(collision)
 				continue;
 
-			rec.nodes += node;
+			rec.nodes.push_back(node);
 		}
 
 		return std::static_pointer_cast<WGA_DataRecord_CPU>(recPtr);

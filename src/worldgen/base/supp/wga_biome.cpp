@@ -10,7 +10,7 @@ WGA_Symbol::SymbolType WGA_Biome::symbolType() const {
 }
 
 void WGA_Biome::addCondition(const WGA_Biome::Condition &cond) {
-	conditions_ += cond;
+	conditions_.push_back(cond);
 }
 
 void WGA_Biome::setParam(WGA_Value *variable, WGA_Value *value) {

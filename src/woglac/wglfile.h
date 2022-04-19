@@ -1,7 +1,7 @@
 #pragma once
 
-#include <QString>
-#include <QSharedPointer>
+#include <memory>
+#include <string>
 
 class WGLFile {
 

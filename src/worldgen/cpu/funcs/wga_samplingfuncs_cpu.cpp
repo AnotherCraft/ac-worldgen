@@ -2,8 +2,6 @@
 
 
 void WGA_SamplingFuncs_CPU::sampleGradient2D(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key key, DH <VT::Float2> result, V <VT::Float> value, V <VT::Float> dist) {
-	Q_UNUSED(api)
-
 	value.v->markAsCrossSampled(0);
 
 	// Each sampling point will have its own separate cache

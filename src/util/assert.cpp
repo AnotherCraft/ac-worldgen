@@ -1,8 +1,9 @@
 #include "assert.h"
 
-#include <QDebug>
+#include <iostream>
+#include <format>
 
-void assertError(const char *assert, const char *file, int line, const QString &msg) {
-	qWarning().noquote() << QStringLiteral("\n\n\n!!! assert FAILURE (%1:%2): %3").arg(file, QString::number(line), !msg.isEmpty() ? msg : assert);
+void assertError(const char *assert, const char *file, int line, const std::string &msg) {
+	std::cout << std::format("\n\n\n!!! assert FAILURE ({}:{}): {}", file, line, !msg.empty() ? msg : assert);
 	throw AssertFailureException();
 }

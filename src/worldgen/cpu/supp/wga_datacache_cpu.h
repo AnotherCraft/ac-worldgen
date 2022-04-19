@@ -1,13 +1,7 @@
 #pragma once
 
 #include <unordered_set>
-
-#include <QVector>
-#include <QCache>
-#include <QMutex>
-#include <QReadWriteLock>
-#include <QSharedPointer>
-#include <QWaitCondition>
+#include <mutex>
 
 #include "util/enumutils.h"
 #include "worldgen/base/supp/wga_value.h"
@@ -61,15 +55,15 @@ private:
 		std::unordered_set<Key> wipKeys;
 
 		//TracyLockable(QMutex, mutex);
-		QMutex mutex;
+		std::mutex mutex;
 
 		/// Condition used for waiting for a record being generated in a different thread
-		QWaitCondition wipKeyCondition;
+		std::condition_variable wipKeyCondition;
 	};
 	CacheData cacheData_[+CacheType::_count][cacheDivisions];
 
 private:
-	QAtomicInt hitCount_[+CacheType::_count], missCount_[+CacheType::_count];
+	std::atomic<size_t> hitCount_[+CacheType::_count], missCount_[+CacheType::_count];
 
 private:
 	struct RecordStats {
@@ -77,8 +71,8 @@ private:
 		int missCount = 0;
 		int genCount = 0;
 	};
-	QHash<Key, RecordStats> recordStats_; ///< Key.origin is set to 0
-	QReadWriteLock recordStatsMutex_;
+	std::unordered_map<Key, RecordStats> recordStats_; ///< Key.origin is set to 0
+	std::mutex recordStatsMutex_;
 
 };
 

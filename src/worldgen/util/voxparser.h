@@ -1,8 +1,8 @@
 #pragma once
 
-#include <QByteArray>
-#include <QBuffer>
-#include <QHash>
+#include <vector>
+#include <iostream>
+#include <unordered_map>
 
 /// Parser of the VOX file format
 /// File format specified here: https://github.com/ephtracy/voxel-model/blob/master/MagicaVoxel-file-format-vox.txt
@@ -23,7 +23,7 @@ public:
 	}
 
 	inline bool isEmpty() const {
-		return voxels_.isEmpty();
+		return voxels_.empty();
 	}
 
 	void clear();
@@ -39,7 +39,7 @@ private:
 	Chunk readChunk(std::basic_istream<char> &b);
 
 private:
-	QHash<uint8_t, QVector<VoxelPos>> voxels_;
+	std::unordered_map<uint8_t, std::vector<VoxelPos>> voxels_;
 
 };
 

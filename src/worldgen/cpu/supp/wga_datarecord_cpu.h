@@ -34,8 +34,8 @@ public:
 
 template<>
 struct std::hash<WGA_DataRecord_CPU::Key> {
-	size_t operator ()(const WGA_DataRecord_CPU::Key &key) const {
-		return std::hash<void *>{}(key.symbol) ^ (std::hash<BlockWorldPos::V>{}(key.origin) << 1) ^ (std::hash<WGA_DataRecord_CPU::SubKey>{}(key.subKey) << 2);
+	inline size_t operator ()(const WGA_DataRecord_CPU::Key &key) const {
+		return HashUtils::multiHash(key.symbol, key.origin, key.subKey);
 	}
 };
 

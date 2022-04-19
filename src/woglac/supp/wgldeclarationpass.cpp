@@ -26,7 +26,7 @@ void WGLDeclarationPass::enterScope(WoglacParser::ScopeContext *ctx) {
 			throw WGLError(std::format("Symbol extension target type mismatch: '{}' expected, but trying to extend as '{}'", WGLUtils::getSymbolTypeName(sym->symbolType()), WGLUtils::getSymbolTypeName(targetType)), ctx);
 	}
 
-	currentScope_ += sym;
+	currentScope_.push(sym);
 }
 
 void WGLDeclarationPass::exitScope(WoglacParser::ScopeContext *ctx) {
@@ -41,7 +41,7 @@ void WGLDeclarationPass::enterRuleExpansionStatement(WoglacParser::RuleExpansion
 		throw WGLError(std::format("Target '{}' for a rule expansion is not a rule.", effectiveTarget->fullName()), ctx);
 
 	WGLSymbol *sym = new WGLSymbol(ctx_, directTarget, {}, SymbolType::RuleExpansion, ctx);
-	currentScope_ += sym;
+	currentScope_.push(sym);
 }
 
 void WGLDeclarationPass::exitRuleExpansionStatement(WoglacParser::RuleExpansionStatementContext *ctx) {
@@ -73,7 +73,7 @@ void WGLDeclarationPass::enterBiomeParamDefinition(WoglacParser::BiomeParamDefin
 }
 
 void WGLDeclarationPass::enterVariableDefinition(WoglacParser::VariableDefinitionContext *ctx) {
-	static const QHash<int, SymbolType> varSymbolTypeFromTargetType{
+	static const std::unordered_map<int, SymbolType> varSymbolTypeFromTargetType{
 		{+SymbolType::Biome,         SymbolType::FieldVariable},
 		{+SymbolType::Namespace,     SymbolType::FieldVariable},
 		{+SymbolType::Rule,          SymbolType::StructureVariable},
@@ -84,8 +84,10 @@ void WGLDeclarationPass::enterVariableDefinition(WoglacParser::VariableDefinitio
 	WGLSymbol *directTarget = lookupIdentifier(ctx->id, true);
 	WGLSymbol *effectiveTarget = directTarget->effectiveTarget();
 
-	const SymbolType symbolType = varSymbolTypeFromTargetType.value(+effectiveTarget->symbolType());
-	if(symbolType == SymbolType::Unknown)
+	SymbolType symbolType;
+	if(auto i = varSymbolTypeFromTargetType.find(+effectiveTarget->symbolType()); i != varSymbolTypeFromTargetType.end())
+		symbolType = i->second;
+	else
 		throw WGLError(std::format("Variables are not allowed inside '{}'.", WGLUtils::getSymbolTypeName(effectiveTarget->symbolType())), ctx);
 
 	WGLSymbol *sym = new WGLSymbol(ctx_, directTarget, WGLUtils::identifier(ctx->id->id.back()), symbolType, ctx);
@@ -95,7 +97,7 @@ void WGLDeclarationPass::enterVariableDefinition(WoglacParser::VariableDefinitio
 
 void WGLDeclarationPass::enterComponentNodeStatement(WoglacParser::ComponentNodeStatementContext *ctx) {
 	WGLSymbol *sym = componentNodeDeclaration(ctx->cmn, currentScope());
-	currentScope_ += sym;
+	currentScope_.push(sym);
 }
 
 void WGLDeclarationPass::exitComponentNodeStatement(WoglacParser::ComponentNodeStatementContext *ctx) {
@@ -110,7 +112,7 @@ void WGLDeclarationPass::enterComponentIncludeStatement(WoglacParser::ComponentI
 		throw WGLError("Component include can only be used in a component symbol.", ctx);
 
 	WGLSymbol *sym = new WGLSymbol(ctx_, directTarget, {}, SymbolType::Scope, ctx);
-	currentScope_ += sym;
+	currentScope_.push(sym);
 }
 
 void WGLDeclarationPass::exitComponentIncludeStatement(WoglacParser::ComponentIncludeStatementContext *ctx) {

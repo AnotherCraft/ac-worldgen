@@ -213,7 +213,7 @@ int main(int argc, char *argv[]) {
 
 			struct Data {
 				std::vector<char> data;
-				qsizetype recordCount;
+				size_t recordCount;
 			};
 			std::function<Data()> f;
 
@@ -254,7 +254,7 @@ int main(int argc, char *argv[]) {
 			};
 
 			{
-				QMutexLocker _ml(&jobsMutex);
+				std::unique_lock _ml(jobsMutex);
 				runningJobs++;
 				jobs.push(job);
 				newJobCondition.notify_one();

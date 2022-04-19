@@ -1,8 +1,8 @@
 #pragma once
 
-#include "wglinclude.h"
+#include <stack>
 
-#include <QStack>
+#include "wglinclude.h"
 
 #include "wglcontext.h"
 #include "wglsymbol.h"
@@ -36,13 +36,11 @@ protected:
 	void popScope(antlr4::ParserRuleContext *ctx);
 
 protected:
-	WGLSymbol *
-	componentNodeDeclaration(WoglacParser::ComponentNodeStatementCommonPartContext *ctx, WGLSymbol *directTarget,
-	                         bool useDeclarationAST = true);
+	WGLSymbol *componentNodeDeclaration(WoglacParser::ComponentNodeStatementCommonPartContext *ctx, WGLSymbol *directTarget, bool useDeclarationAST = true);
 
 protected:
 	WGLContext *ctx_;
-	QStack<WGLSymbol *> currentScope_;
+	std::stack<WGLSymbol *> currentScope_;
 
 };
 

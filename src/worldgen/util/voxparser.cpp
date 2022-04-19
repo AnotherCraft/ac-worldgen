@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include <format>
+#include <sstream>
 
 template<typename T>
 T readPrimitive(std::basic_istream<char> &stream) {
@@ -66,13 +67,13 @@ void VOXParser::parseData(std::basic_istream<char> &stream) {
 					uint8_t x, y, z, id;
 				};
 
-				if(!voxels_.isEmpty())
+				if(!voxels_.empty())
 					throw "Multiple models are not supported";
 
 				auto numVoxels = readPrimitive<uint32_t>(cb);
 				while(numVoxels--) {
 					const VoxelRec voxel = readPrimitive<VoxelRec>(cb);
-					voxels_[voxel.id] += VoxelPos{voxel.x, voxel.y, voxel.z};
+					voxels_[voxel.id].push_back(VoxelPos{voxel.x, voxel.y, voxel.z});
 				}
 			}
 

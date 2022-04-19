@@ -58,7 +58,7 @@ void WGA_BiomeData_CPU::calculateFor(WorldGenAPI_CPU &api, const BlockWorldPos &
 
 			const int biomeId = rawBiomeMapping[j];
 			float &weight = weights[biomeId];
-			weight += qMax<float>(0, 1 - distance / (gridSize * 1.42f));
+			weight += std::max<float>(0, 1 - distance / (gridSize * 1.42f));
 
 			if(weight > largestWeight) {
 				largestWeight = weight;

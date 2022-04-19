@@ -23,7 +23,6 @@
   nodeWorldPos = ctx->mapToWorld(nodeLocalPos); \
   } \
   const BlockWorldPos worldPos = result.worldPos(key.origin, i); \
-  Q_UNUSED(worldPos); \
   result[i] = expr; \
   }
 
@@ -52,7 +51,7 @@ private:
 		BlockWorldPos origin;
 		WGA_Rule *entryRule;
 	};
-	using SpawnList = QVector<SpawnRec>;
+	using SpawnList = std::vector<SpawnRec>;
 	using SpawnFunc =
 	std::function< void(Api
 	api,

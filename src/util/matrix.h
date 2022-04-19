@@ -3,9 +3,8 @@
 #include <type_traits>
 #include <array>
 
-#include <QHash>
-
 #include "vector.h"
+#include "util/hashutils.h"
 
 template<typename T, int W, int H>
 struct Matrix;
@@ -42,11 +41,11 @@ public:
 	}
 
 public:
-	inline void operator=(const M &m) {
+	inline void operator =(const M &m) {
 		data = m.data;
 	}
 
-	bool operator==(const M &m) const {
+	bool operator ==(const M &m) const {
 		bool result = true;
 
 		for(int y = 0; y < H; y++) {
@@ -57,12 +56,12 @@ public:
 		return result;
 	}
 
-	inline bool operator!=(const M &m) const {
+	inline bool operator !=(const M &m) const {
 		return !(*this == m);
 	}
 
 	template<int W2>
-	Matrix<T, W2, H> operator*(const Matrix<T, W2, W> &m) const {
+	Matrix<T, W2, H> operator *(const Matrix<T, W2, W> &m) const {
 		Matrix<T, W2, H> result;
 
 		for(int y = 0; y < H; y++) {
@@ -79,13 +78,13 @@ public:
 		return result;
 	}
 
-	inline T &operator()(int x, int y) {
+	inline T &operator ()(int x, int y) {
 		ASSERT(x >= 0 && x < W);
 		ASSERT(y >= 0 && y < H);
 		return data[y][x];
 	}
 
-	inline const T &operator()(int x, int y) const {
+	inline const T &operator ()(int x, int y) const {
 		ASSERT(x >= 0 && x < W);
 		ASSERT(y >= 0 && y < H);
 		return data[y][x];
@@ -186,9 +185,9 @@ public:
 	}
 
 public:
-	using P::operator*;
+	using P::operator *;
 
-	V operator*(const V &v) const {
+	V operator *(const V &v) const {
 		V result;
 		for(int y = 0; y < W; y++) {
 			for(int x = 0; x < W; x++) {
@@ -199,7 +198,7 @@ public:
 		return result;
 	}
 
-	VA operator*(const VA &v) const {
+	VA operator *(const VA &v) const {
 		V result = *this * V(v, 1);
 
 		if(result[W - 1] != 1)
@@ -212,7 +211,7 @@ public:
 		return resultA;
 	}
 
-	inline void operator*=(const M &m) {
+	inline void operator *=(const M &m) {
 		*this = *this * m;
 	}
 
@@ -271,13 +270,19 @@ public:
 
 };
 
-template<typename T, int W, int H>
-size_t qHash(const Matrix<T, W, H> &m, size_t seed = 0) {
-	for(int y = 0; y < H; y++) {
-		for(int x = 0; x < W; x++) {
-			seed = qHash(m.data[y][x], seed);
-		}
-	}
 
-	return seed;
+template<typename T, int W, int H>
+struct std::hash<Matrix<T, W, H>> {
+	size_t operator ()(const Matrix<T, W, H> &m) const {
+		size_t r = 0;
+		std::hash<T> h;
+
+		for(int y = 0; y < H; y++) {
+			for(int x = 0; x < W; x++) {
+				HashUtils::combineHash(r, h(m.data[y][x]));
+			}
+		}
+
+		return r;
+	}
 };

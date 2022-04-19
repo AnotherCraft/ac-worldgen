@@ -1,9 +1,8 @@
 #pragma once
 
-// Must place before everything else because of antlr
-#include "wglinclude.h"
+#include <string>
 
-#include <QString>
+#include "wglinclude.h"
 
 class WGLError {
 

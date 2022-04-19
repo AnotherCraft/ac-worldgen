@@ -73,7 +73,7 @@ void WGLContext::checkCircularDependencies() {
 void WGLContext::markSymbolDefined(WGLSymbol *s) {
 	definedSymbols_.insert(s);
 
-	QVector<WGLSymbol *> newlyDefinedSymbols;
+	std::vector<WGLSymbol *> newlyDefinedSymbols;
 
 	for(auto it = symbolApiCmdDependents_.find(s); it != symbolApiCmdDependents_.end() && it->first == s; it++) {
 		UnresolvedAPICmd &rec = unresolvedApiCmds_[it->second];
@@ -83,7 +83,7 @@ void WGLContext::markSymbolDefined(WGLSymbol *s) {
 		if(!rec.unresolvedDependencyCount) {
 			resolvedApiCmds_.push_back(rec.command);
 			if(rec.definingSymbol)
-				newlyDefinedSymbols += rec.definingSymbol;
+				newlyDefinedSymbols.push_back(rec.definingSymbol);
 		}
 	}
 

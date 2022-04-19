@@ -14,15 +14,17 @@
 
 #define WGCPUF_ARGS(T) const WGA_DataRecord_CPU::Key &key, WGA_DataHandle_CPU<WGA_Value::ValueType::T> data
 #define DIM_FUNC(D) [] { return WGA_Value::Dimensionality::D; }
-#define WGCPUF_CONST(T, expr) api->registerSymbol(new WGA_Value_CPU(*api, WGA_Value::ValueType::T, false, DIM_FUNC(DConst), wga_fillCtor<WGA_Value::ValueType::T>(DIM_FUNC(DConst), [val = (expr)] (WGCPUF_ARGS(T)) { Q_UNUSED(key) data[0] = val; }, __FUNCTION__)))
+#define WGCPUF_CONST(T, expr) api->registerSymbol(new WGA_Value_CPU(*api, WGA_Value::ValueType::T, false, DIM_FUNC(DConst), wga_fillCtor<WGA_Value::ValueType::T>(DIM_FUNC(DConst), [val = (expr)] (WGCPUF_ARGS(T)) { data[0] = val; }, __FUNCTION__)))
 
-using LocalCache = QHash<WGA_DataRecord_CPU::Key, WGA_DataRecord_CPU::Ptr>;
+using LocalCache = std::unordered_map<WGA_DataRecord_CPU::Key, WGA_DataRecord_CPU::Ptr>;
 
 thread_local WGA_StructureGenerator_CPU *WorldGenAPI_CPU::structureGen = nullptr;
 thread_local LocalCache *localCache = nullptr;
 
 WorldGenAPI_CPU::~WorldGenAPI_CPU() {
-	qDeleteAll(symbols_);
+	for(WGA_Symbol *sym: symbols_)
+		delete sym;
+
 	symbols_.clear();
 }
 
@@ -128,7 +130,7 @@ WGA_Biome &WorldGenAPI_CPU::getChunkBiome(const BlockWorldPos &origin_) {
 	const BlockWorldPos origin = BlockWorldPos(origin_.x(), origin_.y(), 0);
 
 	const auto ctor = [this](const WGA_DataRecord_CPU::Key &key) {
-		QHash<WGA_Value_CPU *, float> fields;
+		std::unordered_map<WGA_Value_CPU *, float> fields;
 		const auto getField = [&](WGA_Value_CPU *field) {
 			if(fields.contains(field))
 				return fields[field];
@@ -143,7 +145,7 @@ WGA_Biome &WorldGenAPI_CPU::getChunkBiome(const BlockWorldPos &origin_) {
 
 		ASSERT(biomes_.size());
 		for(WGA_Biome *biome: biomes_) {
-			float deviation = biome->conditions().count() * -0.2f; // Give some advantage to biomes with many conditions
+			float deviation = biome->conditions().size() * -0.2f; // Give some advantage to biomes with many conditions
 			for(const WGA_Biome::Condition &c: biome->conditions()) {
 				const float fieldVal = getField(static_cast<WGA_Value_CPU *>(c.param));
 				const float d = abs(c.mean - fieldVal) / c.deviation;

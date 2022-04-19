@@ -3,7 +3,7 @@
 #include "wglerror.h"
 
 WGLPass::WGLPass() {
-	currentScope_ += nullptr;
+	currentScope_.push(nullptr);
 }
 
 void WGLPass::setContext(WGLContext *ctx) {
@@ -13,7 +13,7 @@ void WGLPass::setContext(WGLContext *ctx) {
 void WGLPass::execute(WoglacParser::ModuleContext *module) {
 	ASSERT(currentScope_.size() == 1);
 
-	currentScope_[0] = ctx_->rootSymbol;
+	currentScope_.top() = ctx_->rootSymbol;
 	antlr4::tree::ParseTreeWalker::DEFAULT.walk(this, module);
 
 	ASSERT(currentScope_.size() == 1);
@@ -28,9 +28,12 @@ WGLSymbol *WGLPass::lookupIdentifier(WoglacParser::ExtendedIdentifierContext *ei
 	const antlr4::Token *baseId = *it++;
 
 	WGLSymbol *result = nullptr;
-	for(int i = currentScope_.size() - 1; i >= 0; i--) {
-		if((result = currentScope_[i]->resolveIdentifier(baseId, eid, false)))
+	auto scope = currentScope_;
+	while(!scope.empty()) {
+		if((result = scope.top()->resolveIdentifier(baseId, eid, false)))
 			break;
+
+		scope.pop();
 	}
 
 	if(!result)
@@ -59,7 +62,7 @@ WGLPass::checkTargetTypeMatch(antlr4::Token *targetType, WGLSymbol *effectiveTar
 
 void WGLPass::popScope(antlr4::ParserRuleContext *ctx) {
 	ASSERT(ctx_->astSymbolMapping.contains(ctx));
-	ASSERT(ctx_->astSymbolMapping.value(ctx) == currentScope_.top());
+	ASSERT(ctx_->astSymbolMapping.at(ctx) == currentScope_.top());
 
 	currentScope_.pop();
 }

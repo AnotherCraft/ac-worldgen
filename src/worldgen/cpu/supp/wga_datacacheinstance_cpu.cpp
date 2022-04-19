@@ -1,6 +1,7 @@
 #include "wga_datacacheinstance_cpu.h"
 
 #include "util/iterators.h"
+#include "util/containerutils.h"
 
 std::shared_ptr<WGA_DataRecord_CPU> WGA_DataCacheInstance_CPU::get(const WGA_DataCacheInstance_CPU::Key &key) {
 	Record &rec = hash_.valueRef(key);

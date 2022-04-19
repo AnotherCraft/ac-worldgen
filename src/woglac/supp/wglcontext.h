@@ -25,10 +25,10 @@ public:
 public:
 	WGLCompiler *compiler;
 	WGLSymbol *rootSymbol;
-	QList<WGLSymbol *> allSymbols;
+	std::vector<WGLSymbol *> allSymbols;
 
 	/// Associates symbols with AST contexts; filled in declaration pass
-	QHash<antlr4::ParserRuleContext *, WGLSymbol *> astSymbolMapping;
+	std::unordered_map<antlr4::ParserRuleContext *, WGLSymbol *> astSymbolMapping;
 
 public:
 	void addApiCmd(WGLSymbol *definingSymbol, const DependencyList &dependencies, const APICommand &cmd);

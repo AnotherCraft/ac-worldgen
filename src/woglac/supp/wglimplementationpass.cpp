@@ -6,13 +6,13 @@
 
 #include "wglerror.h"
 
-#define EXPRESSION_RESULT(resultType, expr) ExpressionResult{ [=] (WGLAPIContext &ctx) { Q_UNUSED(ctx); return (expr); }, resultType }
+#define EXPRESSION_RESULT(resultType, expr) ExpressionResult{ [=] (WGLAPIContext &ctx) { return (expr); }, resultType }
 
 void WGLImplementationPass::enterScope(WoglacParser::ScopeContext *ctx) {
-	WGLSymbol *sym = ctx_->astSymbolMapping.value(ctx);
+	WGLSymbol *sym = ctx_->astSymbolMapping.at(ctx);
 	ASSERT(sym);
 
-	currentScope_ += sym;
+	currentScope_.push(sym);
 
 	if(!ctx->extend) {
 		switch(sym->symbolType()) {
@@ -52,10 +52,10 @@ void WGLImplementationPass::exitScope(WoglacParser::ScopeContext *ctx) {
 }
 
 void WGLImplementationPass::enterRuleExpansionStatement(WoglacParser::RuleExpansionStatementContext *ctx) {
-	WGLSymbol *sym = ctx_->astSymbolMapping.value(ctx);
+	WGLSymbol *sym = ctx_->astSymbolMapping.at(ctx);
 	ASSERT(sym);
 
-	currentScope_ += sym;
+	currentScope_.push(sym);
 
 	WGLSymbol *parentRule = sym->parent()->effectiveTarget();
 
@@ -88,7 +88,7 @@ void WGLImplementationPass::exitRuleExpansionStatement(WoglacParser::RuleExpansi
 }
 
 void WGLImplementationPass::enterBiomeParamDefinition(WoglacParser::BiomeParamDefinitionContext *ctx) {
-	WGLSymbol *sym = ctx_->astSymbolMapping.value(ctx);
+	WGLSymbol *sym = ctx_->astSymbolMapping.at(ctx);
 	ASSERT(sym);
 
 	DependencyList deps;
@@ -120,7 +120,7 @@ void WGLImplementationPass::enterBiomeConditionStatement(WoglacParser::BiomeCond
 }
 
 void WGLImplementationPass::enterVariableDefinition(WoglacParser::VariableDefinitionContext *ctx) {
-	WGLSymbol *sym = ctx_->astSymbolMapping.value(ctx);
+	WGLSymbol *sym = ctx_->astSymbolMapping.at(ctx);
 	ASSERT(sym);
 
 	DependencyList deps;
@@ -135,7 +135,7 @@ void WGLImplementationPass::enterVariableDefinition(WoglacParser::VariableDefini
 }
 
 void WGLImplementationPass::enterParamDefinition(WoglacParser::ParamDefinitionContext *ctx) {
-	WGLSymbol *sym = ctx_->astSymbolMapping.value(ctx);
+	WGLSymbol *sym = ctx_->astSymbolMapping.at(ctx);
 	ASSERT(sym);
 
 	WGLSymbol *parent = sym->parent()->effectiveTarget();
@@ -207,7 +207,7 @@ void WGLImplementationPass::enterComponentNodeStatement(WoglacParser::ComponentN
 		cfg.position = pos.func(ctx);
 	});
 
-	currentScope_ += sym;
+	currentScope_.push(sym);
 }
 
 void WGLImplementationPass::exitComponentNodeStatement(WoglacParser::ComponentNodeStatementContext *ctx) {
@@ -220,7 +220,7 @@ void WGLImplementationPass::enterComponentIncludeStatement(WoglacParser::Compone
 	ASSERT(voxParser_.isEmpty());
 	voxParser_.parseFile(ctx_->compiler->lookupFile(WGLUtils::stringLiteral(ctx->file), ctx));
 
-	currentScope_ += sym;
+	currentScope_.push(sym);
 }
 
 void WGLImplementationPass::exitComponentIncludeStatement(WoglacParser::ComponentIncludeStatementContext *ctx) {
@@ -240,7 +240,7 @@ void WGLImplementationPass::enterComponentIncludeStatementBlockParam(
 	const auto val = expression(ctx->val, deps);
 
 	std::vector<BlockWorldPos> poss;
-	for(const VOXParser::VoxelPos &vp: voxParser_.voxels().value(id))
+	for(const VOXParser::VoxelPos &vp: voxParser_.voxels().at(id))
 		poss.push_back(BlockWorldPos(vp.x, vp.y, vp.z));
 
 	if(poss.empty())
@@ -262,7 +262,7 @@ void WGLImplementationPass::enterComponentIncludeStatementNodeParam(WoglacParser
 	const int id = WGLUtils::numericLiteral(ctx->id);
 
 	componentIncludePositions_.clear();
-	for(const VOXParser::VoxelPos &vp: voxParser_.voxels().value(id))
+	for(const VOXParser::VoxelPos &vp: voxParser_.voxels().at(id))
 		componentIncludePositions_.push_back(BlockWorldPos(vp.x, vp.y, vp.z));
 
 	if(componentIncludePositions_.empty())
@@ -275,7 +275,7 @@ void WGLImplementationPass::enterComponentIncludeStatementNodeParam(WoglacParser
 		cfg.position = ctx.api->constFloat3(pos.to<float>());
 	});
 
-	currentScope_ += node;
+	currentScope_.push(node);
 }
 
 void WGLImplementationPass::exitComponentIncludeStatementNodeParam(WoglacParser::ComponentIncludeStatementNodeParamContext *ctx) {
@@ -353,7 +353,7 @@ void WGLImplementationPass::enterComponentBlockStatement(WoglacParser::Component
 }
 
 void WGLImplementationPass::enterStructureConditionStatement(WoglacParser::StructureConditionStatementContext *ctx) {
-	static const QSet<int> allowedSymbolTypes{
+	static const std::unordered_set<int> allowedSymbolTypes{
 		+SymbolType::Component, +SymbolType::Rule, +SymbolType::RuleExpansion
 	};
 
@@ -522,8 +522,6 @@ WGLImplementationPass::ExpressionResult WGLImplementationPass::expression(Woglac
 }
 
 WGLImplementationPass::ExpressionResult WGLImplementationPass::expression(WoglacParser::LiteralExpressionContext *ctx, WGLImplementationPass::DependencyList &deps) {
-	Q_UNUSED(deps);
-
 	if(auto e = ctx->block) {
 		const std::string uid = e->getText();
 

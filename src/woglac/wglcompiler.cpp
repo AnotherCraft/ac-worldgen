@@ -14,10 +14,6 @@
 
 class ANTLRErrorHandler : public antlr4::BaseErrorListener {
 	virtual void syntaxError(antlr4::Recognizer *recognizer, antlr4::Token *offendingSymbol, size_t line, size_t charPositionInLine, const std::string &msg, std::exception_ptr e) override {
-		Q_UNUSED(recognizer)
-		Q_UNUSED(offendingSymbol)
-		Q_UNUSED(e)
-		Q_UNUSED(charPositionInLine);
 		throw WGLError(std::format("Syntax error: {} on line {} ({})", msg.c_str(), line, charPositionInLine), nullptr);
 	}
 };
@@ -63,9 +59,9 @@ void WGLCompiler::compile() {
 					throw WGLError(std::format("Error opening file '{}'", f->fileName()), nullptr);
 
 				m->input.reset(new antlr4::ANTLRInputStream(*m->stream));
-				m->lexer.reset(new WoglacLexer(m->input.data()));
-				m->tokens.reset(new antlr4::CommonTokenStream(m->lexer.data()));
-				m->parser.reset(new WoglacParser(m->tokens.data()));
+				m->lexer.reset(new WoglacLexer(m->input.get()));
+				m->tokens.reset(new antlr4::CommonTokenStream(m->lexer.get()));
+				m->parser.reset(new WoglacParser(m->tokens.get()));
 
 				m->parser->setBuildParseTree(true);
 				m->parser->getInterpreter<antlr4::atn::ParserATNSimulator>()->setPredictionMode(antlr4::atn::PredictionMode::SLL);

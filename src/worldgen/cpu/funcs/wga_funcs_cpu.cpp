@@ -12,14 +12,15 @@
 #include "wga_samplingfuncs_cpu.h"
 
 #pragma optimize("gt", on)
-QHash<WorldGenAPI::FunctionID, WGA_Funcs_CPU::Func> WGA_Funcs_CPU::functions() {
+
+std::unordered_map<WorldGenAPI::FunctionID, WGA_Funcs_CPU::Func> WGA_Funcs_CPU::functions() {
 	static const auto result = [] {
-		QHash<WorldGenAPI::FunctionID, Func> result;
+		std::unordered_map<WorldGenAPI::FunctionID, Func> result;
 
 #include "worldgen/util/wg_macro_def.h"
 
-#define DIM_MAX_2(v1, v2) qMax(v1, v2)
-#define DIM_MIN_2(v1, v2) qMin(v1, v2)
+#define DIM_MAX_2(v1, v2) std::max(v1, v2)
+#define DIM_MIN_2(v1, v2) std::min(v1, v2)
 #define DIM_C(c) WGA_Value::Dimensionality::D ## c
 #define DIM_ARG(i) args[i-1]->dimensionality()
 
@@ -34,7 +35,7 @@ QHash<WorldGenAPI::FunctionID, WGA_Funcs_CPU::Func> WGA_Funcs_CPU::functions() {
   IOTA_F_ ## argCount(IMPL_INLINE_ARG) \
   /*ZoneTransientN(_tracyZone, #funcName ":loop", true);*/ \
   const int sz = data.size; \
-	for(int i = 0; i < sz; i++) { \
+  for(int i = 0; i < sz; i++) { \
   IOTA_F_ ## argCount(IMPL_INLINE_ARG2) \
   data[i] = (expr); \
   };
@@ -44,10 +45,9 @@ QHash<WorldGenAPI::FunctionID, WGA_Funcs_CPU::Func> WGA_Funcs_CPU::functions() {
   const WorldGenAPI::Function &f = WorldGenAPI::functions().list[i++]; \
   ASSERT(#funcName == f.name); \
   result[f.id] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) { \
-  Q_UNUSED(args) \
   const bool isContextual = DEFER2(CONCAT)(IS_CONTEXTUAL_, M_ARG_1 impl) || iterator(args).anyx(x->isContextual()); \
   if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0); /* If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache */ \
-	const auto dimFunc = [=] { auto result = dim; ASSERT(result != WGA_Value::Dimensionality::_count); return dim; }; \
+  const auto dimFunc = [=] { auto result = dim; ASSERT(result != WGA_Value::Dimensionality::_count); return dim; }; \
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) { \
   IOTA_F_ ## argCount (ARG_DEF) \
   DEFER2(CONCAT)(IMPL_, M_ARG_1 impl)(PREVENT_EATING_COMMA(M_ARG_1_REST impl), funcName, argCount) \

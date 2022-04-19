@@ -1,6 +1,7 @@
 #pragma once
 
-#include <QHash>
+#include <unordered_map>
+#include <vector>
 
 #include "wga_symbol.h"
 
@@ -11,7 +12,7 @@ public:
 		WGA_Value *param = nullptr;
 		float mean = 0, deviation = 0;
 	};
-	using Conditions = QVector<Condition>;
+	using Conditions = std::vector<Condition>;
 
 public:
 	WGA_Biome();
@@ -28,7 +29,10 @@ public:
 
 	/// Returns a value representing biome param (defined by the default value) for the given biome
 	inline WGA_Value *param(WGA_Value *param) const {
-		return params_.value(param, param);
+		if(auto i = params_.find(param); i != params_.end())
+			return i->second;
+
+		return param;
 	};
 
 	inline const auto &params() const {
@@ -39,7 +43,7 @@ public:
 
 private:
 	Conditions conditions_;
-	QHash<WGA_Value *, WGA_Value *> params_;
+	std::unordered_map<WGA_Value *, WGA_Value *> params_;
 
 };
 

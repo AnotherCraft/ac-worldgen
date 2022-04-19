@@ -1,9 +1,6 @@
 #pragma once
 
-// Must place before everything else because of antlr
 #include "wglinclude.h"
-
-#include <QStack>
 
 #include "worldgen/base/supp/wga_componentnode.h"
 #include "worldgen/util/voxparser.h"

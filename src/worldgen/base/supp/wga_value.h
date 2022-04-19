@@ -1,8 +1,5 @@
 #pragma once
 
-#include <QHash>
-#include <QString>
-
 #include "util/enumutils.h"
 #include "defines.h"
 
@@ -54,8 +51,3 @@ public:
 	virtual Dimensionality dimensionality() const = 0;
 
 };
-
-
-inline size_t qHash(WGA_Value::ValueType t, size_t seed = 0) {
-	return qHash(static_cast<int>(t), seed);
-}

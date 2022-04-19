@@ -65,15 +65,7 @@ add_custom_target(ac_worldgen_deploy ALL DEPENDS antlr tracy x_ac_worldgen)
 # ===========================================
 # Dummy target for intellisense
 # ===========================================
-find_package(Qt6 COMPONENTS Concurrent REQUIRED CONFIG)
-qt_add_executable(x_ac_worldgen_dummy WIN32 EXCLUDE_FROM_ALL)
-get_target_property(qtcore_binlocation Qt6::Core LOCATION)
-get_filename_component(qtcore_location ${qtcore_binlocation} DIRECTORY)
-set(qt_include_location "${qtcore_location}/../include")
-target_include_directories(x_ac_worldgen_dummy PRIVATE
-        "${qt_include_location}/QtConcurrent"
-        )
-
+add_executable(x_ac_worldgen_dummy WIN32 EXCLUDE_FROM_ALL)
 file(
         GLOB_RECURSE ac_client_src CONFIGURE_DEPENDS
         "${PROJECT_BASE_DIR}/src/*.cc"

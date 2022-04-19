@@ -13,9 +13,6 @@ public:
 	using V = Vector2<BlockWorldPos_T>;
 
 public:
-	static const QVector<ChunkWorldPos> &inclusive4NeighbourhoodOffsets();
-	static const QVector<ChunkWorldPos> &inclusive9NeighbourhoodOffsets();
-
 	static const ChunkWorldPos invalid;
 
 public:

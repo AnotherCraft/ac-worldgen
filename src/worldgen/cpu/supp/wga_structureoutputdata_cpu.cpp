@@ -9,7 +9,7 @@ bool WGA_StructureOutputData_CPU::SubChunkRecord::shouldUseFlat(int addedRecordC
 	/// When block count <= associativeDataLimit, associativeData is used, otherwise flatData for sunChunkSize is used
 	static constexpr int associativeDataLimit = 512;
 
-	if(!flatData.isEmpty())
+	if(!flatData.empty())
 		return true;
 
 	if(associativeData.size() + addedRecordCount > associativeDataLimit) {
