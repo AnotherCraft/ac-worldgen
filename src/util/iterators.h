@@ -1,11 +1,8 @@
 #pragma once
 
 #include <functional>
-
-#include <QVector>
-#include <QList>
-#include <QSet>
-#include <QVarLengthArray>
+#include <vector>
+#include <unordered_set>
 
 #define eachx(expr) each([&] (const auto &x) { expr; })
 #define mapx(expr) map([&] (const auto &x) { return expr; })
@@ -43,25 +40,16 @@ public:
 public:
 	template<typename = void>
 	auto toList() {
-		QList<T> r;
+		std::vector<T> r;
 		while(impl.has())
-			r += take();
-
-		return r;
-	}
-
-	template<qsizetype n>
-	auto toVarLengthArray() {
-		QVarLengthArray<T, n> r;
-		while(impl.has())
-			r += take();
+			r.push_back(take());
 
 		return r;
 	}
 
 	template<typename = void>
 	auto toSet() {
-		QSet<T> r;
+		std::unordered_set<T> r;
 		while(impl.has())
 			r += take();
 

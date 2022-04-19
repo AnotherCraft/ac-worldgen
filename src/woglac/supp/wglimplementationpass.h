@@ -71,11 +71,11 @@ private:
 	void componentNodeCommonPart(WGLSymbol *sym, WoglacParser::ComponentNodeStatementCommonPartContext *ctx, WGLSymbol *component, DependencyList &deps, const std::function<void(WGLAPIContext &ctx, WGA_ComponentNode::Config &cfg)> &cfgFunc);
 
 private:
-	ExpressionResult functionCall(const QString &functionName, const QVector <ExpressionResult> &args, antlr4::ParserRuleContext *ctx);
-	ExpressionResult binaryOperation(const QString &op, const ExpressionResult &a, const ExpressionResult &b, antlr4::ParserRuleContext *ctx);
+	ExpressionResult functionCall(const std::string &functionName, const std::vector<ExpressionResult> &args, antlr4::ParserRuleContext *ctx);
+	ExpressionResult binaryOperation(const std::string &op, const ExpressionResult &a, const ExpressionResult &b, antlr4::ParserRuleContext *ctx);
 
 private:
 	VOXParser voxParser_;
-	QVector <BlockWorldPos> componentIncludePositions_;
+	std::vector<BlockWorldPos> componentIncludePositions_;
 };
 

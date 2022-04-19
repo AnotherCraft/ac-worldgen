@@ -45,7 +45,7 @@ public:
 
 private:
 	using StructureRec = WGA_StructureOutputDataRecord_CPU;
-	using StructureRecPtr = QSharedPointer<StructureRec>;
+	using StructureRecPtr = std::shared_ptr<StructureRec>;
 
 private:
 	struct SpawnRec {

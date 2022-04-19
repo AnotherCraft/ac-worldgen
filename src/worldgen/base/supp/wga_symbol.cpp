@@ -18,12 +18,11 @@ bool WGA_Symbol::isContextual() const {
 	return false;
 }
 
-QVariant WGA_Symbol::pragma(const QString &name) const {
-	ASSERT(pragmas_.contains(name));
-	return pragmas_[name];
+WGA_Symbol::PragmaValue WGA_Symbol::pragma(const std::string &name) const {
+	return pragmas_.at(name);
 }
 
-void WGA_Symbol::setPragma(const QString &name, const QVariant &value) {
+void WGA_Symbol::setPragma(const std::string &name, const PragmaValue &value) {
 	// Only allow setting existing pargmas
 	ASSERT(pragmas_.contains(name));
 	pragmas_[name] = value;
@@ -31,5 +30,5 @@ void WGA_Symbol::setPragma(const QString &name, const QVariant &value) {
 
 void WGA_Symbol::setPragmas(const WGA_Symbol::PragmaList &pragmas) {
 	for(auto it = pragmas.begin(), end = pragmas.end(); it != end; it++)
-		setPragma(it.key(), it.value());
+		setPragma(it->first, it->second);
 }

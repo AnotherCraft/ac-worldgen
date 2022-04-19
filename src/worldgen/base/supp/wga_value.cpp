@@ -1,12 +1,12 @@
 #include "wga_value.h"
 
-const QHash<QString, WGA_Value::ValueType> WGA_Value::typesByName{
+const std::unordered_map<std::string, WGA_Value::ValueType> WGA_Value::typesByName{
 #define I(A, name) {#name, WGA_Value::ValueType::name},
 	WGA_TYPES(I, _)
 #undef I
 };
 
-const QHash<WGA_Value::ValueType, QString> WGA_Value::typeNames{
+const std::unordered_map<WGA_Value::ValueType, std::string> WGA_Value::typeNames{
 #define I(A, name) {WGA_Value::ValueType::name, #name},
 	WGA_TYPES(I, _)
 #undef I

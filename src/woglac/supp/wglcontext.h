@@ -1,5 +1,9 @@
 #pragma once
 
+#include <unordered_set>
+#include <unordered_map>
+#include <vector>
+
 // Must place before everything else because of antlr
 #include "wglinclude.h"
 
@@ -10,7 +14,7 @@ class WGLContext {
 
 public:
 	using APICommand = std::function<void(WGLAPIContext &)>;
-	using DependencyList = QSet<WGLSymbol *>;
+	using DependencyList = std::unordered_set<WGLSymbol *>;
 
 public:
 	WGLContext();
@@ -30,7 +34,7 @@ public:
 	void addApiCmd(WGLSymbol *definingSymbol, const DependencyList &dependencies, const APICommand &cmd);
 	void checkCircularDependencies();
 
-	inline const QVector<APICommand> &apiCommands() {
+	inline const auto &apiCommands() {
 		return resolvedApiCmds_;
 	}
 
@@ -45,12 +49,12 @@ private:
 	void markSymbolDefined(WGLSymbol *s);
 
 private:
-	QList<UnresolvedAPICmd> unresolvedApiCmds_;
-	QVector<APICommand> resolvedApiCmds_;
-	QSet<WGLSymbol *> definedSymbols_;
+	std::vector<UnresolvedAPICmd> unresolvedApiCmds_;
+	std::vector<APICommand> resolvedApiCmds_;
+	std::unordered_set<WGLSymbol *> definedSymbols_;
 
 	/// List of what api cmds depend on a given symbol
-	QMultiHash<WGLSymbol *, int> symbolApiCmdDependents_;
+	std::unordered_multimap<WGLSymbol *, int> symbolApiCmdDependents_;
 
 };
 

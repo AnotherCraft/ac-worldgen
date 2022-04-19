@@ -12,7 +12,7 @@ public:
 	using T = typename WGA_ValueRec_CPU<type>::T;
 
 public:
-	QSharedPointer<WGA_DataRecord_CPU> handle;
+	std::shared_ptr<WGA_DataRecord_CPU> handle;
 	T *data = nullptr;
 	int size = 0;
 	int flag = 0;

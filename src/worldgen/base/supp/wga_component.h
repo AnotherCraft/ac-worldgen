@@ -1,6 +1,8 @@
 #pragma once
 
-#include <QString>
+#include <unordered_map>
+#include <vector>
+#include <string>
 
 #include "wga_grammarsymbol.h"
 #include "wga_value.h"
@@ -10,7 +12,7 @@ class WGA_Component : public WGA_GrammarSymbol {
 public:
 	/// Areas are used for ensuring that various structures do not overlap
 	struct Area {
-		QString name;
+		std::string name;
 		WGA_Value *startPos = nullptr; ///< Component-local position
 		WGA_Value *endPos = nullptr; ///< Component-local position
 	};
@@ -19,7 +21,7 @@ public:
 	struct Blocks {
 		WGA_Value *startPos = nullptr; ///< Component-local position
 		WGA_Value *endPos = nullptr; ///< Component-local position, can be null
-		QVector<BlockWorldPos> positions; ///< Alternative to startPos/endPos
+		std::vector<BlockWorldPos> positions; ///< Alternative to startPos/endPos
 
 		WGA_Value *block = nullptr;
 	};
@@ -31,8 +33,11 @@ public:
 	virtual SymbolType symbolType() const override;
 
 public:
-	inline const auto nodes(const QString &name) const {
-		return nodesByGroup_.value(name);
+	inline const auto nodes(const std::string &name) const {
+		if(auto r = nodesByGroup_.find(name); r != nodesByGroup_.end())
+			return r->second;
+
+		return std::vector<WGA_ComponentNode *>{};
 	}
 
 	inline const auto &nodes() const {
@@ -54,10 +59,10 @@ public:
 	void addBlocks(const Blocks &area);
 
 private:
-	QHash<QString, QVector<WGA_ComponentNode *>> nodesByGroup_;
-	QVector<WGA_ComponentNode *> nodes_;
-	QList<Area> areas_;
-	QList<Blocks> blockAreas_;
+	std::unordered_map<std::string, std::vector<WGA_ComponentNode *>> nodesByGroup_;
+	std::vector<WGA_ComponentNode *> nodes_;
+	std::vector<Area> areas_;
+	std::vector<Blocks> blockAreas_;
 
 };
 

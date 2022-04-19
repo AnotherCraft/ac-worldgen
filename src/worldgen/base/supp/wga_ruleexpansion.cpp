@@ -2,7 +2,7 @@
 
 #include "wga_rule.h"
 
-WGA_RuleExpansion::WGA_RuleExpansion(WGA_Rule *rule, WGA_Component *component, const QString &node) {
+WGA_RuleExpansion::WGA_RuleExpansion(WGA_Rule *rule, WGA_Component *component, const std::string &node) {
 	setDestription("(rule expansion)");
 
 	ASSERT(rule);
@@ -12,14 +12,14 @@ WGA_RuleExpansion::WGA_RuleExpansion(WGA_Rule *rule, WGA_Component *component, c
 	node_ = node;
 
 	static const PragmaList pg{
-		{"priority",         1},
-		{"probabilityRatio", 100}
+		{"priority",         1.0f},
+		{"probabilityRatio", 100.0f}
 	};
 	pragmas_ = pg;
 
 	// rule -> false; Has the lowest priority by default
 	if(!component_)
-		setPragma("priority", 9999);
+		setPragma("priority", 9999.0f);
 }
 
 WGA_Symbol::SymbolType WGA_RuleExpansion::symbolType() const {

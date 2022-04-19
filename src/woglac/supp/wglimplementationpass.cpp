@@ -61,17 +61,17 @@ void WGLImplementationPass::enterRuleExpansionStatement(WoglacParser::RuleExpans
 
 	WGLSymbol *component = ctx->component ? lookupIdentifier(ctx->component, false) : nullptr;
 	if(component && component->symbolType() != SymbolType::Component)
-		throw WGLError(QStringLiteral("Symbol '%1' is not a structure component.").arg(component->fullName()), ctx->component);
+		throw WGLError(std::format("Symbol '{}' is not a structure component.", component->fullName()), ctx->component);
 
-	const QString node = WGLUtils::identifier(ctx->node);
+	const std::string node = WGLUtils::identifier(ctx->node);
 
-	QList < QPair < QString, QVariant >> pragmaSets;
+	std::vector<std::pair<std::string, WGA_Symbol::PragmaValue >> pragmaSets;
 
 	if(ctx->priority)
-		pragmaSets += {"priority", WGLUtils::numericLiteral(ctx->priority)};
+		pragmaSets.push_back({"priority", WGLUtils::numericLiteral(ctx->priority)});
 
 	if(ctx->probabilityRatio)
-		pragmaSets += {"probabilityRatio", WGLUtils::numericLiteral(ctx->probabilityRatio)};
+		pragmaSets.push_back({"probabilityRatio", WGLUtils::numericLiteral(ctx->probabilityRatio)});
 
 	ctx_->addApiCmd(sym, {parentRule, component}, [sym, parentRule, component, node, pragmaSets](WGLAPIContext &ctx) {
 		WGA_RuleExpansion *rex = ctx.api->newRuleExpansion(ctx.map<WGA_Rule>(parentRule), component ? ctx.map<WGA_Component>(component) : nullptr, node);
@@ -105,11 +105,11 @@ void WGLImplementationPass::enterBiomeParamDefinition(WoglacParser::BiomeParamDe
 void WGLImplementationPass::enterBiomeConditionStatement(WoglacParser::BiomeConditionStatementContext *ctx) {
 	WGLSymbol *target = lookupIdentifier(ctx->target, false)->effectiveTarget();
 	if(target->symbolType() != SymbolType::Biome)
-		throw WGLError(QStringLiteral("Symbol '%1' is not a biome (biome condition syntax used).").arg(target->fullName()), ctx->target);
+		throw WGLError(std::format("Symbol '{}' is not a biome (biome condition syntax used).", target->fullName()), ctx->target);
 
 	WGLSymbol *param = lookupIdentifier(ctx->param, false);
 	if(param->symbolType() != SymbolType::FieldVariable)
-		throw WGLError(QStringLiteral("Symbol '%1' is not a field variable (biome condition syntax used).").arg(param->fullName()), ctx->param);
+		throw WGLError(std::format("Symbol '{}' is not a field variable (biome condition syntax used).", param->fullName()), ctx->param);
 
 	const float mean = WGLUtils::numericLiteral(ctx->mean);
 	const float dev = WGLUtils::numericLiteral(ctx->dev);
@@ -127,7 +127,7 @@ void WGLImplementationPass::enterVariableDefinition(WoglacParser::VariableDefini
 	auto val = expression(ctx->val, deps);
 
 	if(val.type != sym->valueType)
-		throw WGLError(QStringLiteral("Variable '%1' is defined as type '%2' but the value expression is of type '%3'.").arg(sym->fullName(), WGA_Value::typeNames[sym->valueType], WGA_Value::typeNames[val.type]), ctx);
+		throw WGLError(std::format("Variable '{}' is defined as type '{}' but the value expression is of type '{}'.", sym->fullName(), WGA_Value::typeNames.at(sym->valueType), WGA_Value::typeNames.at(val.type)), ctx);
 
 	ctx_->addApiCmd(sym, deps, [sym, val](WGLAPIContext &ctx) {
 		ctx.addSymbolMapping(sym, val.func(ctx));
@@ -146,7 +146,7 @@ void WGLImplementationPass::enterParamDefinition(WoglacParser::ParamDefinitionCo
 	auto defaultValue = ctx->defaultValue ? expression(ctx->defaultValue, deps) : ExpressionResult();
 
 	if(defaultValue.type != sym->valueType)
-		throw WGLError(QStringLiteral("Structure parameter '%1' is defined as type '%2' but the default value expression is of type '%3'.").arg(sym->fullName(), WGA_Value::typeNames[sym->valueType], WGA_Value::typeNames[defaultValue.type]), ctx);
+		throw WGLError(std::format("Structure parameter '{}' is defined as type '{}' but the default value expression is of type '{}'.", sym->fullName(), WGA_Value::typeNames.at(sym->valueType), WGA_Value::typeNames.at(defaultValue.type)), ctx);
 
 	ctx_->addApiCmd(sym, deps, [sym, parent, defaultValue](WGLAPIContext &ctx) {
 		ctx.addSymbolMapping(sym, ctx.api->grammarSymbolParam(ctx.map<WGA_GrammarSymbol>(parent), sym->name(), sym->valueType, defaultValue.func ? defaultValue.func(ctx) : nullptr));
@@ -167,13 +167,13 @@ void WGLImplementationPass::enterParamSetStatement(WoglacParser::ParamSetStateme
 
 	if(targetType == SymbolType::Biome) {
 		WGLSymbol *param = lookupIdentifier(ctx->param, false);
-		deps += param;
+		deps.insert(param);
 
 		if(param->symbolType() != SymbolType::BiomeParam)
-			throw WGLError(QStringLiteral("Symbol '%1' is not a biome param.").arg(param->fullName()), ctx);
+			throw WGLError(std::format("Symbol '{}' is not a biome param.", param->fullName()), ctx);
 
 		if(val.type != param->valueType)
-			throw WGLError(QStringLiteral("Biome param '%1' is of type '%2', but type '%3' provided in the specification for biome '%4'.").arg(param->fullName(), WGA_Value::typeNames[param->valueType], WGA_Value::typeNames[val.type], target->fullName()), ctx);
+			throw WGLError(std::format("Biome param '{}' is of type '{}', but type '{}' provided in the specification for biome '{}'.", param->fullName(), WGA_Value::typeNames.at(param->valueType), WGA_Value::typeNames.at(val.type), target->fullName()), ctx);
 
 		ctx_->addApiCmd(nullptr, deps, [target, param, val](WGLAPIContext &ctx) {
 			ctx.map<WGA_Biome>(target)->setParam(ctx.map<WGA_Value>(param), val.func(ctx));
@@ -182,18 +182,16 @@ void WGLImplementationPass::enterParamSetStatement(WoglacParser::ParamSetStateme
 	else if(targetType == SymbolType::Rule || targetType == SymbolType::RuleExpansion ||
 	        targetType == SymbolType::Component) {
 		if(ctx->param->id.size() != 1)
-			throw WGLError(QStringLiteral("Extended identifier params are only allowed for biomes."), ctx->param);
+			throw WGLError("Extended identifier params are only allowed for biomes.", ctx->param);
 
-		const QString paramName = WGLUtils::identifier(ctx->param->id[0]);
+		const std::string paramName = WGLUtils::identifier(ctx->param->id[0]);
 
 		ctx_->addApiCmd(nullptr, deps, [target, paramName, val](WGLAPIContext &ctx) {
 			ctx.map<WGA_GrammarSymbol>(target)->setParam(paramName, val.func(ctx));
 		});
 	}
 	else
-		throw WGLError(
-			QStringLiteral("Param set statements are allowed only for biome, rule, component and rule expansion targets."),
-			ctx);
+		throw WGLError("Param set statements are allowed only for biome, rule, component and rule expansion targets.", ctx);
 }
 
 void WGLImplementationPass::enterComponentNodeStatement(WoglacParser::ComponentNodeStatementContext *ctx) {
@@ -241,11 +239,11 @@ void WGLImplementationPass::enterComponentIncludeStatementBlockParam(
 	DependencyList deps;
 	const auto val = expression(ctx->val, deps);
 
-	QVector <BlockWorldPos> poss;
+	std::vector<BlockWorldPos> poss;
 	for(const VOXParser::VoxelPos &vp: voxParser_.voxels().value(id))
-		poss += BlockWorldPos(vp.x, vp.y, vp.z);
+		poss.push_back(BlockWorldPos(vp.x, vp.y, vp.z));
 
-	if(poss.isEmpty())
+	if(poss.empty())
 		return;
 
 	ctx_->addApiCmd(nullptr, deps, [component, val, poss](WGLAPIContext &ctx) {
@@ -265,15 +263,15 @@ void WGLImplementationPass::enterComponentIncludeStatementNodeParam(WoglacParser
 
 	componentIncludePositions_.clear();
 	for(const VOXParser::VoxelPos &vp: voxParser_.voxels().value(id))
-		componentIncludePositions_ += BlockWorldPos(vp.x, vp.y, vp.z);
+		componentIncludePositions_.push_back(BlockWorldPos(vp.x, vp.y, vp.z));
 
-	if(componentIncludePositions_.isEmpty())
+	if(componentIncludePositions_.empty())
 		return;
 
 	DependencyList deps;
 
 	WGLSymbol *node = componentNodeDeclaration(ctx->com, currentScope());
-	componentNodeCommonPart(node, ctx->com, component, deps, [pos = componentIncludePositions_.first()](WGLAPIContext &ctx, WGA_ComponentNode::Config &cfg) {
+	componentNodeCommonPart(node, ctx->com, component, deps, [pos = *componentIncludePositions_.begin()](WGLAPIContext &ctx, WGA_ComponentNode::Config &cfg) {
 		cfg.position = ctx.api->constFloat3(pos.to<float>());
 	});
 
@@ -281,7 +279,7 @@ void WGLImplementationPass::enterComponentIncludeStatementNodeParam(WoglacParser
 }
 
 void WGLImplementationPass::exitComponentIncludeStatementNodeParam(WoglacParser::ComponentIncludeStatementNodeParamContext *ctx) {
-	if(componentIncludePositions_.isEmpty())
+	if(componentIncludePositions_.empty())
 		return;
 
 	popScope(ctx->com);
@@ -289,7 +287,7 @@ void WGLImplementationPass::exitComponentIncludeStatementNodeParam(WoglacParser:
 	WGLSymbol *sourceNode = ctx_->astSymbolMapping[ctx->com];
 
 	// Create all the other nodes, copy pragmas
-	componentIncludePositions_.removeFirst();
+	componentIncludePositions_.erase(componentIncludePositions_.begin());
 	for(const BlockWorldPos &pos: componentIncludePositions_) {
 		WGLSymbol *node = componentNodeDeclaration(ctx->com, currentScope(), false);
 		DependencyList deps;
@@ -308,7 +306,7 @@ void WGLImplementationPass::enterComponentAreaStatement(WoglacParser::ComponentA
 	WGLSymbol *component = lookupIdentifier(ctx->target, false)->effectiveTarget();
 
 	if(component->symbolType() != SymbolType::Component)
-		throw WGLError(QStringLiteral("Node statements are allowed only in structure components."), ctx);
+		throw WGLError("Node statements are allowed only in structure components.", ctx);
 
 	DependencyList deps{
 		component
@@ -316,7 +314,7 @@ void WGLImplementationPass::enterComponentAreaStatement(WoglacParser::ComponentA
 	ExpressionResult startPos = positionExpression(ctx->startPos, deps);
 	ExpressionResult endPos = positionExpression(ctx->endPos, deps);
 
-	const QString name = WGLUtils::identifier(ctx->name);
+	const std::string name = WGLUtils::identifier(ctx->name);
 
 	ctx_->addApiCmd(nullptr, deps, [component, startPos, endPos, name](WGLAPIContext &ctx) {
 		WGA_Component::Area area;
@@ -332,7 +330,7 @@ void WGLImplementationPass::enterComponentBlockStatement(WoglacParser::Component
 	WGLSymbol *component = lookupIdentifier(ctx->target, false)->effectiveTarget();
 
 	if(component->symbolType() != SymbolType::Component)
-		throw WGLError(QStringLiteral("Node statements are allowed only in structure components."), ctx);
+		throw WGLError("Node statements are allowed only in structure components.", ctx);
 
 	DependencyList deps{
 		component
@@ -342,8 +340,7 @@ void WGLImplementationPass::enterComponentBlockStatement(WoglacParser::Component
 
 	ExpressionResult value = expression(ctx->val, deps);
 	if(value.type != ValueType::Block)
-		throw WGLError(
-			QStringLiteral("Structure block statement value expression must be of type 'Block', but '%1' was provided.").arg(WGA_Value::typeNames[value.type]), ctx->val);
+		throw WGLError(std::format("Structure block statement value expression must be of type 'Block', but '%1' was provided.", WGA_Value::typeNames.at(value.type)), ctx->val);
 
 	ctx_->addApiCmd(nullptr, deps, [component, startPos, endPos, value](WGLAPIContext &ctx) {
 		WGA_Component::Blocks area;
@@ -363,9 +360,7 @@ void WGLImplementationPass::enterStructureConditionStatement(WoglacParser::Struc
 	WGLSymbol *target = lookupIdentifier(ctx->target, false)->effectiveTarget();
 
 	if(!allowedSymbolTypes.contains(+target->symbolType()))
-		throw WGLError(
-			QStringLiteral("Conditions using this syntax are allowed only in structure rules/components/rule expansions."),
-			ctx);
+		throw WGLError("Conditions using this syntax are allowed only in structure rules/components/rule expansions.", ctx);
 
 	DependencyList deps{
 		target
@@ -373,8 +368,7 @@ void WGLImplementationPass::enterStructureConditionStatement(WoglacParser::Struc
 	ExpressionResult val = expression(ctx->cond, deps);
 
 	if(val.type != ValueType::Bool)
-		throw WGLError(QStringLiteral("Condition statement requires expression of type Bool, %1 provided").arg(
-			WGA_Value::typeNames[val.type]), ctx);
+		throw WGLError(std::format("Condition statement requires expression of type Bool, {} provided", WGA_Value::typeNames.at(val.type)), ctx);
 
 	ctx_->addApiCmd(nullptr, deps, [target, val](WGLAPIContext &ctx) {
 		WGA_GrammarSymbol::Condition cond;
@@ -387,9 +381,9 @@ void WGLImplementationPass::enterStructureConditionStatement(WoglacParser::Struc
 void WGLImplementationPass::enterPragmaStatement(WoglacParser::PragmaStatementContext *ctx) {
 	WGLSymbol *target = lookupIdentifier(ctx->id, true)->effectiveTarget();
 
-	const QString name = WGLUtils::identifier(ctx->id->id.back());
+	const std::string name = WGLUtils::identifier(ctx->id->id.back());
 
-	QVariant value;
+	WGA_Symbol::PragmaValue value;
 	if(auto v = ctx->valId)
 		value = WGLUtils::identifier(v);
 
@@ -456,7 +450,7 @@ WGLImplementationPass::expression(WoglacParser::OrExpressionContext *ctx, WGLImp
 
 WGLImplementationPass::ExpressionResult
 WGLImplementationPass::expression(WoglacParser::ComparisonExpressionContext *ctx, WGLImplementationPass::DependencyList &deps) {
-	static const QHash<QString, QString> ops{
+	static const std::unordered_map<std::string, std::string> ops{
 		{"==", "compEq"},
 		{"!=", "compNeq"},
 		{"<=", "compLeq"},
@@ -468,7 +462,7 @@ WGLImplementationPass::expression(WoglacParser::ComparisonExpressionContext *ctx
 	if(auto e = ctx->base)
 		return expression(e, deps);
 
-	return functionCall(ops[WGLUtils::identifier(ctx->op)], {expression(ctx->left, deps), expression(ctx->right, deps)}, ctx);
+	return functionCall(ops.at(WGLUtils::identifier(ctx->op)), {expression(ctx->left, deps), expression(ctx->right, deps)}, ctx);
 }
 
 WGLImplementationPass::ExpressionResult WGLImplementationPass::expression(WoglacParser::AddExpressionContext *ctx, WGLImplementationPass::DependencyList &deps) {
@@ -486,19 +480,19 @@ WGLImplementationPass::ExpressionResult WGLImplementationPass::expression(Woglac
 }
 
 WGLImplementationPass::ExpressionResult WGLImplementationPass::expression(WoglacParser::UnaryExpressionContext *ctx, WGLImplementationPass::DependencyList &deps) {
-	static const QHash<QString, QString> ops{
+	static const std::unordered_map<std::string, std::string> ops{
 		{"-", "inverse"},
 		{"!", "logNot"},
-		{"+", QString()}
+		{"+", {}}
 	};
 
 	if(auto e = ctx->base)
 		return expression(e, deps);
 
-	const QString funcName = ops.value(WGLUtils::identifier(ctx->op));
+	const std::string funcName = ops.at(WGLUtils::identifier(ctx->op));
 	auto e = ctx->arg;
 
-	if(!funcName.isEmpty())
+	if(!funcName.empty())
 		return functionCall(funcName, {expression(e, deps)}, ctx);
 	else
 		return expression(e, deps);
@@ -531,7 +525,7 @@ WGLImplementationPass::ExpressionResult WGLImplementationPass::expression(Woglac
 	Q_UNUSED(deps);
 
 	if(auto e = ctx->block) {
-		const QString uid = QString::fromStdString(e->getText());
+		const std::string uid = e->getText();
 
 		/*BlockType *block = game()->managers.blockType.getBlockTypeByUID(uid);
 		if(!block)
@@ -561,17 +555,17 @@ WGLImplementationPass::ExpressionResult WGLImplementationPass::expression(Woglac
 	if(ctx->base)
 		return expression(ctx->base, deps);
 
-	QVector <ExpressionResult> args{expression(ctx->arg1, deps)};
+	std::vector<ExpressionResult> args{expression(ctx->arg1, deps)};
 	for(const ExpressionResult &arg: iterator(ctx->args->args).mapx(
 		expression(x, deps)))
-		args += arg;
+		args.push_back(arg);
 
 	return functionCall(WGLUtils::identifier(ctx->id), args, ctx);
 }
 
 WGLImplementationPass::ExpressionResult WGLImplementationPass::expression(WoglacParser::ExtendedIdentifierContext *ctx, WGLImplementationPass::DependencyList &deps) {
 	WGLSymbol *sym = lookupIdentifier(ctx, false);
-	deps += sym;
+	deps.insert(sym);
 
 	switch(sym->symbolType()) {
 
@@ -584,7 +578,7 @@ WGLImplementationPass::ExpressionResult WGLImplementationPass::expression(Woglac
 			WGLSymbol *scp = currentScope()->effectiveTarget();
 
 			if(symp != scp)
-				throw WGLError(QStringLiteral("Local variable '%1' cannot be used outside of the rule/structure scope '%2'").arg(sym->fullName(), symp->fullName()), ctx);
+				throw WGLError(std::format("Local variable '{}' cannot be used outside of the rule/structure scope '{}'", sym->fullName(), symp->fullName()), ctx);
 
 			return EXPRESSION_RESULT(sym->valueType, ctx.map<WGA_Value>(sym));
 		}
@@ -596,25 +590,25 @@ WGLImplementationPass::ExpressionResult WGLImplementationPass::expression(Woglac
 			return EXPRESSION_RESULT(ValueType::ComponentNode, ctx.api->constComponentNode(ctx.map<WGA_ComponentNode>(sym)));
 
 		default:
-			throw WGLError(QStringLiteral("Symbol '%1' of type '%2' cannot be used as a value.").arg(sym->fullName(), WGLUtils::getSymbolTypeName(sym->symbolType())), ctx);
+			throw WGLError(std::format("Symbol '{}' of type '{}' cannot be used as a value.", sym->fullName(), WGLUtils::getSymbolTypeName(sym->symbolType())), ctx);
 
 	}
 }
 
 WGLImplementationPass::ExpressionResult WGLImplementationPass::expression(WoglacParser::BiomeParamExpressionContext *ctx, WGLImplementationPass::DependencyList &deps) {
-	const QString method = WGLUtils::identifier(ctx->method);
+	const std::string method = WGLUtils::identifier(ctx->method);
 
 	WGLSymbol *param = lookupIdentifier(ctx->param, false);
 	if(param->symbolType() != SymbolType::BiomeParam)
-		throw WGLError(QStringLiteral("Symbol '%1' is not a biome param.").arg(param->fullName()), ctx->param);
+		throw WGLError(std::format("Symbol '{}' is not a biome param.", param->fullName()), ctx->param);
 
-	deps += param;
+	deps.insert(param);
 
-	QVector <WGLImplementationPass::ExpressionResult> args;
-	args += EXPRESSION_RESULT(param->valueType, ctx.map<WGA_Value>(param));
+	std::vector<WGLImplementationPass::ExpressionResult> args;
+	args.push_back(EXPRESSION_RESULT(param->valueType, ctx.map<WGA_Value>(param)));
 
 	for(auto e: ctx->params)
-		args += expression(e, deps);
+		args.push_back(expression(e, deps));
 
 	return functionCall("biomeParam_" + WGLUtils::identifier(ctx->method), args, ctx);
 }
@@ -623,7 +617,7 @@ WGLImplementationPass::ExpressionResult WGLImplementationPass::positionExpressio
 	if(auto e = ctx->vec) {
 		ExpressionResult val = expression(e, deps);
 		if(val.type != ValueType::Float3)
-			throw WGLError(QStringLiteral("Position expression must evaluate to Float3 (type %1 provided).").arg(WGA_Value::typeNames[val.type]), ctx);
+			throw WGLError(std::format("Position expression must evaluate to Float3 (type {} provided).", WGA_Value::typeNames.at(val.type)), ctx);
 
 		return val;
 	}
@@ -634,33 +628,31 @@ WGLImplementationPass::ExpressionResult WGLImplementationPass::positionExpressio
 void WGLImplementationPass::componentNodeCommonPart(WGLSymbol *sym, WoglacParser::ComponentNodeStatementCommonPartContext *ctx, WGLSymbol *component, DependencyList &deps, const std::function<void(WGLAPIContext &, WGA_ComponentNode::Config &)> &cfgFunc) {
 	ASSERT(component->symbolType() == SymbolType::Component);
 
-	const QString group = ctx->group ? WGLUtils::identifier(ctx->group) : QString();
+	const std::string group = ctx->group ? WGLUtils::identifier(ctx->group) : std::string{};
 
 	WGLSymbol *rule = ctx->rule_ ? lookupIdentifier(ctx->rule_, false) : nullptr;
 	if(rule && rule->symbolType() != SymbolType::Rule)
-		throw WGLError(QStringLiteral("Node expansion target must be a rule."), ctx);
+		throw WGLError("Node expansion target must be a rule.", ctx);
 
 	static const auto oriStr = [](const WoglacParser::ComponentNodeOrientationExpressionContext *ctx) {
-		return ctx ? WGLUtils::identifier(ctx->dir) + WGLUtils::identifier(ctx->sign) : QString();
+		return ctx ? WGLUtils::identifier(ctx->dir) + WGLUtils::identifier(ctx->sign) : std::string{};
 	};
 
-	QList < QPair < QString, QVariant >> pragmaSets;
+	std::vector<std::pair<QString, QVariant >> pragmaSets;
 
 	if(ctx->prop && ctx->prop->notAdjacent)
-		pragmaSets += {"adjacent", false};
+		pragmaSets.push_back({"adjacent", false});
 
 	if(ctx->prop && ctx->prop->horizontalEdge)
-		pragmaSets += {"horizontalEdge", true};
+		pragmaSets.push_back({"horizontalEdge", true});
 
 	if(ctx->prop && ctx->prop->verticalEdge)
-		pragmaSets += {"verticalEdge", true};
+		pragmaSets.push_back({"verticalEdge", true});
 
-	const BlockOrientation orientation =
-		ctx->prop ? BlockOrientation(oriStr(ctx->prop->ori), oriStr(ctx->prop->ori2)) :
-		BlockOrientation();
+	const BlockOrientation orientation = ctx->prop ? BlockOrientation(oriStr(ctx->prop->ori), oriStr(ctx->prop->ori2)) : BlockOrientation();
 
 	if(rule)
-		deps += rule;
+		deps.insert(rule);
 
 	ctx_->addApiCmd(sym, deps, [=](WGLAPIContext &ctx) {
 		WGA_ComponentNode::Config cfg;
@@ -682,25 +674,26 @@ void WGLImplementationPass::componentNodeCommonPart(WGLSymbol *sym, WoglacParser
 	});
 }
 
-WGLImplementationPass::ExpressionResult WGLImplementationPass::functionCall(const QString &functionName, const QVector <WGLImplementationPass::ExpressionResult> &args, antlr4::ParserRuleContext *ctx) {
+WGLImplementationPass::ExpressionResult WGLImplementationPass::functionCall(const std::string &functionName, const std::vector<WGLImplementationPass::ExpressionResult> &args, antlr4::ParserRuleContext *ctx) {
 	const WorldGenAPI::Functions &fs = WorldGenAPI::functions();
 
 	if(!fs.nameSet.contains(functionName))
-		throw WGLError(QStringLiteral("Function '%1' does not exist.").arg(functionName), ctx);
+		throw WGLError(std::format("Function '{}' does not exist.", functionName), ctx);
 
 	const QString prototype = WorldGenAPI::Function::composePrototype(functionName, iterator(args).mapx(x.type).toList());
-	const WorldGenAPI::FunctionID fid = fs.prototypeMapping.value(prototype, -1);
 
-	if(fid == -1)
-		throw WGLError(
-			QStringLiteral("Function '%1' does not have overload '%2'.\nAcceptable overloads:\n%3").arg(functionName, prototype, iterator(fs.nameMapping[functionName]).mapx(fs.list[x].prototype).join("\n")), ctx);
+	WorldGenAPI::FunctionID fid;
+	if(const auto i = fs.prototypeMapping.find(prototype); i != fs.prototypeMapping.end())
+		fid = i.second;
+	else
+		throw WGLError(std::format("Function '{}' does not have overload '{}'.\nAcceptable overloads:\n{}", functionName, prototype, iterator(fs.nameMapping.at(functionName)).mapx(fs.list[x].prototype).join("\n")), ctx);
 
-	const QString desc = QString::fromStdString(ctx->getText());
+	const std::string desc = ctx->getText();
 
 	const WorldGenAPI::Function &f = fs.list[fid];
 	return ExpressionResult{
 		[fid, args, desc](WGLAPIContext &ctx) {
-			auto r = ctx.api->function(fid, iterator(args).mapx(x.func(ctx)).toVarLengthArray<6>());
+			auto r = ctx.api->function(fid, iterator(args).mapx(x.func(ctx)).toList());
 			r->setDestription(desc);
 			return r;
 		},
@@ -708,7 +701,7 @@ WGLImplementationPass::ExpressionResult WGLImplementationPass::functionCall(cons
 	};
 }
 
-WGLImplementationPass::ExpressionResult WGLImplementationPass::binaryOperation(const QString &op, const WGLImplementationPass::ExpressionResult &a, const WGLImplementationPass::ExpressionResult &b, antlr4::ParserRuleContext *ctx) {
+WGLImplementationPass::ExpressionResult WGLImplementationPass::binaryOperation(const std::string &op, const WGLImplementationPass::ExpressionResult &a, const WGLImplementationPass::ExpressionResult &b, antlr4::ParserRuleContext *ctx) {
 	static const QHash<QString, QString> ops{
 		{"+", "add"},
 		{"-", "sub"},

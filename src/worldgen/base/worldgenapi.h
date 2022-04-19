@@ -1,9 +1,11 @@
 #pragma once
 
 #include <functional>
-
-#include <QObject>
-#include <QSet>
+#include <set>
+#include <vector>
+#include <map>
+#include <unordered_map>
+#include <unordered_set>
 
 #include "supp/wga_value.h"
 #include "supp/wga_biome.h"
@@ -138,11 +140,10 @@
   FUNC(compGeq, 2, ((T, a, Float), (ARG, b, 1)), (T, r, Bool), DIM_MAX_ARGS_2, (INLINE, arg1 >= arg2), "") \
 
 class WorldGenAPI {
-	Q_GADGET
 
 public:
 	using Seed = uint32_t;
-	using FunctionArgs = QVarLengthArray<WGA_Value *, 6>;
+	using FunctionArgs = std::vector<WGA_Value *>;
 	using FunctionID = int;
 	using Type = WGA_Value::ValueType;
 
@@ -152,11 +153,11 @@ public:
 	public:
 		FunctionArgument() {}
 
-		inline FunctionArgument(Type type, const QString &name) : type(type), name(name) {}
+		inline FunctionArgument(Type type, const std::string &name) : type(type), name(name) {}
 
 	public:
 		Type type;
-		QString name;
+		std::string name;
 
 	};
 	struct Function {
@@ -166,36 +167,36 @@ public:
 		FunctionID id;
 
 		/// Name of the function
-		QString name;
+		std::string name;
 
 		/// name(Arg1, Arg2, ...)
-		QString prototype;
+		std::string prototype;
 
 		/// For documentation purposes
-		QString description;
+		std::string description;
 
-		QString section;
+		std::string section;
 
 	public:
-		QVector <FunctionArgument> arguments;
+		std::vector<FunctionArgument> arguments;
 		FunctionArgument returnValue;
 
 	public:
-		static QString composePrototype(const QString &functionName, const QVector <WGA_Value::ValueType> &argTypes);
+		static std::string composePrototype(const std::string &functionName, const std::vector<WGA_Value::ValueType> &argTypes);
 
 	};
 	struct Functions {
 
 	public:
-		QList<Function> list;
-		QMap <QString, FunctionID> prototypeMapping;
-		QSet<QString> nameSet;
-		QStringList nameList; ///< Ordered name list
-		QMap <QString, QVector<FunctionID>> nameMapping;
+		std::vector<Function> list;
+		std::map<std::string, FunctionID> prototypeMapping;
+		std::unordered_set<std::string> nameSet;
+		std::vector<std::string> nameList; ///< Ordered name list
+		std::map<std::string, std::vector<FunctionID>> nameMapping;
 
 	public:
 		/// Generates documentation in markdown format
-		void generateDocumentation(QTextStream &ts) const;
+		void generateDocumentation() const;
 
 	};
 	static const Functions &functions();
@@ -212,11 +213,11 @@ public:
 		seed_ = set;
 	}
 
-	inline const QHash<QString, BlockID> &blockUIDMapping() const {
+	inline const std::unordered_map<std::string, BlockID> &blockUIDMapping() const {
 		return blockUIDMapping_;
 	}
 
-	virtual void setBlockUIDMapping(const QHash<QString, BlockID> &set) {
+	virtual void setBlockUIDMapping(const std::unordered_map<std::string, BlockID> &set) {
 		blockUIDMapping_ = set;
 	}
 
@@ -232,18 +233,18 @@ public:
 		return constBlock(BlockID(0));
 	}
 
-	inline WGA_Value *constBlock(const QString &uid) {
-		const BlockID id = blockUIDMapping_.value(uid, -1);
-		if(id == -1)
-			throw std::exception(QStringLiteral("Block UID '%1' not defined.").arg(uid).toStdString().c_str());
+	inline WGA_Value *constBlock(const std::string &uid) {
+		const auto r = blockUIDMapping_.find(uid);
+		if(r == blockUIDMapping_.end())
+			throw std::exception(std::format("Block UID '{}' not defined.", uid).c_str());
 
-		return constBlock(id);
+		return constBlock(r->second);
 	}
 
 public:
 	virtual WGA_Biome *newBiome() = 0;
 	virtual WGA_Rule *newRule() = 0;
-	virtual WGA_RuleExpansion *newRuleExpansion(WGA_Rule *rule, WGA_Component *component, const QString &node) = 0;
+	virtual WGA_RuleExpansion *newRuleExpansion(WGA_Rule *rule, WGA_Component *component, const std::string &node) = 0;
 	virtual WGA_Component *newComponent() = 0;
 	virtual WGA_ComponentNode *newComponentNode() = 0;
 
@@ -256,11 +257,11 @@ public:
 	virtual WGA_Value *proxy(WGA_Value *v) = 0;
 
 	/// Returns value representing given grammar symbol param.
-	virtual WGA_Value *grammarSymbolParam(WGA_GrammarSymbol *sym, const QString &name, WGA_Value::ValueType type, WGA_Value *defaultValue) = 0;
+	virtual WGA_Value *grammarSymbolParam(WGA_GrammarSymbol *sym, const std::string &name, WGA_Value::ValueType type, WGA_Value *defaultValue) = 0;
 
 private:
 	WorldGenSeed seed_ = 0;
-	QHash<QString, BlockID> blockUIDMapping_;
+	std::unordered_map<std::string, BlockID> blockUIDMapping_;
 
 };
 

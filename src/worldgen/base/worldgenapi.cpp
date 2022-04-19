@@ -1,6 +1,9 @@
 #include "worldgenapi.h"
 
-#include <math.h>
+#include <iostream>
+#include <cmath>
+#include <set>
+#include <format>
 
 #include "util/iterators.h"
 #include "util/macroutils.h"
@@ -13,12 +16,12 @@ const WorldGenAPI::Functions &WorldGenAPI::functions() {
 		const auto finalize = [&]() {
 			f.prototype = Function::composePrototype(f.name, iterator(f.arguments).mapx(x.type).toList());
 			f.id = fs.list.size();
-			fs.list += f;
+			fs.list.push_back(f);
 			fs.prototypeMapping[f.prototype] = f.id;
 			if(!fs.nameSet.contains(f.name))
-				fs.nameList += f.name;
-			fs.nameSet += f.name;
-			fs.nameMapping[f.name] += f.id;
+				fs.nameList.push_back(f.name);
+			fs.nameSet.insert(f.name);
+			fs.nameMapping[f.name].push_back(f.id);
 		};
 
 #include "worldgen/util/wg_macro_def.h"
@@ -60,50 +63,50 @@ WorldGenAPI::~WorldGenAPI() {
 
 }
 
-QString WorldGenAPI::Function::composePrototype(const QString &functionName, const QVector <WGA_Value::ValueType> &argTypes) {
-	return QStringLiteral("%1(%2)").arg(functionName, iterator(argTypes).mapx(WGA_Value::typeNames[x]).join(", "));
+std::string WorldGenAPI::Function::composePrototype(const std::string &functionName, const std::vector<WGA_Value::ValueType> &argTypes) {
+	return std::format("{}({})", functionName, iterator(argTypes).mapx(WGA_Value::typeNames.at(x)).join(", "));
 }
 
-void WorldGenAPI::Functions::generateDocumentation(QTextStream &ts) const {
+void WorldGenAPI::Functions::generateDocumentation() const {
 	const WorldGenAPI::Functions &functions = WorldGenAPI::functions();
 
-	QString section;
+	std::string section;
 
-	for(const QString &fn: functions.nameList) {
-		const QString s = list[functions.nameMapping[fn].first()].section;
+	for(const std::string &fn: functions.nameList) {
+		const std::string s = list[functions.nameMapping.at(fn)[0]].section;
 		if(section != s) {
 			section = s;
-			ts << QStringLiteral("# %1 \n\n").arg(s);
+			std::cout << "# " << s << "\n\n";
 		}
 
-		ts << QStringLiteral("## `%1` \n").arg(fn);
+		std::cout << "## `" << fn << "` \n";
 
-		QMap <QString, QString> prototypesByDescription;
-		QSet < QString > mentionedPrototypes;
+		std::unordered_map<std::string, std::string> prototypesByDescription;
+		std::set<std::string> mentionedPrototypes;
 
-		for(const WorldGenAPI::FunctionID fid: functions.nameMapping[fn]) {
+		for(const WorldGenAPI::FunctionID fid: functions.nameMapping.at(fn)) {
 			const WorldGenAPI::Function &f = functions.list[fid];
-			const QString prototype = QStringLiteral("%1 %2(%3)\n").arg(
-				WGA_Value::typeNames[f.returnValue.type],
-				f.name,
-				iterator(f.arguments).mapx(QStringLiteral("%1 %2").arg(WGA_Value::typeNames[x.type], x.name)).join(", ")
+			const std::string prototype = std::format("{} {}({})\n",
+			                                          WGA_Value::typeNames.at(f.returnValue.type),
+			                                          f.name,
+			                                          iterator(f.arguments).mapx(std::format("{} {}", WGA_Value::typeNames.at(x.type), x.name)).join(", ")
 			);
 
 			if(mentionedPrototypes.contains(prototype))
 				continue;
 
-			mentionedPrototypes += prototype;
+			mentionedPrototypes.insert(prototype);
 			prototypesByDescription[f.description] += prototype;
 		}
 
 		for(auto it = prototypesByDescription.begin(), end = prototypesByDescription.end(); it != end; it++) {
-			ts << "```WOGLAC\n";
-			ts << it.value(); // Prototypes
-			ts << "```\n";
+			std::cout << "```WOGLAC\n";
+			std::cout << it->second; // Prototypes
+			std::cout << "```\n";
 
-			ts << "\n";
-			ts << it.key(); // Description
-			ts << "\n";
+			std::cout << "\n";
+			std::cout << it->first; // Description
+			std::cout << "\n";
 		}
 	}
 }

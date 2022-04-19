@@ -21,7 +21,7 @@ public:
 
 };
 
-using WGA_StructureOutputData_CPUPtr = QSharedPointer<WGA_StructureOutputData_CPU>;
+using WGA_StructureOutputData_CPUPtr = std::shared_ptr<WGA_StructureOutputData_CPU>;
 
 
 class WGA_StructureOutputDataRecord_CPU : public WGA_DataRecord_CPU {

@@ -57,7 +57,7 @@ WGA_DataCache_CPU::DataRecordPtr WGA_DataCache_CPU::get(const WGA_DataRecord_CPU
 			isHit = true;
 		}
 		else {
-			cd.wipKeys += key;
+			cd.wipKeys.insert(key);
 
 			if(cd.generatedKeys.contains(key))
 				isMiss = true;
@@ -79,7 +79,7 @@ WGA_DataCache_CPU::DataRecordPtr WGA_DataCache_CPU::get(const WGA_DataRecord_CPU
 			QMutexLocker _ml(&cd.mutex);
 			cd.cache.insert(key, result, result->dataSize());
 			cd.generatedKeys.insert(key);
-			cd.wipKeys.remove(key);
+			cd.wipKeys.erase(key);
 			cd.wipKeyCondition.wakeAll();
 		}
 	}
@@ -106,39 +106,6 @@ WGA_DataCache_CPU::DataRecordPtr WGA_DataCache_CPU::get(const WGA_DataRecord_CPU
 }
 
 void WGA_DataCache_CPU::reportHitRate() {
-	if(0) {
-		struct S {
-			Key key;
-			RecordStats value;
-		};
-
-		QMap<int, S> m;
-		{
-			QReadLocker _ml(&recordStatsMutex_);
-			forit(recordStats_) m.insert(-it.value().missCount, S{it.key(), it.value()});
-		}
-
-		for(const S &s: m) {
-			const bool isValue = dynamic_cast<WGA_Value_CPU *>(s.key.symbol);
-			const bool isCrossSampled = isValue ? static_cast<WGA_Value_CPU *>(s.key.symbol)->isCrossSampled(0) : false;
-			qDebug()
-				<< " | MISS " << QString::number(s.value.missCount).rightJustified(6)
-				<< " | HIT " << QString::number(s.value.hitCount).rightJustified(6)
-				<< " | MIR " <<
-				QString::number(static_cast<double>(s.value.missCount) / (s.value.missCount + s.value.hitCount) * 100, 'f',
-				                2).rightJustified(6) + " %"
-				<< " | GEN " << QString::number(s.value.genCount).rightJustified(6)
-				<< " | " << QString(QMetaEnum::fromType<WGA_Value::Dimensionality>().valueToKey(
-				+(isValue ? static_cast<WGA_Value_CPU *>(s.key.symbol)->dimensionality()
-				          : WGA_Value::Dimensionality::Unknown))).leftJustified(6)
-				<< " | " << (s.key.symbol->isContextual() ? "CTX" : "   ")
-				<< " | " << (isCrossSampled ? "CS" : "  ")
-				<< " | " << s.key.symbol->description() << s.key.subKey;
-		}
-
-		qDebug() << "\n\n\n\n";
-	}
-
 	for(int i = 0; i < +CacheType::_count; i++) {
 		const int missCount = missCount_[i], hitCount = hitCount_[i];
 

@@ -1,6 +1,6 @@
 #include "wglsymbol.h"
 
-#include <QSet>
+#include <regex>
 
 #include "util/enumutils.h"
 
@@ -9,21 +9,25 @@
 
 using Type = WGLSymbol::Type;
 
-WGLSymbol::WGLSymbol(WGLContext *context, WGLSymbol *parent, const QString &name, Type type, antlr4::ParserRuleContext *declarationAst_)
+WGLSymbol::WGLSymbol(WGLContext *context, WGLSymbol *parent, const std::string &name, Type type, antlr4::ParserRuleContext *declarationAst_)
 	: context_(*context), parent_(parent), name_(name), type_(type), declarationAst_(declarationAst_) {
 	ASSERT(!context_.astSymbolMapping.contains(declarationAst_));
 
 	fullName_ = name_;
 
-	if(fullName_.isEmpty())
-		fullName_ = !parent ? QStringLiteral("(root)") : QStringLiteral("(anonymous %1)").arg(
-			WGLUtils::getSymbolTypeName(type));
+	if(fullName_.empty())
+		fullName_ = !parent ? std::string("(root)") : std::format("(anonymous {})", WGLUtils::getSymbolTypeName(type));
 
 	desc_ = fullName_;
-	if(declarationAst_ && declarationAst_->start && declarationAst_->stop && declarationAst_->start->getTokenSource())
-		desc_ += ": " + QString::fromStdString(declarationAst_->start->getTokenSource()->getInputStream()->getText(antlr4::misc::Interval(declarationAst_->start->getStartIndex(), declarationAst_->stop->getStopIndex()))).trimmed().replace('\n', ' ');
+	if(declarationAst_ && declarationAst_->start && declarationAst_->stop && declarationAst_->start->getTokenSource()) {
+		static const std::regex rx1("^\\s+|\\s+$"), rx2("\n");
+		std::string str = declarationAst_->start->getTokenSource()->getInputStream()->getText(antlr4::misc::Interval(declarationAst_->start->getStartIndex(), declarationAst_->stop->getStopIndex()));
+		str = std::regex_replace(str, rx1, "");
+		str = std::regex_replace(str, rx2, " ");
+		desc_.append(": " + str);
+	}
 
-	ASSERT(!desc_.isEmpty());
+	ASSERT(!desc_.empty());
 
 	context_.allSymbols += this;
 
@@ -31,19 +35,19 @@ WGLSymbol::WGLSymbol(WGLContext *context, WGLSymbol *parent, const QString &name
 		context_.astSymbolMapping[declarationAst_] = this;
 
 	if(parent_) {
-		parent_->children_ += this;
+		parent_->children_.push_back(this);
 
-		if(!name_.isEmpty()) {
+		if(!name_.empty()) {
 			auto &child = parent_->childrenByName_[name_];
 
 			if(child)
-				throw WGLError(QStringLiteral("Symbol '%1' redefinition.").arg(child->fullName()), declarationAst_);
+				throw WGLError(std::format("Symbol '{}' redefinition.", child->fullName()), declarationAst_);
 
 			child = this;
 		}
 
-		if(!parent_->fullName().isEmpty())
-			fullName_ = QStringLiteral("%1.%2").arg(parent_->fullName(), name_);
+		if(!parent_->fullName().empty())
+			fullName_ = std::format("{}.{}", parent_->fullName(), name_);
 	}
 
 	effectiveTarget_ = this;
@@ -58,13 +62,14 @@ WGLSymbol *WGLSymbol::resolveIdentifier(const antlr4::Token *id, antlr4::ParserR
 	return resolveIdentifier(WGLUtils::identifier(id), ctx, throwError);
 }
 
-WGLSymbol *WGLSymbol::resolveIdentifier(const QString &id, antlr4::ParserRuleContext *ctx, bool throwError) {
-	WGLSymbol *result = childrenByName_.value(id);
+WGLSymbol *WGLSymbol::resolveIdentifier(const std::string &id, antlr4::ParserRuleContext *ctx, bool throwError) {
+	if(const auto f = childrenByName_.find(id); f != childrenByName_.end())
+		return f->second;
 
-	if(!result && throwError)
-		throw WGLError(QStringLiteral("Failed to resolve identifier '%1' in scope '%2'").arg(id, fullName()), ctx);
+	if(throwError)
+		throw WGLError(std::format("Failed to resolve identifier '{}' in scope '{}'", id, fullName()), ctx);
 
-	return result;
+	return nullptr;
 }
 
 WGLSymbol::~WGLSymbol() {

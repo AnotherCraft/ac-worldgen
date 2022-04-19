@@ -4,11 +4,11 @@ WGLFile::WGLFile() {
 
 }
 
-WGLFile::WGLFile(const QString &fileName) {
+WGLFile::WGLFile(const std::string &fileName) {
 	setFileName(fileName);
 }
 
-void WGLFile::setFileName(const QString &fileName) {
+void WGLFile::setFileName(const std::string &fileName) {
 	if(fileName_ == fileName)
 		return;
 

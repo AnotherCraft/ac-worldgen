@@ -18,7 +18,7 @@ class ANTLRErrorHandler : public antlr4::BaseErrorListener {
 		Q_UNUSED(offendingSymbol)
 		Q_UNUSED(e)
 		Q_UNUSED(charPositionInLine);
-		throw WGLError(QStringLiteral("Syntax error: %1 on line %2 (%3)").arg(msg.c_str(), QString::number(line), QString::number(charPositionInLine)), nullptr);
+		throw WGLError(std::format("Syntax error: {} on line {} ({})", msg.c_str(), line, charPositionInLine), nullptr);
 	}
 };
 
@@ -34,17 +34,16 @@ void WGLCompiler::clear() {
 }
 
 void WGLCompiler::addFile(const WGLFilePtr &file) {
-	ASSERT(!files_.contains(file));
-	files_ += file;
+	files_.push_back(file);
 }
 
-QString WGLCompiler::lookupFile(const QString &filename, antlr4::ParserRuleContext *ctx) {
-	for(const QString &dirn : lookupDirectories_) {
-		if(QFile f(QDir(dirn).absoluteFilePath(filename)); f.exists())
+QString WGLCompiler::lookupFile(const std::string &filename, antlr4::ParserRuleContext *ctx) {
+	for(const QString &dirn: lookupDirectories_) {
+		if(ifstream f(dirn + "/" + filename); f.good())
 			return f.fileName();
 	}
 
-	throw WGLError(QStringLiteral("Failed to lookup file '%1'").arg(filename), ctx);
+	throw WGLError(std::format("Failed to lookup file '{}'", filename), ctx);
 }
 
 void WGLCompiler::compile() {
@@ -55,12 +54,12 @@ void WGLCompiler::compile() {
 		// Parse files
 		for(const WGLFilePtr &f: files_) {
 			try {
-				QSharedPointer <WGLModule> m(new WGLModule());
+				auto m = std::make_shared<WGLModule>();
 
 				m->stream.reset(new std::ifstream());
-				m->stream->open(f->fileName().toStdString(), std::ifstream::in);
+				m->stream->open(f->fileName(), std::ifstream::in);
 				if(!m->stream->is_open())
-					qWarning() << "Error opening file" << f->fileName();
+					throw WGLError(std::format("Error opening file '{}'", f->fileName()), nullptr);
 
 				m->input.reset(new antlr4::ANTLRInputStream(*m->stream));
 				m->lexer.reset(new WoglacLexer(m->input.data()));
@@ -75,13 +74,10 @@ void WGLCompiler::compile() {
 				m->parser->addErrorListener(&errHandler);
 				m->ast = m->parser->module();
 
-				modules_ += m;
+				modules_.push_back(m);
 			}
 			catch(const WGLError &e) {
-				qWarning().noquote() << "Error when compiling WOGLAC file " << f->fileName() << ": " << e.message();
-
-				clear();
-				return;
+				throw std::exception(std::format("Error when compiling WOGLAC file '{}': {}", f->fileName(), e.message()));
 			}
 		}
 
@@ -112,14 +108,14 @@ void WGLCompiler::compile() {
 	}
 }
 
-QHash<QString, WGA_Value*> WGLCompiler::construct(WorldGenAPI &api) {
+std::unordered_map<std::string, WGA_Value *> WGLCompiler::construct(WorldGenAPI &api) {
 	WGLAPIContext ctx;
 	ctx.api = &api;
 
 	for(const auto &cmd: context_->apiCommands())
 		cmd(ctx);
 
-	QHash<QString, WGA_Value*> r;
+	std::unordered_map<std::string, WGA_Value *> r;
 	for(WGLSymbol *sym: context_->rootSymbol->childrenByName()) {
 		if(!sym->isExport)
 			continue;

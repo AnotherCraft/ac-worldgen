@@ -1,23 +1,27 @@
 #include "wglutils.h"
 
-#include <QHash>
+#include <unordered_map>
+#include <regex>
 
 #include "util/assert.h"
 #include "util/enumutils.h"
 
 WGLUtils::SymbolType WGLUtils::getSymbolType(const antlr4::Token *val) {
-	static const QHash<QString, SymbolType> tbl{
+	static const std::unordered_map<std::string, SymbolType> tbl{
 		{"namespace", SymbolType::Namespace},
 		{"component", SymbolType::Component},
 		{"rule",      SymbolType::Rule},
 		{"biome",     SymbolType::Biome}
 	};
 
-	return tbl.value(identifier(val), SymbolType::Unknown);
+	if(auto i = tbl.find(identifier(val)); i != tbl.end())
+		return i->second;
+
+	return SymbolType::Unknown;
 }
 
-const QString &WGLUtils::getSymbolTypeName(WGLUtils::SymbolType t) {
-	static QHash<int, QString> data{
+const std::string &WGLUtils::getSymbolTypeName(WGLUtils::SymbolType t) {
+	static std::unordered_map<int, std::string> data{
 		{+SymbolType::Unknown,           "(unknown)"},
 		{+SymbolType::Biome,             "biome"},
 		{+SymbolType::BiomeParam,        "biome param"},
@@ -36,17 +40,19 @@ const QString &WGLUtils::getSymbolTypeName(WGLUtils::SymbolType t) {
 	return data[+t];
 }
 
-QString WGLUtils::identifier(const antlr4::Token *id) {
+std::string WGLUtils::identifier(const antlr4::Token *id) {
 	if(!id)
-		return QString();
+		return {};
 
-	return QString::fromStdString(id->getText());
+	return id->getText();
 }
 
 float WGLUtils::numericLiteral(const antlr4::Token *val) {
-	return QString::fromStdString(val->getText()).remove('~').remove('#').toFloat();
+	static const std::regex rx("[~#]");
+	return std::stof(std::regex_replace(val->getText(), rx, ""));
 }
 
-QString WGLUtils::stringLiteral(const antlr4::Token *val) {
-	return QString::fromStdString(val->getText()).remove('"');
+std::string WGLUtils::stringLiteral(const antlr4::Token *val) {
+	static const std::regex rx("[\"]");
+	return std::regex_replace(val->getText(), rx, "");
 }

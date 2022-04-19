@@ -121,7 +121,7 @@ int main(int argc, char *argv[]) {
 	// Setup WorldGenAPI
 	WorldGenAPI_CPU wgapi;
 	{
-		wgapi.setSeed(WorldGenSeed(seed);
+		wgapi.setSeed(WorldGenSeed(seed));
 
 		// Block mapping
 		blockMapping["block.air"] = blockID_air;
@@ -130,22 +130,22 @@ int main(int argc, char *argv[]) {
 	}
 
 	// Compile source files
-	QHash<QString, WGA_Value *> exports;
+	std::unordered_map<std::string, WGA_Value *> exports;
 	{
 		WGLCompiler wgc;
 
 		wgc.setLookupDirectories(lookupDirs);
 
 		for(const std::string &filename: files)
-			wgc.addFile(WGLFilePtr(new WGLFile(filename)));
+			wgc.addFile(std::make_shared<WGLFile>(filename));
 
 		wgc.compile();
 		exports = wgc.construct(wgapi);
 	}
 
 	if(exportList) {
-		for(auto it = exports.keyValueBegin(), e = exports.keyValueEnd(); it != e; it++)
-			std::cout << std::format("%1: %2\n", it->first, WGA_Value::typeNames[it->second->valueType()]);
+		for(auto it = exports.begin(), e = exports.end(); it != e; it++)
+			std::cout << std::format("%1: %2\n", it->first, WGA_Value::typeNames.at(it->second->valueType()));
 
 		return 0;
 	}
@@ -160,14 +160,15 @@ int main(int argc, char *argv[]) {
 				while(jobs.empty())
 					newJobCondition.wait(lock);
 
-				job = jobs.pop();
+				job = jobs.front();
+				jobs.pop();
 			}
 
 			job();
 
 			{
 				std::unique_lock lock(jobsMutex);
-				runningJobs --;
+				runningJobs--;
 				jobEndCondition.notify_all();
 			}
 		}));
@@ -188,22 +189,25 @@ int main(int argc, char *argv[]) {
 
 			std::string var;
 			std::cin >> var;
-			WGA_Value *val = exports.value(var);
-			if(!val) {
-				qWarning() << "Export does not exist: " << var;
+			const auto valp = exports.find(var);
+			if(valp == exports.end()) {
+				std::unique_lock _l(stdoutMutex);
+				std::cout << "message Export does not exist: " << var << "\n";
 				continue;
 			}
+			WGA_Value *val = valp->second;
 
 			if(val->symbolType() != WGA_Value::SymbolType::Value) {
-				qWarning() << "Export symbol is not a variable";
+				std::unique_lock _l(stdoutMutex);
+				std::cout << "Export symbol is not a variable\n";
 				continue;
 			}
 
 			std::string valueType;
 			std::cin >> valueType;
-			if(WGA_Value::typeNames[val->valueType()] != valueType) {
+			if(WGA_Value::typeNames.at(val->valueType()) != valueType) {
 				std::unique_lock _ul(stdoutMutex);
-				std::cout << std::format("Export '{}' is of type '{}', but '{}' expected.\n", var, WGA_Value::typeNames[val->valueType()], valueType);
+				std::cout << std::format("Export '{}' is of type '{}', but '{}' expected.\n", var, WGA_Value::typeNames.at(val->valueType()), valueType);
 				return 1;
 			}
 
@@ -236,7 +240,8 @@ int main(int argc, char *argv[]) {
 				f = genf.operator ()<WGA_Value::ValueType::Block>();
 
 			else {
-				std::cout >> std::format("Unsupported export value type: {}", WGA_Value::typeNames[val->valueType()]);
+				std::unique_lock _l(stdoutMutex);
+				std::cout << std::format("Unsupported export value type: {}", WGA_Value::typeNames.at(val->valueType()));
 				return 1;
 			}
 
@@ -256,8 +261,11 @@ int main(int argc, char *argv[]) {
 			}
 		}
 
-		else
-			qWarning() << "Unknown message type:" << type;
+		else {
+			std::unique_lock _l(stdoutMutex);
+			std::cout << "Unknown message type:" << type << "\n";
+			return 1;
+		}
 	}
 
 	// Wait for all jobs to end

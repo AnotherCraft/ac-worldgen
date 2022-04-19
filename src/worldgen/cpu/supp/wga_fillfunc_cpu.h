@@ -40,7 +40,7 @@ WGA_DataCache_CPU::DataRecordPtr wga_dimFillCtor(const WGA_DataRecord_CPU::Key &
 	else
 		rec = new(rec) DataRecord();
 
-	const QSharedPointer<WGA_DataRecord_CPU> recPtr(rec, dtor);
+	const std::shared_ptr<WGA_DataRecord_CPU> recPtr(rec, dtor);
 
 	DataHandle handle{recPtr, rec->data, cnt, cnt - 1};
 

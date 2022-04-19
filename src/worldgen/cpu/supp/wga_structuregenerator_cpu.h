@@ -1,7 +1,7 @@
 #pragma once
 
-#include <QHash>
-#include <QStack>
+#include <vector>
+#include <stack>
 
 #include "util/matrix.h"
 #include "util/blockorientation.h"
@@ -63,7 +63,7 @@ public:
 		WGA_Value::Dimensionality getInputParamDimensionality(WGA_Symbol *symbol);
 
 	private:
-		static QString paramKey(const QString &paramName, WGA_Value::ValueType type);
+		static std::string paramKey(const std::string &paramName, WGA_Value::ValueType type);
 
 	private:
 		WorldGenAPI_CPU *api_ = nullptr;
@@ -73,19 +73,19 @@ public:
 		BlockTransformMatrix localToWorldMatrix_;
 
 	private:
-		QHash<WGA_DataRecord_CPU::Key, WGA_DataRecord_CPU::Ptr> dataCache_;
-		QHash<const WGA_Value *, WGA_Value::Dimensionality> dimensionalityCache_;
+		std::unordered_map<WGA_DataRecord_CPU::Key, WGA_DataRecord_CPU::Ptr> dataCache_;
+		std::unordered_map<const WGA_Value *, WGA_Value::Dimensionality> dimensionalityCache_;
 
 		/// List of all passed param inputs and outputs
-		QHash<QString, WGA_Value *> paramInputs_, paramOutputs_;
+		std::unordered_map<std::string, WGA_Value *> paramInputs_, paramOutputs_;
 
 		/// Maps param utility as defined in the WGA_GrammarSymbol paramDeclares to param keys
-		QHash<WGA_Symbol *, QString> paramKeyMapping_;
+		std::unordered_map<WGA_Symbol *, std::string> paramKeyMapping_;
 
 		/// Temporary symbols, are deleted with the context
-		QVector<WGA_Symbol *> temporarySymbols_;
+		std::vector<WGA_Symbol *> temporarySymbols_;
 
-		QHash<WGA_Symbol *, WGA_Value::Dimensionality> inputParamDimensionalityCache_;
+		std::unordered_map<WGA_Symbol *, WGA_Value::Dimensionality> inputParamDimensionalityCache_;
 
 		Seed seed_ = 0;
 
@@ -105,8 +105,8 @@ public:
 
 	public:
 		DataContext currentExpansionData;
-		QVector<WGA_Rule::CompiledExpansion> possibleExpansions;
-		QVector<RuleExpansionNode> possibleExpansionNodes;
+		std::vector<WGA_Rule::CompiledExpansion> possibleExpansions;
+		std::vector<RuleExpansionNode> possibleExpansionNodes;
 		int currentExpansionIndex = -1;
 		int currentExpansionNodeIndex = -1;
 
@@ -152,8 +152,7 @@ private:
 
 private:
 	/// Returns false on failBranch
-	bool
-	expandRule(WGA_Rule *rule, const BlockWorldPos &localOrigin, const BlockOrientation &orientation, DataContext *data);
+	bool expandRule(WGA_Rule *rule, const BlockWorldPos &localOrigin, const BlockOrientation &orientation, DataContext *data);
 
 	/// Returns true if the rule was truly expanded
 	bool processExpansion(RuleExpansionState &res);
@@ -170,17 +169,18 @@ private:
 	static BlockID blockValue(WGA_Value *val, const BlockWorldPos &samplePoint);
 
 private:
-	QStack<State> stateStack_;
-	QVector<Area> areas_;
-	QVector<ComponentExpansionStatePtr> componentExpansions_;
-	QVector<RuleExpansionStatePtr> ruleExpansions_;
+	std::stack<State> stateStack_;
+	std::vector<Area> areas_;
+	std::vector<ComponentExpansionStatePtr> componentExpansions_;
+	std::vector<RuleExpansionStatePtr> ruleExpansions_;
 	int currentlyExpandedRuleIx_ = -1; ///< Index to ruleExpansion to the current rule being processed
 
 private:
 	int expansionCount_ = 0, maxExpansionCount_ = 16384; ///< Limits how many expansion attempts can be made
 	int maxStackDepth_ = 512;
 	Seed seed_;
-	QHash<QString, int> areaNameMapping_; ///< Mapping are names to int to speed up comparison
+	std::unordered_map<std::string, int>
+	areaNameMapping_; ///< Mapping are names to int to speed up comparison
 
 private:
 	DataContext *currentDataContext_ = nullptr;

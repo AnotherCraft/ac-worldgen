@@ -470,8 +470,8 @@ void WGA_NoiseFuncs_CPU::poissonDisc2DBool(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU
 
 	const std::function< WGA_DataRecord_CPU::Ptr(Key key)> recCtor = [&api, &radius, &recCtor, baseSeed](Key key) {
 		const auto getRecord = [&](int x, int y) {
-			return api->getDataRecord(
-				WGA_DataRecord_CPU::Key{key.symbol, key.origin + BlockWorldPos(x * chunkSize, y * chunkSize, 0), 1}, recCtor).staticCast<WGA_DataRecordT_CPU<Rec>>();
+			auto rec = api->getDataRecord(WGA_DataRecord_CPU::Key{key.symbol, key.origin + BlockWorldPos(x * chunkSize, y * chunkSize, 0), 1}, recCtor);
+			return std::static_pointer_cast<WGA_DataRecordT_CPU<Rec>>(rec);
 		};
 
 
@@ -541,10 +541,10 @@ void WGA_NoiseFuncs_CPU::poissonDisc2DBool(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU
 			rec.nodes += node;
 		}
 
-		return recPtr.staticCast<WGA_DataRecord_CPU>();
+		return std::static_pointer_cast<WGA_DataRecord_CPU>(recPtr);
 	};
 
-	const RecPtr rec = api->getDataRecord(WGA_DataRecord_CPU::Key{key.symbol, key.origin, 1}, recCtor).staticCast<WGA_DataRecordT_CPU<Rec>>();
+	const RecPtr rec = std::static_pointer_cast<WGA_DataRecordT_CPU<Rec>>(api->getDataRecord(WGA_DataRecord_CPU::Key{key.symbol, key.origin, 1}, recCtor));
 
 	for(int i = 0; i < result.size; i++)
 		result[i] = false;

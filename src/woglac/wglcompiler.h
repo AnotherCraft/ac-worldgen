@@ -1,6 +1,7 @@
 #pragma once
 
-#include <QString>
+#include <vector>
+#include <string>
 
 #include "pch.h"
 
@@ -14,7 +15,7 @@ public:
 
 	void clear();
 
-	inline void setLookupDirectories(const QStringList &set) {
+	inline void setLookupDirectories(const std::vector<std::string> &set) {
 		lookupDirectories_ = set;
 	}
 
@@ -22,22 +23,22 @@ public:
 	void addFile(const WGLFilePtr &file);
 
 	// Tries to locate a specified file, throws if failed
-	QString lookupFile(const QString &filename, antlr4::ParserRuleContext *ctx);
+	QString lookupFile(const std::string &filename, antlr4::ParserRuleContext *ctx);
 
 public:
 	void compile();
 
 public:
 	// Calls appropriate WorldGenAPI functions to construct the worldgen pipeline, returns exports
-	QHash<QString, WGA_Value*> construct(WorldGenAPI &api);
+	std::unordered_map<std::string, WGA_Value*> construct(WorldGenAPI &api);
 
 private:
-	QList<WGLFilePtr> files_;
+	std::vector<WGLFilePtr> files_;
 	std::shared_ptr<WGLContext> context_;
-	QStringList lookupDirectories_;
+	std::vector<std::string> lookupDirectories_;
 
 private:
-	QList<QSharedPointer<WGLModule>> modules_;
+	std::vector<std::shared_ptr<WGLModule>> modules_;
 
 };
 

@@ -34,9 +34,7 @@ WGLSymbol *WGLPass::lookupIdentifier(WoglacParser::ExtendedIdentifierContext *ei
 	}
 
 	if(!result)
-		throw WGLError(
-			QStringLiteral("Failed to lookup identifier '%1' in scope '%2'.").arg(QString::fromStdString(baseId->getText()),
-			                                                                      currentScope()->fullName()), eid);
+		throw WGLError(std::format("Failed to lookup identifier '{}' in scope '{}'.", baseId->getText(), currentScope()->fullName()), eid);
 
 	auto end = eid->id.end();
 	if(skipLast)
@@ -56,9 +54,7 @@ WGLPass::checkTargetTypeMatch(antlr4::Token *targetType, WGLSymbol *effectiveTar
 	SymbolType tt = WGLUtils::getSymbolType(targetType);
 
 	if(tt != effectiveTarget->symbolType())
-		throw WGLError(QStringLiteral("Specified target type '%1' doesn't match with target symbol '%2' type '%3'.").arg(
-			WGLUtils::getSymbolTypeName(tt), effectiveTarget->fullName(),
-			WGLUtils::getSymbolTypeName(effectiveTarget->symbolType())), ctx);
+		throw WGLError(std::format("Specified target type '{}' doesn't match with target symbol '{}' type '{}'.", WGLUtils::getSymbolTypeName(tt), effectiveTarget->fullName(), WGLUtils::getSymbolTypeName(effectiveTarget->symbolType())), ctx);
 }
 
 void WGLPass::popScope(antlr4::ParserRuleContext *ctx) {
@@ -68,19 +64,17 @@ void WGLPass::popScope(antlr4::ParserRuleContext *ctx) {
 	currentScope_.pop();
 }
 
-WGLSymbol *
-WGLPass::componentNodeDeclaration(WoglacParser::ComponentNodeStatementCommonPartContext *ctx, WGLSymbol *directTarget,
-                                  bool useDeclarationAST) {
+WGLSymbol *WGLPass::componentNodeDeclaration(WoglacParser::ComponentNodeStatementCommonPartContext *ctx, WGLSymbol *directTarget, bool useDeclarationAST) {
 	WGLSymbol *effectiveTarget = directTarget->effectiveTarget();
 
 	if(effectiveTarget->symbolType() != SymbolType::Component)
 		throw WGLError("Nodes cannot be defined outside structure components.", ctx);
 
-	const QString baseName = WGLUtils::identifier(ctx->group);
-	QString name = baseName;
+	const std::string baseName = WGLUtils::identifier(ctx->group);
+	std::string name = baseName;
 	int i = 2;
-	while(!name.isEmpty() && directTarget->childrenByName().contains(name))
-		name = QStringLiteral("%1_%2").arg(baseName, QString::number(i++));
+	while(!name.empty() && directTarget->childrenByName().contains(name))
+		name = std::format("{}_{}", baseName, std::to_string(i++));
 
 	return new WGLSymbol(ctx_, directTarget, name, SymbolType::ComponentNode, useDeclarationAST ? ctx : nullptr);
 }

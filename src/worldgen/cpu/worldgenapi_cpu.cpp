@@ -60,33 +60,33 @@ WGA_Value *WorldGenAPI_CPU::constComponentNode(WGA_ComponentNode *val) {
 
 WGA_Biome *WorldGenAPI_CPU::newBiome() {
 	WGA_Biome *biome = new WGA_Biome();
-	symbols_ += biome;
-	biomes_ += biome;
+	symbols_.push_back(biome);
+	biomes_.push_back(biome);
 	return biome;
 }
 
 WGA_Rule *WorldGenAPI_CPU::newRule() {
 	WGA_Rule *rule = new WGA_Rule();
-	symbols_ += rule;
+	symbols_.push_back(rule);
 	return rule;
 }
 
-WGA_RuleExpansion *WorldGenAPI_CPU::newRuleExpansion(WGA_Rule *rule, WGA_Component *component, const QString &node) {
+WGA_RuleExpansion *WorldGenAPI_CPU::newRuleExpansion(WGA_Rule *rule, WGA_Component *component, const std::string &node) {
 	WGA_RuleExpansion *ruleex = new WGA_RuleExpansion(rule, component, node);
 	rule->addExpansion(ruleex);
-	symbols_ += ruleex;
+	symbols_.push_back(ruleex);
 	return ruleex;
 }
 
 WGA_Component *WorldGenAPI_CPU::newComponent() {
 	WGA_Component *component = new WGA_Component();
-	symbols_ += component;
+	symbols_.push_back(component);
 	return component;
 }
 
 WGA_ComponentNode *WorldGenAPI_CPU::newComponentNode() {
 	WGA_ComponentNode *node = new WGA_ComponentNode();
-	symbols_ += node;
+	symbols_.push_back(node);
 	return node;
 }
 
@@ -168,7 +168,7 @@ WGA_Biome &WorldGenAPI_CPU::getChunkBiome(const BlockWorldPos &origin_) {
 	return *r.data;
 }
 
-QSharedPointer<WGA_DataRecordT_CPU<WGA_BiomeData_CPU>> WorldGenAPI_CPU::getBiomeData(const BlockWorldPos &origin_) {
+std::shared_ptr<WGA_DataRecordT_CPU<WGA_BiomeData_CPU>> WorldGenAPI_CPU::getBiomeData(const BlockWorldPos &origin_) {
 	using Rec = WGA_DataRecordT_CPU<WGA_BiomeData_CPU>;
 	const BlockWorldPos origin = BlockWorldPos(origin_.x(), origin_.y(), 0);
 
@@ -181,7 +181,7 @@ QSharedPointer<WGA_DataRecordT_CPU<WGA_BiomeData_CPU>> WorldGenAPI_CPU::getBiome
 	};
 
 	auto rec = getDataRecord(WGA_DataRecord_CPU::Key(&biomeDataSymbol_, origin, 0), ctor);
-	auto r = rec.staticCast<Rec>();
+	auto r = std::static_pointer_cast<Rec>(rec);
 
 	return r;
 }
@@ -190,9 +190,8 @@ void WorldGenAPI_CPU::reportCacheHitRate() {
 	dataCache_.reportHitRate();
 }
 
-WGA_Value *WorldGenAPI_CPU::grammarSymbolParam(WGA_GrammarSymbol *sym, const QString &name, WGA_Value::ValueType type,
-                                               WGA_Value *defaultValue) {
-	QSharedPointer<WGA_Value *> v(new WGA_Value *());
+WGA_Value *WorldGenAPI_CPU::grammarSymbolParam(WGA_GrammarSymbol *sym, const std::string &name, WGA_Value::ValueType type, WGA_Value *defaultValue) {
+	auto v = std::make_shared<WGA_Value *>();
 	const auto dimFunc = [v]() {
 		ASSERT(structureGen);
 

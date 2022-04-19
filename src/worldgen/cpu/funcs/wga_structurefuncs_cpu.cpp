@@ -103,7 +103,7 @@ void WGA_StructureFuncs_CPU::_spawn(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key k
 	const auto ctor = [&api, &seed, &spawnFunc](const WGA_DataRecord_CPU::Key &key) {
 		ZoneScopedN("genStructure");
 
-		StructureRecPtr rec(new StructureRec());
+		auto rec =std::make_shared<StructureRec>();
 
 		SpawnList spawnList;
 		spawnFunc(api, key, spawnList);
@@ -125,7 +125,7 @@ void WGA_StructureFuncs_CPU::_spawn(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key k
 			rec->dataSizeV += output->dataSize;
 		}
 
-		return rec.staticCast<WGA_DataRecord_CPU>();
+		return std::static_pointer_cast<WGA_DataRecord_CPU>(rec);
 	};
 
 
@@ -133,7 +133,7 @@ void WGA_StructureFuncs_CPU::_spawn(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key k
 	const ChunkWorldPos_T maxRadiusV = static_cast<ChunkWorldPos_T>(maxRadius.constValue());
 	for(const ChunkWorldPos &pos: vectorIterator(originChunk - maxRadiusV, originChunk + maxRadiusV)) {
 		const WGA_DataRecord_CPU::Key recKey(key.symbol, BlockWorldPos::fromChunkBlockIndex(pos, 0, 0), 1);
-		const StructureRecPtr rec = api->getDataRecord(recKey, ctor).staticCast<StructureRec>();
+		const StructureRecPtr rec = std::static_pointer_cast<StructureRec>(api->getDataRecord(recKey, ctor));
 
 		for(const WGA_StructureOutputData_CPUPtr &struc: qAsConst(rec->data)) {
 			ZoneScopedN("procStructureData");

@@ -1,6 +1,8 @@
 #pragma once
 
-#include <QMutex>
+#include <unordered_map>
+#include <vector>
+#include <mutex>
 
 #include "pch.h"
 #include "wga_grammarsymbol.h"
@@ -14,12 +16,12 @@ public:
 		bool mirror = false;
 	};
 	struct SamePriorityCompiledExpansionList {
-		QVector<CompiledExpansion> expansions;
+		std::vector<CompiledExpansion> expansions;
 		float probabilityRatioSum = 0;
 	};
 	struct CompiledExpansionList {
 		/// Expansions are grouped by priority into lists.
-		QMap<float, SamePriorityCompiledExpansionList> subLists;
+		std::unordered_map<float, SamePriorityCompiledExpansionList> subLists;
 	};
 
 public:
@@ -37,10 +39,10 @@ public:
 	void addExpansion(WGA_RuleExpansion *expansion);
 
 private:
-	QList<WGA_RuleExpansion *> expansions_;
+	std::vector<WGA_RuleExpansion *> expansions_;
 	CompiledExpansionList compiledExpansions_;
 	bool compiledReady_ = false;
-	QMutex compilingMutex_;
+	std::mutex compilingMutex_;
 
 };
 

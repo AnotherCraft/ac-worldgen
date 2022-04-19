@@ -17,8 +17,8 @@ WGA_Symbol::SymbolType WGA_Component::symbolType() const {
 
 void WGA_Component::addNode(WGA_ComponentNode *node) {
 	node->setParentComponent(this);
-	nodesByGroup_[node->config().group] += node;
-	nodes_ += node;
+	nodesByGroup_[node->config().group].push_back(node);
+	nodes_.push_back(node);
 }
 
 void WGA_Component::addArea(const WGA_Component::Area &area) {
@@ -28,7 +28,7 @@ void WGA_Component::addArea(const WGA_Component::Area &area) {
 	ASSERT(area.startPos->valueType() == WGA_Value::ValueType::Float3);
 	ASSERT(area.endPos->valueType() == WGA_Value::ValueType::Float3);
 
-	areas_ += area;
+	areas_.push_back(area);
 }
 
 void WGA_Component::addBlocks(const WGA_Component::Blocks &area) {
@@ -38,5 +38,5 @@ void WGA_Component::addBlocks(const WGA_Component::Blocks &area) {
 	ASSERT(!area.endPos || area.endPos->valueType() == WGA_Value::ValueType::Float3);
 	ASSERT(area.startPos || !area.endPos);
 
-	blockAreas_ += area;
+	blockAreas_.push_back(area);
 }

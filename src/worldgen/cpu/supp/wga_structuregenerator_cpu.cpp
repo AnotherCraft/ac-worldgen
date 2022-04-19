@@ -25,9 +25,9 @@ void WGA_StructureGenerator_CPU::setup(WGA_Rule *entryRule, const BlockWorldPos 
 	SCOPE_EXIT(unbind());
 
 	areas_.clear();
-	componentExpansions_.clear();
-	ruleExpansions_.clear();
-	stateStack_.clear();
+	componentExpansions_ = {};
+	ruleExpansions_ = {};
+	stateStack_ = {};
 
 	seed_ = WorldGen_CPU_Utils::hash(origin.to<uint32_t>(), seed);
 	currentlyExpandedRuleIx_ = 0;
@@ -194,7 +194,7 @@ bool WGA_StructureGenerator_CPU::expandRule(WGA_Rule *rule, const BlockWorldPos 
 
 	RuleExpansionStatePtr res(new RuleExpansionState());
 	currentDataContext_ = &res->ruleData;
-	ruleExpansions_ += res;
+	ruleExpansions_.push_back(res);
 
 	res->ruleData.load(&api_, data, rule);
 	res->ruleData.localToWorldMatrix() *= BlockTransformMatrix::translation(localOrigin);
@@ -214,33 +214,32 @@ bool WGA_StructureGenerator_CPU::expandRule(WGA_Rule *rule, const BlockWorldPos 
 	// Create possible expansion list
 	// Go from the lowest priority to the highest, add expansions
 	const WGA_Rule::CompiledExpansionList &cel = rule->compiledExpansionList();
-	for(const WGA_Rule::SamePriorityCompiledExpansionList &spcel: qAsConst(cel.subLists)) {
-		QVarLengthArray<const WGA_Rule::CompiledExpansion *, 8> unprocessedExpansions;
+	for(const auto &ci: cel.subLists) {
+		std::vector<const WGA_Rule::CompiledExpansion *> unprocessedExpansions;
 		//QVector<WGA_Rule::CompiledExpansion const*> unprocessedExpansions;
 
-		for(const WGA_Rule::CompiledExpansion &cex: qAsConst(spcel.expansions))
-			unprocessedExpansions += &cex;
+		for(const WGA_Rule::CompiledExpansion &cex: qAsConst(ci.second.expansions))
+			unprocessedExpansions.push_back(&cex);
 
-		if(unprocessedExpansions.isEmpty())
+		if(unprocessedExpansions.empty())
 			qDebug() << "Rule has no possible expansions";
 
 		// Randomly order the same priority expansions, follow probability Ratios
-		float unprocessedProbabilityRatioSum = spcel.probabilityRatioSum;
+		float unprocessedProbabilityRatioSum = ci.second.probabilityRatioSum;
 
-		while(!unprocessedExpansions.isEmpty()) {
+		while(!unprocessedExpansions.empty()) {
 			seed = WorldGen_CPU_Utils::hash(seed);
 			const float randomPos = (static_cast<float>(seed & 0xffff) / 0xffff) * unprocessedProbabilityRatioSum;
 
 			float sum = 0;
-			int i = 0, end = unprocessedExpansions.size();
-			for(; i < end; i++) {
-				const WGA_Rule::CompiledExpansion *cex = unprocessedExpansions[i];
+			for(auto i = unprocessedExpansions.begin(), end = unprocessedExpansions.end(); i != end; i++) {
+				const WGA_Rule::CompiledExpansion *cex = *i;
 
 				sum += cex->probabilityRatio;
 				if(randomPos <= sum) {
 					unprocessedProbabilityRatioSum -= cex->probabilityRatio;
-					res->possibleExpansions += *cex;
-					unprocessedExpansions.remove(i);
+					res->possibleExpansions.push_back(*cex);
+					unprocessedExpansions.erase(i);
 					sum = -1;
 					break;
 				}
@@ -296,26 +295,25 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 		for(WGA_ComponentNode *targetNode: comp->nodes(rex->node())) {
 			BlockOrientation ori = targetNode->config().orientation;
 
-			if(ori.isSpecified() && targetNode->pragma("allowRotation").toBool()) {
+			if(ori.isSpecified() && std::get<bool>(targetNode->pragma("allowRotation"))) {
 				for(int i = 0; i < 4; i++) {
-					res.possibleExpansionNodes += RuleExpansionNode{targetNode, ori};
+					res.possibleExpansionNodes.push_back({targetNode, ori});
 					ori = ori.nextUpVariant();
 				}
 			}
 			else
-				res.possibleExpansionNodes += RuleExpansionNode{targetNode, ori};
+				res.possibleExpansionNodes.push_back({targetNode, ori});
 		}
 
-		Seed seed = WorldGen_CPU_Utils::hash((res.ruleData.localToWorldMatrix() * BlockWorldPos()).to<uint32_t>(),
-		                                     seed_ ^ 0x12);
+		Seed seed = WorldGen_CPU_Utils::hash((res.ruleData.localToWorldMatrix() * BlockWorldPos()).to<uint32_t>(), seed_ ^ 0x12);
 		for(int i = 0; i < res.possibleExpansionNodes.size(); i++) {
 			seed = WorldGen_CPU_Utils::hash(seed);
 			const int j = i + (seed % (res.possibleExpansionNodes.size() - i));
 			qSwap(res.possibleExpansionNodes[i], res.possibleExpansionNodes[j]);
 		}
 
-		if(res.possibleExpansionNodes.isEmpty())
-			qDebug() << "Component has no nodes named " << rex->node();
+		/*if(res.possibleExpansionNodes.isEmpty())
+			qDebug() << "Component has no nodes named " << rex->node();*/
 
 		// Process param sets
 		res.currentExpansionData.setParams();
@@ -349,13 +347,13 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 	// Calcualte component transform matrix
 	{
 		int transformFlags = 0;
-		if(node->pragma("horizontalEdge").toBool())
+		if(std::get<bool>(node->pragma("horizontalEdge")))
 			transformFlags |= +BlockOrientation::TransformFlags::horizontalEdge;
 
-		if(node->pragma("verticalEdge").toBool())
+		if(std::get<bool>(node->pragma("verticalEdge")))
 			transformFlags |= +BlockOrientation::TransformFlags::verticalEdge;
 
-		if(node->pragma("adjacent").toBool())
+		if(std::get<bool>(node->pragma("adjacent")))
 			transformFlags |= +BlockOrientation::TransformFlags::adjacent;
 
 		if(crex.mirror)
@@ -377,7 +375,7 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 		}
 	}
 
-	componentExpansions_ += cex;
+	componentExpansions_.push_back(cex);
 
 	// Generate and check areas
 	for(const WGA_Component::Area &arc: comp->areas()) {
@@ -405,7 +403,7 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 			}
 		}
 
-		areas_ += area;
+		areas_.push_back(area);
 	}
 
 	// Check component conditions
@@ -439,9 +437,9 @@ void WGA_StructureGenerator_CPU::addBranch() {
 
 	State s;
 
-	s.areaCount = areas_.count();
-	s.ruleExpansionCount = ruleExpansions_.count();
-	s.componentExpansionCount = componentExpansions_.count();
+	s.areaCount = areas_.size();
+	s.ruleExpansionCount = ruleExpansions_.size();
+	s.componentExpansionCount = componentExpansions_.size();
 	s.currentlyExpandedRuleIx = currentlyExpandedRuleIx_;
 
 	stateStack_.push(s);
@@ -452,7 +450,8 @@ void WGA_StructureGenerator_CPU::failBranch() {
 
 	ASSERT(!stateStack_.empty());
 
-	const State s = stateStack_.pop();
+	const State s = stateStack_.top();
+	stateStack_.pop();
 
 	areas_.resize(s.areaCount);
 	ruleExpansions_.resize(s.ruleExpansionCount);
@@ -498,14 +497,14 @@ void WGA_StructureGenerator_CPU::DataContext::load(WorldGenAPI_CPU *api, DataCon
 	seed_ = api->structureGen->seed_;
 
 	for(const WGA_GrammarSymbol::ParamDeclare &pd: sym->paramDeclares()) {
-		const QString key = paramKey(pd.paramName, pd.type);
+		const std::string key = paramKey(pd.paramName, pd.type);
 		paramInputs_[key] = pd.defaultValue;
 		paramKeyMapping_[pd.value] = key;
 	}
 
 	if(parentContext) {
 		for(auto it = parentContext->paramOutputs_.begin(), end = parentContext->paramOutputs_.end(); it != end; it++) {
-			WGA_Value_CPU *sourceVal = static_cast<WGA_Value_CPU *>(*it);
+			WGA_Value_CPU *sourceVal = static_cast<WGA_Value_CPU *>(it->second);
 
 			const auto dimFunc = [sourceVal, this] {
 				WorldGenAPI_CPU::structureGen->currentDataContext_ = parentContext_;
@@ -526,15 +525,15 @@ void WGA_StructureGenerator_CPU::DataContext::load(WorldGenAPI_CPU *api, DataCon
 			};
 
 			WGA_Value_CPU *localVal = new WGA_Value_CPU(sourceVal->api(), sourceVal->valueType(), true, dimFunc, ctorFunc);
-			temporarySymbols_ += localVal;
-			paramInputs_[it.key()] = localVal;
+			temporarySymbols_.push_back(localVal);
+			paramInputs_[it->first] = localVal;
 		}
 	}
 
 	for(const WGA_GrammarSymbol::ParamDeclare &pd: sym->paramDeclares()) {
-		const QString key = paramKey(pd.paramName, pd.type);
+		const std::string key = paramKey(pd.paramName, pd.type);
 		if(!paramInputs_[key])
-			throw QStringLiteral("Param value not defined for param %1").arg(pd.paramName);
+			throw std::exception(std::format("Param value not defined for param {}", pd.paramName).c_str());
 	}
 
 	paramOutputs_ = paramInputs_;
@@ -551,9 +550,9 @@ WGA_DataRecord_CPU::Ptr WGA_StructureGenerator_CPU::DataContext::getDataRecord(c
 		return result;
 
 	// Check if the symbol is param declare value, map it to actual param value
-	const QString paramKey = paramKeyMapping_.value(key.symbol);
-	if(!paramKey.isNull())
-		result = static_cast<WGA_Value_CPU *>(paramInputs_[paramKey])->getDataRecord(key.origin, key.subKey);
+	;
+	if(const auto f = paramKeyMapping_.find(key.symbol); f != paramKeyMapping_.end())
+		result = static_cast<WGA_Value_CPU *>(paramInputs_[f->second])->getDataRecord(key.origin, key.subKey);
 	else
 		result = ctor(key);
 
@@ -562,26 +561,23 @@ WGA_DataRecord_CPU::Ptr WGA_StructureGenerator_CPU::DataContext::getDataRecord(c
 }
 
 WGA_Value::Dimensionality WGA_StructureGenerator_CPU::DataContext::getValueDimensionality(const WGA_Value *val) {
-	WGA_Value::Dimensionality result = dimensionalityCache_.value(val);
-	if(result == WGA_Value::Dimensionality::Unknown) {
+	WGA_Value::Dimensionality &result = dimensionalityCache_[val];
+	if(result == WGA_Value::Dimensionality::Unknown)
 		result = static_cast<const WGA_Value_CPU *>(val)->dimFunc()();
-		dimensionalityCache_.insert(val, result);
-	}
 
 	return result;
 }
 
 WGA_Value::Dimensionality WGA_StructureGenerator_CPU::DataContext::getInputParamDimensionality(WGA_Symbol *symbol) {
-	WGA_Value::Dimensionality result = inputParamDimensionalityCache_.value(symbol);
+	WGA_Value::Dimensionality &result = inputParamDimensionalityCache_[symbol];
 	if(result == WGA_Value::Dimensionality::Unknown) {
 		ASSERT(paramKeyMapping_.contains(symbol));
-		result = paramInputs_[paramKeyMapping_.value(symbol)]->dimensionality();
-		inputParamDimensionalityCache_.insert(symbol, result);
+		result = paramInputs_[paramKeyMapping_.at(symbol)]->dimensionality();
 	}
 
 	return result;
 }
 
-QString WGA_StructureGenerator_CPU::DataContext::paramKey(const QString &paramName, WGA_Value::ValueType type) {
-	return QStringLiteral("%1#%2").arg(paramName, WGA_Value::typeNames[type]);
+std::string WGA_StructureGenerator_CPU::DataContext::paramKey(const std::string &paramName, WGA_Value::ValueType type) {
+	return std::format("{}#{}", paramName, WGA_Value::typeNames.at(type));
 }

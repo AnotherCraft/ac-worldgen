@@ -26,12 +26,12 @@ public:
 
 public:
 	static SymbolType getSymbolType(const antlr4::Token *val);
-	static const QString &getSymbolTypeName(SymbolType t);
+	static const std::string &getSymbolTypeName(SymbolType t);
 
 public:
-	static QString identifier(const antlr4::Token *id);
+	static std::string identifier(const antlr4::Token *id);
 	static float numericLiteral(const antlr4::Token *val);
-	static QString stringLiteral(const antlr4::Token *val);
+	static std::string stringLiteral(const antlr4::Token *val);
 
 };
 

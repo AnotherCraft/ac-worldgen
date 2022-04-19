@@ -8,15 +8,15 @@
 class WGLError {
 
 public:
-	WGLError(const QString &msg, antlr4::ParserRuleContext *ctx);
+	WGLError(const std::string &msg, antlr4::ParserRuleContext *ctx);
 
 public:
-	inline const QString &message() const {
+	inline const std::string &message() const {
 		return message_;
 	}
 
 private:
-	QString message_;
+	std::string message_;
 
 };
 

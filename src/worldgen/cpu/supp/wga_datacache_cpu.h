@@ -1,5 +1,7 @@
 #pragma once
 
+#include <unordered_set>
+
 #include <QVector>
 #include <QCache>
 #include <QMutex>
@@ -16,7 +18,7 @@
 class WGA_DataCache_CPU {
 
 public:
-	using DataRecordPtr = QSharedPointer<WGA_DataRecord_CPU>;
+	using DataRecordPtr = std::shared_ptr<WGA_DataRecord_CPU>;
 	using Dimensionality = WGA_Value::Dimensionality;
 	using Key = WGA_DataRecord_CPU::Key;
 	using Ctor = WGA_DataRecord_CPU::Ctor;
@@ -53,10 +55,10 @@ private:
 		WGA_DataCacheInstance_CPU cache;
 
 		/// Set of all already genreated keys, even those that aren't in the cache anymore
-		QSet<Key> generatedKeys;
+		std::unordered_set<Key> generatedKeys;
 
 		/// Set of keys that are currently being generated
-		QSet<Key> wipKeys;
+		std::unordered_set<Key> wipKeys;
 
 		//TracyLockable(QMutex, mutex);
 		QMutex mutex;
