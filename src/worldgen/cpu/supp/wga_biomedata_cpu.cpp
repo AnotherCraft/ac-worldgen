@@ -4,7 +4,8 @@
 #include "worldgen_cpu_utils.h"
 
 void WGA_BiomeData_CPU::calculateFor(WorldGenAPI_CPU &api, const BlockWorldPos &pos) {
-	static constexpr int gridSizeMask = gridSize - 1;
+	const BlockWorldPos_T gridSize = api.biomeGridSize();
+	const BlockWorldPos_T gridSizeMask = gridSize - 1;
 
 	const Vector2I gridNode(pos.x() & ~gridSizeMask, pos.y() & ~gridSizeMask);
 
@@ -17,8 +18,7 @@ void WGA_BiomeData_CPU::calculateFor(WorldGenAPI_CPU &api, const BlockWorldPos &
 		const Vector2I relPos = Vector2I(-gridSize * 2) + Vector2I(i % maxCountComp, i / maxCountComp) * gridSize;
 		const Vector2I baseWorldPos = gridNode + relPos;
 
-		const uint32_t bhash = WorldGen_CPU_Utils::hash(
-			WorldGen_CPU_Utils::hash(seed ^ baseWorldPos.x()) ^ baseWorldPos.y());
+		const uint32_t bhash = WorldGen_CPU_Utils::hash(WorldGen_CPU_Utils::hash(seed ^ baseWorldPos.x()) ^ baseWorldPos.y());
 		const Vector2I baseWorldPosOffset = Vector2I(bhash & gridSizeMask, WorldGen_CPU_Utils::hash(bhash ^ 8455123) & gridSizeMask);
 		const Vector2I worldPos = baseWorldPos + baseWorldPosOffset;
 

@@ -24,7 +24,8 @@ void WGLContext::clear() {
 	definedSymbols_.clear();
 	symbolApiCmdDependents_.clear();
 
-	rootSymbol = new WGLSymbol(this, nullptr, {}, WGLSymbol::Type::Namespace, nullptr);
+	rootSymbol = new WGLSymbol(this, nullptr, "root", WGLSymbol::Type::Namespace, nullptr);
+	//markSymbolDefined(rootSymbol);
 }
 
 void WGLContext::addApiCmd(WGLSymbol *definingSymbol, const DependencyList &dependencies, const WGLContext::APICommand &cmd) {

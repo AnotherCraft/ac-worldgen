@@ -24,7 +24,7 @@ This is a repository for a worldgen system for AnotherCraft. The system is compl
   
 ## Documentation & resources
 * **[Application usage](docs/app_interface.md)**
-* **[WOGLAC tutorial](docs/woglac_tutorial.md)**
+* **[WOGLAC tutorial](docs/tutorial/README.md)**
 * **[WOGLAC language reference](docs/woglac_reference.md)**
 * **[Function list](docs/function_list.md)**
 * **[VS Code extension for WOGLAC](https://github.com/AnotherCraft/ac-woglac-vscode)**

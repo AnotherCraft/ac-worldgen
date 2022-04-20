@@ -398,10 +398,25 @@ void WGLImplementationPass::enterPragmaStatement(WoglacParser::PragmaStatementCo
 
 	else throw;
 
+	if(!target->parent() && name == "biomeGridSize") {
+		ctx_->addApiCmd(nullptr, {}, [value](WGLAPIContext &ctx) {
+			ctx.api->setBiomeGridSize(std::get<float>(value));
+		});
+	}
+	else {
+		static const std::unordered_set<int> supportedSymbolTypes{
+			+WGLSymbol::Type::RuleExpansion,
+			+WGLSymbol::Type::Rule,
+			+WGLSymbol::Type::Component,
+			+WGLSymbol::Type::ComponentNode
+		};
+		if(!supportedSymbolTypes.contains(+target->symbolType()))
+			throw WGLError::WGLError("Pragmas are not supported for the given context.", ctx);
 
-	ctx_->addApiCmd(nullptr, {target}, [target, name, value](WGLAPIContext &ctx) {
-		ctx.map<WGA_Symbol>(target)->setPragma(name, value);
-	});
+		ctx_->addApiCmd(nullptr, {target}, [target, name, value](WGLAPIContext &ctx) {
+			ctx.map<WGA_Symbol>(target)->setPragma(name, value);
+		});
+	}
 }
 
 WGLImplementationPass::ExpressionResult

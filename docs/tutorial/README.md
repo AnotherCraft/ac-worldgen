@@ -4,8 +4,8 @@ Let's give you some quick introduction what you can do with WOGLAC and how you c
 
 ### See also
 
-* [Language reference](docs/woglac_reference.md)
-* [Function list](docs/function_list.md)
+* [Language reference](..//woglac_reference.md)
+* [Function list](../function_list.md)
 
 ## Basic contepts
 
@@ -15,11 +15,11 @@ This is more or less true even in practice, except the worldgen system works wit
 
 ## Tutorials
 
-1. [Flatlands](tutorial/01_flatland.md)
-2. [Hills](tutorial/02_hills.md)
-3. [Caves](tutorial/03_caves.md)
-4. [Voronoi/Worley noise, mountains](tutorial/04_voronoi.md) 
-5. [Domain warping](tutorial/05_warping.md)
-6. Biomes
+1. [Flatlands](01_flatland.md)
+2. [Hills](02_hills.md)
+3. [Caves](03_caves.md)
+4. [Voronoi/Worley noise, mountains](04_voronoi.md) 
+5. [Domain warping](05_warping.md)
+6. [Biomes](06_biomes.md)
 7. Structures
-8. VOX imports
+8. Structure imports

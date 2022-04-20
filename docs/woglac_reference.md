@@ -312,7 +312,7 @@ All the parameter reading methods consider distances not to the biome tile bound
 Float resultTerrainHeight = biome(test.terrainHeight, weighted, 1); // Interpolate terrain height across biomes
 Block resultGroundBlock = biome(test.groundBlock, nearest); 
 
-Block resultBlock =	worldPos()::z() <= resultTerrainHeight ? resultGroundBlock : block.air;
+Block resultBlock = worldPos()::z() <= resultTerrainHeight ? resultGroundBlock : block.air;
 ```
 
 # Functions

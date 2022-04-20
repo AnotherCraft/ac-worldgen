@@ -16,7 +16,7 @@ WGLSymbol::WGLSymbol(WGLContext *context, WGLSymbol *parent, const std::string &
 	fullName_ = name_;
 
 	if(fullName_.empty())
-		fullName_ = !parent ? std::string("(root)") : std::format("(anonymous {})", WGLUtils::getSymbolTypeName(type));
+		fullName_ = std::format("(anonymous {})", WGLUtils::getSymbolTypeName(type));
 
 	desc_ = fullName_;
 	if(declarationAst_ && declarationAst_->start && declarationAst_->stop && declarationAst_->start->getTokenSource()) {

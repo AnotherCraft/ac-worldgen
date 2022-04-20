@@ -5,7 +5,6 @@
 struct WGA_BiomeData_CPU {
 
 public:
-	static constexpr int gridSize = 256;
 	static constexpr int maxCountComp = 5;
 	static constexpr int maxCount = maxCountComp * maxCountComp;
 

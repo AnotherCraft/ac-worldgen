@@ -221,6 +221,16 @@ public:
 		blockUIDMapping_ = set;
 	}
 
+	inline auto biomeGridSize() const {
+		return biomeGridSize_;
+	}
+	inline void setBiomeGridSize(BlockWorldPos_T set) {
+		if(set < 16 || !std::has_single_bit(static_cast<uint64_t>(set)))
+			throw std::exception("Biome grid size must be larger than 16 and be power of 2.");
+
+		biomeGridSize_ = set;
+	}
+
 public:
 	virtual WGA_Value *constFloat(float val) = 0;
 	virtual WGA_Value *constFloat3(const V3F val) = 0;
@@ -262,6 +272,7 @@ public:
 private:
 	WorldGenSeed seed_ = 0;
 	std::unordered_map<std::string, BlockID> blockUIDMapping_;
+	BlockWorldPos_T  biomeGridSize_ = 256;
 
 };
 
