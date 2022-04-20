@@ -435,6 +435,14 @@ Float3 fract(Float3 v)
 ```
 
 Returns fractional part of the number `x - trunc(x)`.
+## `ffract` 
+```WOGLAC
+Float ffract(Float v)
+Float2 ffract(Float2 v)
+Float3 ffract(Float3 v)
+```
+
+Returns fractional part of the number `x - floor(x)`.
 ## `pow` 
 ```WOGLAC
 Float pow(Float v, Float e)

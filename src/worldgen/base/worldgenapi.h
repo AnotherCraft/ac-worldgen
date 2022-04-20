@@ -108,7 +108,7 @@
   FUNC(ceil, 1, ((NUM, v)), (ARG, r, 1), DIM_ARG(1), (INLINE, arg1.ceil()), "") \
   FUNC(round, 1, ((NUM, v)), (ARG, r, 1), DIM_ARG(1), (INLINE, arg1.round()), "") \
   FUNC(fract, 1, ((NUM, v)), (ARG, r, 1), DIM_ARG(1), (INLINE, arg1.componentUnary([] (float f) { return f - trunc(f); })), "Returns fractional part of the number `x - trunc(x)`.") \
-  \
+  FUNC(ffract, 1, ((NUM, v)), (ARG, r, 1), DIM_ARG(1), (INLINE, arg1.componentUnary([] (float f) { return f - floor(f); })), "Returns fractional part of the number `x - floor(x)`.") \
   FUNC(pow, 2, ((T, v, Float), (T, e, Float)), (T, r, Float), DIM_MAX_ARGS_2, (INLINE, pow(arg1, arg2)), "Returns power of `v` to the exponent `e`.") \
   \
   FUNC(sin, 1, ((T, x, Float)), (T, r, Float), DIM_MAX_ARGS_1, (INLINE, sin(arg1)), "Returns `sin(x)`, `x` is in radians.") \
