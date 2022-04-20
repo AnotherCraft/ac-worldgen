@@ -19,7 +19,8 @@ This is more or less true even in practice, except the worldgen system works wit
 2. [Hills](02_hills.md)
 3. [Caves](03_caves.md)
 4. [Voronoi/Worley noise, mountains](04_voronoi.md) 
-5. [Domain warping](05_warping.md)
+5. [Domain warping, mountains](05_warping.md)
 6. [Biomes](06_biomes.md)
-7. Structures
-8. Structure imports
+7. Trees, structure generation
+8. Structures
+9. Structure imports
