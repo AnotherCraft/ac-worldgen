@@ -4,7 +4,7 @@ Let's start with generating flatlands. We'll use the `Float3 worldPos()` functio
 ```WOGLAC
 export Block resultBlock = worldPos()::z() < 20 ? block.core.dirt : block.air;
 ```
-![](img/flatland.png)
+![](img/flatland.jpg)
 
 We define an `export` variable `resultBlock` (that we'll be querying from the client application - see [Application interface](app_interface.md)) and set it to `block.core.dirt` for blocks that are below `z` `20` or to air for the blocks above. Simple.
 
@@ -19,4 +19,4 @@ Float z = worldPos()::z();
 export Block resultBlock = worldPos()::x() < 0 ? block.air : z < 10 ? block.core.stone : z < 19 ? block.core.dirt : z < 20 ? block.core.grass : block.air;
 ```
 
-![](img/layeredFlatland.png)
+![](img/layeredFlatland.jpg)

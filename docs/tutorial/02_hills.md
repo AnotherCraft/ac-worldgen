@@ -8,7 +8,7 @@ Float noiseHeight = 10;
 Float terrainZ = 20 + perlin2D(~1, #6648) * noiseHeight;
 export Block resultBlock = z < terrainZ ? block.core.dirt : block.air;
 ```
-![](img/hills.png)
+![](img/hills.jpg)
 
 Okay, now let's make the hills bigger by increasing the `octaveSize` and higher by increasing `noiseHeight`:
 ```WOGLAC
@@ -18,7 +18,7 @@ Float noiseHeight = 20;
 Float terrainZ = 10 + perlin2D(~4, #6648) * noiseHeight;
 export Block resultBlock = z < terrainZ ? block.core.dirt : block.air;
 ```
-![](img/hills2.png)
+![](img/hills2.jpg)
 
 ## Multiple noise octaves
 Now these look too uniform. We can add more variation by adding a second, smaller Perlin noise:
@@ -29,7 +29,7 @@ Float noiseHeight = 20;
 Float terrainZ = 10 + perlin2D(~4, #6648) * noiseHeight + perlin2D(~2, #6648) * noiseHeight * 0.5;
 export Block resultBlock = z < terrainZ ? block.core.dirt : block.air;
 ```
-![](img/hills3.png)
+![](img/hills3.jpg)
 
 ## Water
 Now we can also add water:
@@ -41,7 +41,7 @@ Float waterZ = 10;
 Float terrainZ = 10 + perlin2D(~4, #6648) * noiseHeight + perlin2D(~2, #6648) * noiseHeight * 0.5;
 export Block resultBlock = z < terrainZ ? block.core.dirt : z < waterZ ? block.core.water : block.air;
 ```
-![](img/hills4.png)
+![](img/hills4.jpg)
 
 ## Grass
 Now let's add grass. Let's say we will add grass only on the top, when we're not under water and when the hill is not too steep.
@@ -72,7 +72,7 @@ export Block resultBlock =
 	block.air
 	;
 ```
-![](img/hills5.png)
+![](img/hills5.jpg)
 
 ## Grass gradient
 Now let's limit grass only on areas that are not steep. To do that, we need to calculate the terrain steepness - its gradient. We can achieve that using the `Float sampleOffset(Float variable, Float3 offset)` function - we sample the terrain height at `x+1` and `x-1` and calculate the difference, then we do the same on `y+1` and `y-1` and we combine the results:
@@ -109,4 +109,4 @@ export Block resultBlock =
 	block.air
 	;
 ```
-![](img/hills6.png)
+![](img/hills6.jpg)

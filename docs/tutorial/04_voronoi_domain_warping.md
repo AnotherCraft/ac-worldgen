@@ -1,0 +1,2 @@
+# Voronoi & domain warping
+[Worley noise](https://en.wikipedia.org/wiki/Worley_noise) is a noise working on the principles of [Voronoi diagrams](https://en.wikipedia.org/wiki/Voronoi_diagram): you start with points randomly spread across the space, the noise value is then based on the distance from the nearest points. WOGLAC provides the `voronoi2D` function to play around with the Voronoi noise [[function documentation]](../function_list.md#voronoi2d).

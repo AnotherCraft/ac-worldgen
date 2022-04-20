@@ -1,19 +1,19 @@
 # WOGLAC function list
 Auto generated from the source code.
 
-# Utility functions 
+# Utility functions
 
 ## `worldPos` 
-```WOGLAC
-Float3 worldPos(ComponentNode node)
-```
-
-Returns position of the provided component node in global world coordinates.
 ```WOGLAC
 Float3 worldPos()
 ```
 
 Returns world position of the currently calculated block.
+```WOGLAC
+Float3 worldPos(ComponentNode node)
+```
+
+Returns position of the provided component node in global world coordinates.
 ## `select` 
 ```WOGLAC
 Float select(Bool cond, Float thn, Float els)
@@ -26,7 +26,7 @@ ComponentNode select(Bool cond, ComponentNode thn, ComponentNode els)
 ```
 
 If `cond` is `true`, returns `thn`, else returns `els`.
-# Vector functions 
+# Vector functions
 
 ## `float2` 
 ```WOGLAC
@@ -135,7 +135,7 @@ Float distanceToLine(Float3 p, Float3 a, Float3 b)
 ```
 
 Returns distance of the point `p` to a line defined by points `a` and `b`.
-# Sampling functions 
+# Sampling functions
 
 ## `sampleOffset` 
 ```WOGLAC
@@ -150,17 +150,6 @@ ComponentNode sampleOffset(ComponentNode variable, Float3 offset)
 
 Returns value of `variable` sampled on a world position of (`worldPos() + offset`).
 ## `sampleAt` 
-```WOGLAC
-Float sampleAt(Float variable, ComponentNode node)
-Float2 sampleAt(Float2 variable, ComponentNode node)
-Float3 sampleAt(Float3 variable, ComponentNode node)
-Bool sampleAt(Bool variable, ComponentNode node)
-Block sampleAt(Block variable, ComponentNode node)
-Rule sampleAt(Rule variable, ComponentNode node)
-ComponentNode sampleAt(ComponentNode variable, ComponentNode node)
-```
-
-Returns value of `variable` sampled on position of the given node.
 ```WOGLAC
 Float sampleAt(Float variable, Float3 worldPos)
 Float2 sampleAt(Float2 variable, Float3 worldPos)
@@ -179,6 +168,17 @@ ComponentNode sampleAt(ComponentNode variable, Float2 worldPos)
 ```
 
 Returns value of `variable` sampled on the given world position. The position doesn't have to be constant.
+```WOGLAC
+Float sampleAt(Float variable, ComponentNode node)
+Float2 sampleAt(Float2 variable, ComponentNode node)
+Float3 sampleAt(Float3 variable, ComponentNode node)
+Bool sampleAt(Bool variable, ComponentNode node)
+Block sampleAt(Block variable, ComponentNode node)
+Rule sampleAt(Rule variable, ComponentNode node)
+ComponentNode sampleAt(ComponentNode variable, ComponentNode node)
+```
+
+Returns value of `variable` sampled on position of the given node.
 ## `sampleGradient2D` 
 ```WOGLAC
 Float2 sampleGradient2D(Float value, Float dist)
@@ -193,7 +193,7 @@ Float3 sampleAvg2D(Float3 value, Float dist)
 ```
 
 Samples at offsets (0,0), (dist,0), (-dist,0), (0,dist) and (0,-dist) and returns the average.`
-# Biome functions 
+# Biome functions
 
 ## `biomeParam_nearest` 
 ```WOGLAC
@@ -233,7 +233,7 @@ Float3 biomeParam_weighted(Float3 var, Float exp)
 **This function cannot be used in the WOGLAC language. There is a special syntax construct for biome params.**
 
 Returns value of variable $var weighted across surrounding biomes. The $exp adjusts exponent for the individual weights (1 = linear interpolation).
-# Structure functions 
+# Structure functions
 
 ## `spawn2D` 
 ```WOGLAC
@@ -253,7 +253,7 @@ Float localSeed()
 ```
 
 Returns component-local seed.
-# Noise functions 
+# Noise functions
 
 ## `randC` 
 ```WOGLAC
@@ -308,7 +308,7 @@ Returns 3D Perlin noise value [-1–1].
 Float voronoi2D(Float octaveSize, Float seed, Float resultType, Float metricExponent)
 ```
 
-Returns 2D Voronoi-diagram based value. 
+Returns 2D Voronoi-diagram based value. Use `metricExponent = 2` for standard euclidean metric.
 * `resultType=0` -> distance to the edge (2ndDist-1stDist)
 * `resultType=1` -> distance to the nearest point (1stDist)
 * `resultType=2` -> 1stDist / 2ndDist
@@ -327,7 +327,7 @@ Bool poissonDisc2DBool(Float seed, Float radius)
 ```
 
 Spreads points pseudorandomly on the 2D plane. Each point has a `radius` (2D dimensionality) that can be between 1 and 16. Distance of any two points is not less than sum of their radii. Returns true if there is a point on the current position or false if there isn't.
-# Aggregation functions 
+# Aggregation functions
 
 ## `minPC` 
 ```WOGLAC
@@ -341,7 +341,7 @@ Float maxPC(Float val)
 ```
 
 Returns maximum value of `val` across the entire chunk. Expects `val` to have `2D` dimensionality.
-# Math functions 
+# Math functions
 
 ## `min` 
 ```WOGLAC
@@ -453,7 +453,7 @@ Float cos(Float x)
 ```
 
 Returns `cos(x)`, `x` is in radians.
-# Basic math functions 
+# Basic math functions
 
 ## `inverse` 
 ```WOGLAC
@@ -513,7 +513,7 @@ Float3 mod(Float3 a, Float b)
 ```
 
 Floating point modulo (C++ fmod)
-# Basic logic functions 
+# Basic logic functions
 
 ## `logOr` 
 ```WOGLAC
@@ -539,7 +539,7 @@ Bool bool(Block a)
 ```
 
 Converts to bool (returns `true` if the block is not `block.undefined`, even with air.)
-# Comparison functions 
+# Comparison functions
 
 ## `compEq` 
 ```WOGLAC

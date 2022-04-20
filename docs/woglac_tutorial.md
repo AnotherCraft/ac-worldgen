@@ -17,8 +17,8 @@ This is more or less true even in practice, except the worldgen system works wit
 
 1. [Flatlands](tutorial/01_flatland.md)
 2. [Hills](tutorial/02_hills.md)
-3. Caves
-4. Domain warping
+3. [Caves](tutorial/03_caves.md)
+4. Voronoi & domain warping
 5. Biomes
 6. Structures
 7. VOX imports
