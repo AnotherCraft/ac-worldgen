@@ -429,7 +429,7 @@ component example {
 	block (0, 0, 0) (10, 10, 10) = localPos()::distance(center) < radius ? block.core.stone : block.undefined;
 }
 ```
-This would for example generate a sphere with radius 5 and center at `(5, 5, 5)`.
+This would for example generate a sphere with radius 5 and center at `(5, 5, 5)`. Instead of writing out individual components, you can also use a single expression of type `Float3`.
 
 ### Component areas
 > ```g4

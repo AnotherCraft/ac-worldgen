@@ -1,5 +1,8 @@
 #include "wga_structurefuncs_cpu.h"
 
+#include <iostream>
+#include <format>
+
 #include "util/tracyutils.h"
 
 #include "../supp/wga_structuregenerator_cpu.h"
@@ -72,6 +75,8 @@ void WGA_StructureFuncs_CPU::localPos(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key
 
 void WGA_StructureFuncs_CPU::localSeed(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key key, DH <WGA_Value::ValueType::Float> result) {
 	ASSERT(api->structureGen);
+	if(!api->structureGen)
+		throw std::exception("localSeed() called outside structure generation");
 
 	result[0] = Vector<float, 1>(api->structureGen->currentDataContext()->seed());
 }
@@ -131,7 +136,7 @@ void WGA_StructureFuncs_CPU::_spawn(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key k
 		const WGA_DataRecord_CPU::Key recKey(key.symbol, BlockWorldPos::fromChunkBlockIndex(pos, 0, 0), 1);
 		const StructureRecPtr rec = std::static_pointer_cast<StructureRec>(api->getDataRecord(recKey, ctor));
 
-		for(const WGA_StructureOutputData_CPUPtr &struc: rec->data){
+		for(const WGA_StructureOutputData_CPUPtr &struc: rec->data) {
 			ZoneScopedN("procStructureData");
 
 			if(!struc->subChunkRecords.contains(key.origin))

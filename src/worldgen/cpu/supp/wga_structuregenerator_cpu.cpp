@@ -1,6 +1,7 @@
 #include "wga_structuregenerator_cpu.h"
 
 #include <iostream>
+#include <format>
 
 #include "util/scopeexit.h"
 #include "util/tracyutils.h"
@@ -293,7 +294,6 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 		if(!comp)
 			return true;
 
-		// Randomize the order of the nodes using Fisher-Yates shuffle
 		for(WGA_ComponentNode *targetNode: comp->nodes(rex->node())) {
 			BlockOrientation ori = targetNode->config().orientation;
 
@@ -307,11 +307,14 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 				res.possibleExpansionNodes.push_back({targetNode, ori});
 		}
 
-		Seed seed = WorldGen_CPU_Utils::hash((res.ruleData.localToWorldMatrix() * BlockWorldPos()).to<uint32_t>(), seed_ ^ 0x12);
-		for(int i = 0; i < res.possibleExpansionNodes.size(); i++) {
-			seed = WorldGen_CPU_Utils::hash(seed);
-			const int j = i + (seed % (res.possibleExpansionNodes.size() - i));
-			std::swap(res.possibleExpansionNodes[i], res.possibleExpansionNodes[j]);
+		// Randomize the order of the nodes using Fisher-Yates shuffle
+		{
+			const size_t sz = res.possibleExpansionNodes.size();
+			std::default_random_engine rand(WorldGen_CPU_Utils::hash((res.ruleData.localToWorldMatrix() * BlockWorldPos()).to<uint32_t>(), seed_ ^ 0x12));
+			for(int i = 0; i < sz; i++) {
+				const int j = i + (rand() % (sz - i));
+				std::swap(res.possibleExpansionNodes[i], res.possibleExpansionNodes[j]);
+			}
 		}
 
 		/*if(res.possibleExpansionNodes.isEmpty())
@@ -346,7 +349,7 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 	cex->component = comp;
 	cex->entryNode = node;
 
-	// Calcualte component transform matrix
+	// Calculate component transform matrix
 	{
 		int transformFlags = 0;
 		if(std::get<bool>(node->pragma("horizontalEdge")))
@@ -362,8 +365,7 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 			transformFlags |= +BlockOrientation::TransformFlags::mirror;
 
 		cex->data.localToWorldMatrix() *= n.orientation.transformToMatch(res.orientation.adjacent(), transformFlags);
-		cex->data.localToWorldMatrix() *= BlockTransformMatrix::translation(
-			-blockPosValue(node->config().position, res.currentExpansionData.constSamplePos()));
+		cex->data.localToWorldMatrix() *= BlockTransformMatrix::translation(-blockPosValue(node->config().position, res.currentExpansionData.constSamplePos()));
 
 		cex->placementHash = HashUtils::multiHash(cex->data.localToWorldMatrix(), comp);
 	}
@@ -418,8 +420,20 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 	// Process param sets
 	cex->data.setParams();
 
+	auto nodes = comp->nodes();
+
+	// Randomize the order of the nodes using Fisher-Yates shuffle
+	{
+		const size_t sz = nodes.size();
+		std::default_random_engine rand(HashUtils::multiHash(cex->placementHash, seed_, 1215));
+		for(int i = 0; i < sz; i++) {
+			const int j = i + (rand() % (sz - i));
+			std::swap(nodes[i], nodes[j]);
+		}
+	}
+
 	// Expand the component node rules
-	for(const WGA_ComponentNode *node: comp->nodes()) {
+	for(const WGA_ComponentNode *node: nodes) {
 		if(!node->config().rule || node == cex->entryNode)
 			continue;
 
@@ -496,8 +510,15 @@ void WGA_StructureGenerator_CPU::DataContext::load(WorldGenAPI_CPU *api, DataCon
 	sym_ = sym;
 	parentContext_ = parentContext;
 	api_ = api;
-	localToWorldMatrix_ = parentContext ? parentContext->localToWorldMatrix_ : BlockTransformMatrix();
-	seed_ = api->structureGen->seed_;
+
+	if(parentContext) {
+		localToWorldMatrix_ = parentContext->localToWorldMatrix_;
+		seed_ = HashUtils::multiHash(parentContext_->seed_, parentContext_->localToWorldMatrix_ * BlockWorldPos());
+	}
+	else {
+		localToWorldMatrix_ = BlockTransformMatrix();
+		seed_ = api->structureGen->seed_;
+	}
 
 	for(const WGA_GrammarSymbol::ParamDeclare &pd: sym->paramDeclares()) {
 		const std::string key = paramKey(pd.paramName, pd.type);
