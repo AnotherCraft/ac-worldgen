@@ -45,9 +45,5 @@ export Block resultBlock = z < terrainZ ? (rand2D(#342) < 0.5 ? block.core.dirt 
 ```
 
 ## Third-party resources
-* Qt6
 * Antlr4
-* Tracy
-
-## TODO
-* Get rid of the Qt dependency (it's not really that necessary)?
+* Tracy (for debugging purposes)
