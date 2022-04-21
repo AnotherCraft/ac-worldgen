@@ -492,10 +492,10 @@ File format | Supported editors
 
 </center>
 
-Voxel files can be imported using the `component import` syntax construct:
+Voxel files can be imported using the `component include` syntax construct:
 ```WOGLAC
 component c {
-	component import "file.vox" {
+	component include "file.vox" {
 		0 -> block block.core.stone;
 		1 -> node (x+) n1 -> Rule;
 	}
@@ -511,7 +511,7 @@ The type of the block mapped to a certain ID can again be a field expression:
 component c {
 	Block block0 = rand2D(#2542) < 0.5 ? block.core.stone : block.core.dirt;
 
-	component import "file.vox" {
+	component include "file.vox" {
 		0 -> block block0;
 	}
 }

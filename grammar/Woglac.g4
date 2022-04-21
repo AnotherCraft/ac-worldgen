@@ -5,7 +5,6 @@ module:
 
 statement:
 	pragmaStatement
-	| includeStatement
 	| paramDefinition
 	| biomeParamDefinition
 	| paramSetStatement
@@ -29,9 +28,6 @@ contentOrSemicolon:
 
 pragmaStatement:
 	'pragma' id= extendedIdentifier ('=' (valLit= literalExpression | valId= Identifier))? ';';
-
-includeStatement:
-	'include' file= StringLiteral ';';
 
 variableDefinition:
 	exportFlag='export'? type=Type id=extendedIdentifier '=' val=expression ';';
@@ -73,7 +69,7 @@ componentBlockStatement:
 	('component' target=extendedIdentifier)? 'block' startPos=positionExpression endPos=positionExpression? '=' val=expression ';';
 
 componentIncludeStatement:
-	'component' 'include' file=StringLiteral '{' content+= componentIncludeStatementParam* '}';
+	'component' 'include'  file=StringLiteral '{' content+= componentIncludeStatementParam* '}';
 
 componentIncludeStatementParam:
 	block= componentIncludeStatementBlockParam

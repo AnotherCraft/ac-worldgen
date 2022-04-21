@@ -18,7 +18,7 @@ This is a repository for a worldgen system for AnotherCraft. The system is compl
 * Domain warping.
 * Biomes.
 * Grammar-based structure generation that allows generating anything from trees to cities.
-* Can import voxel prefabs in the ˙.vox˙ format.
+* Can import voxel prefabs in the ˙.vox˙ format ([MagicaVoxel editor](https://ephtracy.github.io/) or [Goxel editor](https://goxel.xyz/)).
 
 ### System structure
 * WorldGenAPI, which is a parallel-enabled worldgen system backend (can also be used standalone, the generation pipeline can be constructed using API calls)

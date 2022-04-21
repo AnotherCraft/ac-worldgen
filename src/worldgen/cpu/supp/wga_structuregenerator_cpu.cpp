@@ -139,22 +139,28 @@ WGA_StructureOutputData_CPUPtr WGA_StructureGenerator_CPU::generateOutput() {
 				}
 			}
 
-			for(const BlockWorldPos &pos: bar.positions) {
-				const BlockWorldPos worldPos = cex->data.mapToWorld(pos);
+			if(!bar.positions.empty()) {
+				BlockWorldPos offset;
+				if(bar.positionsOffset)
+					offset = blockPosValue(bar.startPos, cex->data.constSamplePos());
 
-				const BlockID block = blockv.sampleAt(worldPos);
-				if(block == blockID_undefined)
-					continue;
+				for(const BlockWorldPos &pos: bar.positions) {
+					const BlockWorldPos worldPos = cex->data.mapToWorld(pos + offset);
 
-				const BlockWorldPos subChunkPos = worldPos & ~(chunkSize - 1);
+					const BlockID block = blockv.sampleAt(worldPos);
+					if(block == blockID_undefined)
+						continue;
 
-				auto &srr = result->subChunkRecords[subChunkPos];
-				const ChunkBlockIndex six = worldPos.subChunkBlockIndex(0);
+					const BlockWorldPos subChunkPos = worldPos & ~(chunkSize - 1);
 
-				if(srr.shouldUseFlat(1))
-					srr.flatData[six] = block;
-				else
-					srr.associativeData.push_back({six, block});
+					auto &srr = result->subChunkRecords[subChunkPos];
+					const ChunkBlockIndex six = worldPos.subChunkBlockIndex(0);
+
+					if(srr.shouldUseFlat(1))
+						srr.flatData[six] = block;
+					else
+						srr.associativeData.push_back({six, block});
+				}
 			}
 
 			result->dataSize = iterator(result->subChunkRecords).mapx(sizeof(WGA_StructureOutputData_CPU::SubChunkRecord) + (x.second.flatData.empty() ? 0 : sizeof(BlockID) * chunkVolume) + x.second.associativeData.size() * 4).sum();

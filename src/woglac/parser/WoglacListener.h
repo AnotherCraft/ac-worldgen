@@ -29,9 +29,6 @@ public:
   virtual void enterPragmaStatement(WoglacParser::PragmaStatementContext *ctx) = 0;
   virtual void exitPragmaStatement(WoglacParser::PragmaStatementContext *ctx) = 0;
 
-  virtual void enterIncludeStatement(WoglacParser::IncludeStatementContext *ctx) = 0;
-  virtual void exitIncludeStatement(WoglacParser::IncludeStatementContext *ctx) = 0;
-
   virtual void enterVariableDefinition(WoglacParser::VariableDefinitionContext *ctx) = 0;
   virtual void exitVariableDefinition(WoglacParser::VariableDefinitionContext *ctx) = 0;
 

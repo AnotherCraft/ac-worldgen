@@ -74,5 +74,6 @@ private:
 private:
 	VOXParser voxParser_;
 	std::vector<BlockWorldPos> componentIncludePositions_;
+
 };
 

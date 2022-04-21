@@ -229,8 +229,7 @@ void WGLImplementationPass::exitComponentIncludeStatement(WoglacParser::Componen
 	popScope(ctx);
 }
 
-void WGLImplementationPass::enterComponentIncludeStatementBlockParam(
-	WoglacParser::ComponentIncludeStatementBlockParamContext *ctx) {
+void WGLImplementationPass::enterComponentIncludeStatementBlockParam(WoglacParser::ComponentIncludeStatementBlockParamContext *ctx) {
 	WGLSymbol *component = currentScope()->effectiveTarget();
 	ASSERT(component->symbolType() == SymbolType::Component);
 
@@ -314,7 +313,7 @@ void WGLImplementationPass::enterComponentAreaStatement(WoglacParser::ComponentA
 	ExpressionResult startPos = positionExpression(ctx->startPos, deps);
 	ExpressionResult endPos = positionExpression(ctx->endPos, deps);
 
-	const WGA_Component::Area iarea {
+	const WGA_Component::Area iarea{
 		.name = WGLUtils::identifier(ctx->name),
 		.canOverlap = static_cast<bool>(ctx->canOverlap),
 		.mustOverlap = static_cast<bool>(ctx->mustOverlap),

@@ -26,7 +26,9 @@ public:
 	struct Blocks {
 		WGA_Value *startPos = nullptr; ///< Component-local position
 		WGA_Value *endPos = nullptr; ///< Component-local position, can be null
+
 		std::vector<BlockWorldPos> positions; ///< Alternative to startPos/endPos
+		WGA_Value *positionsOffset = nullptr; ///< Offset to positions
 
 		WGA_Value *block = nullptr;
 	};
