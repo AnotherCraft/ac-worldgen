@@ -29,7 +29,7 @@ Then, we ask the system to generate a 16^3 chunk on the `0,0,0` position. This i
 getData 0 0 0 resultBlock Block\n
 ```
 
-The program then responds with the generated data:
+The program then synchronously responds with the generated data:
 ```
 data 0 0 0 resultBlock 8192\n
 [8192 bytes of binary raw data]

@@ -8,14 +8,16 @@ This is a repository for a worldgen system for AnotherCraft. The system is compl
 ## System premise & features
 * **Standalone application**, easy to integrate with your project, communicates with the client via the `stdin` and `stdout` pipes (see [the interface documentation](docs/app_interface.md)).
 * **Fully customizable generation** using the WOGLAC programming language.
-* Decently fast, written in C++. Parallel procgen implemented.
-* On demand generation of any part of the world (4-byte integer for X, Y and Z coordinates). 
+* Decently fast, written in C++. Parallel generation. You can expect around 2 ms per one 16×16×16 chunk generated per thread with decently complicated worldgen. Some operations are slower than other ofc.
+* On demand generation of any part of the world at any time (4-byte integer for X, Y and Z coordinates).
+* Fully deterministic, always provides the same results, no matter the order of generation.
 * **Open source**.
 
 ### Procgen features
-* 2D & 3D Perlin noise, voronoi-based generation.
-* Domain warping (using the `sampleOffset` function with variable offset parameters).
-* Grammar-based structure generation.
+* 2D & 3D Perlin, Voronoi/Worley-based noise functions.
+* Domain warping.
+* Biomes.
+* Grammar-based structure generation that allows generating anything from trees to cities.
 * Can import voxel prefabs in the ˙.vox˙ format.
 
 ### System structure
@@ -49,7 +51,7 @@ export Block resultBlock = z < terrainZ ? (rand2D(#342) < 0.5 ? block.core.dirt 
 
 ## Third-party resources
 * Antlr4
-* Tracy (for debugging purposes)
+* Tracy
 
 ## License
 AC Worldgen is licensed under LGPL, which means you can incorporate it even into your commercial voxel projects free-of-charge. The system runs as a standalone application, so your code can stay closed source. You however have to make available any changes you've done to the AC Worldgen system itself. It would also be very nice of you to mention us in your credits.

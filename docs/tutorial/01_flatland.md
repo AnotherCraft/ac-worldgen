@@ -16,7 +16,13 @@ What if we want to have multiple layers? Simply use a ternary operator!
 ```WOGLAC
 Float z = worldPos()::z();
 
-export Block resultBlock = worldPos()::x() < 0 ? block.air : z < 10 ? block.core.stone : z < 19 ? block.core.dirt : z < 20 ? block.core.grass : block.air;
+export Block resultBlock =
+	worldPos()::x() < 0 ? block.air :
+	z < 10 ? block.core.stone :
+	z < 19 ? block.core.dirt :
+	z < 20 ? block.core.grass :
+	block.air
+	;
 ```
 
 ![](img/layeredFlatland.jpg)
