@@ -305,7 +305,7 @@ public:
   class  RuleExpansionStatementContext : public antlr4::ParserRuleContext {
   public:
     WoglacParser::ExtendedIdentifierContext *target = nullptr;;
-    WoglacParser::ExtendedIdentifierContext *component = nullptr;;
+    WoglacParser::ExtendedIdentifierContext *expansionTarget = nullptr;;
     antlr4::Token *node = nullptr;;
     antlr4::Token *priority = nullptr;;
     antlr4::Token *probabilityRatio = nullptr;;
@@ -315,9 +315,9 @@ public:
     ContentOrSemicolonContext *contentOrSemicolon();
     std::vector<ExtendedIdentifierContext *> extendedIdentifier();
     ExtendedIdentifierContext* extendedIdentifier(size_t i);
-    antlr4::tree::TerminalNode *Identifier();
     std::vector<antlr4::tree::TerminalNode *> NumericLiteral();
     antlr4::tree::TerminalNode* NumericLiteral(size_t i);
+    antlr4::tree::TerminalNode *Identifier();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;

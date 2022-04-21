@@ -2,7 +2,7 @@
 #include "wga_value.h"
 
 WGA_Biome::WGA_Biome() {
-	setDestription("(biome)");
+	setDescription("(biome)");
 }
 
 WGA_Symbol::SymbolType WGA_Biome::symbolType() const {

@@ -4,7 +4,7 @@
 #include "wga_component.h"
 
 WGA_Rule::WGA_Rule() {
-	setDestription("(rule)");
+	setDescription("(rule)");
 
 	static const PragmaList pg{
 		{"depthFirstProbability", 0.0f},

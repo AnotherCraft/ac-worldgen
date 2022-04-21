@@ -355,10 +355,9 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 
 	WGA_Rule::CompiledExpansion crex = res.possibleExpansions[res.currentExpansionIndex];
 	WGA_RuleExpansion *rex = crex.expansion;
-	WGA_Component *comp = rex->component();
 
 	// Expansion has no component (expands to nothing) -> success
-	if(!comp)
+	if(!rex->component() && !rex->targetRule())
 		return true;
 
 	const RuleExpansionNode &n = res.possibleExpansionNodes[res.currentExpansionNodeIndex];
@@ -367,122 +366,129 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 	res.currentExpansionNodeIndex++;
 	addBranch();
 
-	ComponentExpansionStatePtr cex(new ComponentExpansionState{
-		.component = comp,
-		.entryNode = node,
-	});
-	currentDataContext_ = &cex->data;
-
-	cex->data.load(&api_, &res.currentExpansionData, comp);
-
-	// Calculate component transform matrix
-	{
-		int transformFlags = 0;
-		if(std::get<bool>(node->pragma("horizontalEdge")))
-			transformFlags |= +BlockOrientation::TransformFlags::horizontalEdge;
-
-		if(std::get<bool>(node->pragma("verticalEdge")))
-			transformFlags |= +BlockOrientation::TransformFlags::verticalEdge;
-
-		if(std::get<bool>(node->pragma("adjacent")))
-			transformFlags |= +BlockOrientation::TransformFlags::adjacent;
-
-		if(crex.mirror)
-			transformFlags |= +BlockOrientation::TransformFlags::mirror;
-
-		cex->data.localToWorldMatrix() *= n.orientation.transformToMatch(res.orientation.adjacent(), transformFlags);
-		cex->data.localToWorldMatrix() *= BlockTransformMatrix::translation(-blockPosValue(node->config().position, res.currentExpansionData.constSamplePos()));
-
-		cex->placementHash = HashUtils::multiHash(cex->data.localToWorldMatrix(), comp);
+	if(WGA_Rule *rul = rex->targetRule()) {
+		if(!expandRule(rul, res.ruleData.localToWorldMatrix() * BlockWorldPos(), res.orientation, &res.currentExpansionData))
+			return false;
 	}
+	else if(WGA_Component *comp = rex->component()) {
+		ComponentExpansionStatePtr cex(new ComponentExpansionState{
+			.component = comp,
+			.entryNode = node,
+		});
+		currentDataContext_ = &cex->data;
 
-	// Check if there already isn't the same component with the same position (so we can create a loop)
-	// This is basically useless, dropping
-	/*for(const ComponentExpansionStatePtr &ocex: componentExpansions_) {
-		// If there already is the same component with the same position, return true
-		// This means that this expansion branch joined with a previously build structure
-		if(ocex->placementHash == cex->placementHash && ocex->component == cex->component && ocex->data.localToWorldMatrix() == cex->data.localToWorldMatrix()) {
-			return true;
+		cex->data.load(&api_, &res.currentExpansionData, comp);
+
+		// Calculate component transform matrix
+		{
+			int transformFlags = 0;
+			if(std::get<bool>(node->pragma("horizontalEdge")))
+				transformFlags |= +BlockOrientation::TransformFlags::horizontalEdge;
+
+			if(std::get<bool>(node->pragma("verticalEdge")))
+				transformFlags |= +BlockOrientation::TransformFlags::verticalEdge;
+
+			if(std::get<bool>(node->pragma("adjacent")))
+				transformFlags |= +BlockOrientation::TransformFlags::adjacent;
+
+			if(crex.mirror)
+				transformFlags |= +BlockOrientation::TransformFlags::mirror;
+
+			cex->data.localToWorldMatrix() *= n.orientation.transformToMatch(res.orientation.adjacent(), transformFlags);
+			cex->data.localToWorldMatrix() *= BlockTransformMatrix::translation(-blockPosValue(node->config().position, res.currentExpansionData.constSamplePos()));
+
+			cex->placementHash = HashUtils::multiHash(cex->data.localToWorldMatrix(), comp);
 		}
-	}*/
 
-	componentExpansions_.push_back(cex);
+		// Check if there already isn't the same component with the same position (so we can create a loop)
+		// This is basically useless, dropping
+		/*for(const ComponentExpansionStatePtr &ocex: componentExpansions_) {
+			// If there already is the same component with the same position, return true
+			// This means that this expansion branch joined with a previously build structure
+			if(ocex->placementHash == cex->placementHash && ocex->component == cex->component && ocex->data.localToWorldMatrix() == cex->data.localToWorldMatrix()) {
+				return true;
+			}
+		}*/
 
-	// Generate and check areas
-	for(const WGA_Component::Area &arc: comp->areas()) {
-		int &nameID = areaNameMapping_[arc.name];
-		if(!nameID)
-			nameID = areaNameMapping_.size();
+		componentExpansions_.push_back(cex);
 
-		const BlockWorldPos pos1 = cex->data.mapToWorld(blockPosValue(arc.startPos, cex->data.constSamplePos()));
-		const BlockWorldPos pos2 = cex->data.mapToWorld(blockPosValue(arc.endPos, cex->data.constSamplePos()));
+		// Generate and check areas
+		for(const WGA_Component::Area &arc: comp->areas()) {
+			int &nameID = areaNameMapping_[arc.name];
+			if(!nameID)
+				nameID = areaNameMapping_.size();
 
-		Area area{
-			.nameID = nameID,
-			.startPos = pos1.min(pos2),
-			.endPos = pos1.max(pos2),
-		};
+			const BlockWorldPos pos1 = cex->data.mapToWorld(blockPosValue(arc.startPos, cex->data.constSamplePos()));
+			const BlockWorldPos pos2 = cex->data.mapToWorld(blockPosValue(arc.endPos, cex->data.constSamplePos()));
 
-		// Check if the area is not overlapping other areas with the same name
-		if(!arc.canOverlap || arc.mustOverlap) {
-			bool overlaps = false;
+			Area area{
+				.nameID = nameID,
+				.startPos = pos1.min(pos2),
+				.endPos = pos1.max(pos2),
+			};
 
-			for(const Area &testArea: areas_) {
-				if(testArea.nameID != area.nameID)
-					continue;
+			// Check if the area is not overlapping other areas with the same name
+			if(!arc.canOverlap || arc.mustOverlap) {
+				bool overlaps = false;
 
-				// Areas with the same name cannot intersect
-				if((testArea.endPos >= area.startPos).all() && (testArea.startPos <= area.endPos).all()) {
-					overlaps = true;
-					break;
+				for(const Area &testArea: areas_) {
+					if(testArea.nameID != area.nameID)
+						continue;
+
+					// Areas with the same name cannot intersect
+					if((testArea.endPos >= area.startPos).all() && (testArea.startPos <= area.endPos).all()) {
+						overlaps = true;
+						break;
+					}
+				}
+
+				if(overlaps != arc.mustOverlap) {
+					failBranch();
+					return false;
 				}
 			}
 
-			if(overlaps != arc.mustOverlap) {
-				failBranch();
-				return false;
+			// Overlap areas are just for checking
+			if(!arc.isVirtual)
+				areas_.push_back(area);
+		}
+
+		// Check component conditions
+		if(!checkConditions(comp)) {
+			//qDebug() << "Component conditions failed";
+			failBranch();
+			return false;
+		}
+
+		// Process param sets
+		cex->data.setParams();
+
+		auto nodes = comp->nodes();
+
+		// Randomize the order of the nodes using Fisher-Yates shuffle
+		{
+			const size_t sz = nodes.size();
+			const Seed seed = WorldGen_CPU_Utils::hash(cex->data.seed() ^ 1531, seed_);
+			for(int i = 0; i < sz; i++) {
+				const int j = i + (WorldGen_CPU_Utils::hash(i, seed) % (sz - i));
+				std::swap(nodes[i], nodes[j]);
 			}
 		}
 
-		// Overlap areas are just for checking
-		if(!arc.isVirtual)
-			areas_.push_back(area);
-	}
+		// Expand the component node rules
+		for(const WGA_ComponentNode *node: nodes) {
+			if(!node->config().rule || node == cex->entryNode)
+				continue;
 
-	// Check component conditions
-	if(!checkConditions(comp)) {
-		//qDebug() << "Component conditions failed";
-		failBranch();
-		return false;
-	}
+			// If the expansion fails, expandRule calls failBranch, so we just return
+			if(!expandRule(node->config().rule, blockPosValue(node->config().position, cex->data.constSamplePos()), node->config().orientation, &cex->data))
+				return false;
 
-	// Process param sets
-	cex->data.setParams();
-
-	auto nodes = comp->nodes();
-
-	// Randomize the order of the nodes using Fisher-Yates shuffle
-	{
-		const size_t sz = nodes.size();
-		const Seed seed = WorldGen_CPU_Utils::hash(cex->data.seed() ^ 1531, seed_);
-		for(int i = 0; i < sz; i++) {
-			const int j = i + (WorldGen_CPU_Utils::hash(i, seed) % (sz - i));
-			std::swap(nodes[i], nodes[j]);
+			// expandRule changes the current data context, so we gotta change it back
+			currentDataContext_ = &cex->data;
 		}
 	}
-
-	// Expand the component node rules
-	for(const WGA_ComponentNode *node: nodes) {
-		if(!node->config().rule || node == cex->entryNode)
-			continue;
-
-		// If the expansion fails, expandRule calls failBranch, so we just return
-		if(!expandRule(node->config().rule, blockPosValue(node->config().position, cex->data.constSamplePos()), node->config().orientation, &cex->data))
-			return false;
-
-		// expandRule changes the current data context, so we gotta change it back
-		currentDataContext_ = &cex->data;
-	}
+	else throw;
 
 	return true;
 }

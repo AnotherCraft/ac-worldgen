@@ -32,7 +32,9 @@ public:
 public:
 	virtual WGA_Biome *newBiome() override;
 	virtual WGA_Rule *newRule() override;
+	virtual WGA_RuleExpansion *newRuleExpansion(WGA_Rule *rule) override;
 	virtual WGA_RuleExpansion *newRuleExpansion(WGA_Rule *rule, WGA_Component *component, const std::string &node) override;
+	virtual WGA_RuleExpansion *newRuleExpansion(WGA_Rule *rule, WGA_Rule *targetRule) override;
 	virtual WGA_Component *newComponent() override;
 	virtual WGA_ComponentNode *newComponentNode() override;
 

@@ -44,7 +44,7 @@ public:
 		return desc_;
 	}
 
-	inline void setDestription(const std::string &set) {
+	inline void setDescription(const std::string &set) {
 		desc_ = set;
 	}
 
@@ -52,7 +52,7 @@ protected:
 	PragmaList pragmas_;
 
 private:
-	std::string desc_;
+	std::string desc_, name_;
 
 };
 

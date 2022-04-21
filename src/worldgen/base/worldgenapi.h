@@ -78,7 +78,7 @@
   SECTION("Noise functions") \
   FUNC(randC, 1, ((T, seed, Float)), (T, result, Float), DIM_C(Const), (EXT, Noise), "Returns random value [0–1], constant everywhere.")                              \
   FUNC(randL, 1, ((T, seed, Float)), (T, result, Float), DIM_C(Const), (EXT_CONTEXTUAL, Structure), "Returns random value [0–1], constant everywhere. Incorporates local seed of the currently generated structure (works similarly to `randC(localSeed() + seed)`).") \
-	FUNC(randPC, 1, ((T, seed, Float)), (T, result, Float), DIM_C(PerChunk), (EXT, Noise), "Returns random value [0–1], different for each chunk.") \
+  FUNC(randPC, 1, ((T, seed, Float)), (T, result, Float), DIM_C(PerChunk), (EXT, Noise), "Returns random value [0–1], different for each chunk.") \
   FUNC(rand2D, 1, ((T, seed, Float)), (T, result, Float), DIM_C(2D), (EXT, Noise), "Returns random value [0–1], different for every column.") \
   FUNC(rand3D, 1, ((T, seed, Float)), (T, result, Float), DIM_C(3D), (EXT, Noise), "Returns random value [0–1], different for every block.") \
   FUNC(valueNoisePC, 3, ((T, octaveSize, Float), (T, seed, Float), (T, nodeValue, Float)), (T, result, Float), DIM_C(PerChunk), (EXT, Noise), "Linearly interpolates between values at node points that are determined by `nodeValue`.") \
@@ -225,6 +225,7 @@ public:
 	inline auto biomeGridSize() const {
 		return biomeGridSize_;
 	}
+
 	inline void setBiomeGridSize(BlockWorldPos_T set) {
 		if(set < 16 || !std::has_single_bit(static_cast<uint64_t>(set)))
 			throw std::exception("Biome grid size must be larger than 16 and be power of 2.");
@@ -255,7 +256,16 @@ public:
 public:
 	virtual WGA_Biome *newBiome() = 0;
 	virtual WGA_Rule *newRule() = 0;
+
+	/// New rule expansion that expands to nothing
+	virtual WGA_RuleExpansion *newRuleExpansion(WGA_Rule *rule) = 0;
+
+	/// Rule expansion to a component
 	virtual WGA_RuleExpansion *newRuleExpansion(WGA_Rule *rule, WGA_Component *component, const std::string &node) = 0;
+
+	/// Rule expansion to another rule
+	virtual WGA_RuleExpansion *newRuleExpansion(WGA_Rule *rule, WGA_Rule *targetRule) = 0;
+
 	virtual WGA_Component *newComponent() = 0;
 	virtual WGA_ComponentNode *newComponentNode() = 0;
 
@@ -273,7 +283,7 @@ public:
 private:
 	WorldGenSeed seed_ = 0;
 	std::unordered_map<std::string, BlockID> blockUIDMapping_;
-	BlockWorldPos_T  biomeGridSize_ = 256;
+	BlockWorldPos_T biomeGridSize_ = 256;
 
 };
 

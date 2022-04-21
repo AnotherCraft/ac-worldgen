@@ -73,12 +73,27 @@ WGA_Rule *WorldGenAPI_CPU::newRule() {
 	return rule;
 }
 
+WGA_RuleExpansion *WorldGenAPI_CPU::newRuleExpansion(WGA_Rule *rule) {
+	WGA_RuleExpansion *ruleex = new WGA_RuleExpansion(rule);
+	rule->addExpansion(ruleex);
+	symbols_.push_back(ruleex);
+	return ruleex;
+}
+
 WGA_RuleExpansion *WorldGenAPI_CPU::newRuleExpansion(WGA_Rule *rule, WGA_Component *component, const std::string &node) {
 	WGA_RuleExpansion *ruleex = new WGA_RuleExpansion(rule, component, node);
 	rule->addExpansion(ruleex);
 	symbols_.push_back(ruleex);
 	return ruleex;
 }
+
+WGA_RuleExpansion *WorldGenAPI_CPU::newRuleExpansion(WGA_Rule *rule, WGA_Rule *targetRule) {
+	WGA_RuleExpansion *ruleex = new WGA_RuleExpansion(rule, targetRule);
+	rule->addExpansion(ruleex);
+	symbols_.push_back(ruleex);
+	return ruleex;
+}
+
 
 WGA_Component *WorldGenAPI_CPU::newComponent() {
 	WGA_Component *component = new WGA_Component();

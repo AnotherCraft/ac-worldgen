@@ -13,7 +13,7 @@ const std::unordered_map<WGA_Value::ValueType, std::string> WGA_Value::typeNames
 };
 
 WGA_Value::WGA_Value() {
-	setDestription("(value)");
+	setDescription("(value)");
 }
 
 WGA_Value::~WGA_Value() {

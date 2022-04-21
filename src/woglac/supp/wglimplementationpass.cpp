@@ -59,11 +59,15 @@ void WGLImplementationPass::enterRuleExpansionStatement(WoglacParser::RuleExpans
 
 	WGLSymbol *parentRule = sym->parent()->effectiveTarget();
 
-	WGLSymbol *component = ctx->component ? lookupIdentifier(ctx->component, false) : nullptr;
-	if(component && component->symbolType() != SymbolType::Component)
-		throw WGLError(std::format("Symbol '{}' is not a structure component.", component->fullName()), ctx->component);
+	bool expandsToComponent = ctx->node;
+	const std::string node = ctx->node ? WGLUtils::identifier(ctx->node) : std::string{};
+	WGLSymbol *target = ctx->expansionTarget ? lookupIdentifier(ctx->expansionTarget, false) : nullptr;
 
-	const std::string node = WGLUtils::identifier(ctx->node);
+	if(!target) {}
+	else if(expandsToComponent && target->symbolType() != SymbolType::Component)
+		throw WGLError(std::format("Symbol '{}' is not a structure component.", target->fullName()), ctx->target);
+	else if(!expandsToComponent && target->symbolType() != SymbolType::Rule)
+		throw WGLError(std::format("Symbol '{}' is not a structure rule.", target->fullName()), ctx->target);
 
 	std::vector<std::pair<std::string, WGA_Symbol::PragmaValue >> pragmaSets;
 
@@ -73,8 +77,15 @@ void WGLImplementationPass::enterRuleExpansionStatement(WoglacParser::RuleExpans
 	if(ctx->probabilityRatio)
 		pragmaSets.push_back({"probabilityRatio", WGLUtils::numericLiteral(ctx->probabilityRatio)});
 
-	ctx_->addApiCmd(sym, {parentRule, component}, [sym, parentRule, component, node, pragmaSets](WGLAPIContext &ctx) {
-		WGA_RuleExpansion *rex = ctx.api->newRuleExpansion(ctx.map<WGA_Rule>(parentRule), component ? ctx.map<WGA_Component>(component) : nullptr, node);
+	ctx_->addApiCmd(sym, {parentRule, target}, [sym, parentRule, target, expandsToComponent, node, pragmaSets](WGLAPIContext &ctx) {
+		WGA_RuleExpansion *rex;
+
+		if(!target)
+			rex = ctx.api->newRuleExpansion(ctx.map<WGA_Rule>(parentRule));
+		else if(expandsToComponent)
+			rex = ctx.api->newRuleExpansion(ctx.map<WGA_Rule>(parentRule), ctx.map<WGA_Component>(target), node);
+		else
+			rex = ctx.api->newRuleExpansion(ctx.map<WGA_Rule>(parentRule), ctx.map<WGA_Rule>(target));
 
 		for(const auto &ps: pragmaSets)
 			rex->setPragma(ps.first, ps.second);
@@ -97,7 +108,7 @@ void WGLImplementationPass::enterBiomeParamDefinition(WoglacParser::BiomeParamDe
 	ctx_->addApiCmd(sym, deps, [sym, val](WGLAPIContext &ctx) {
 		// We use proxy to prevent problems when having multiple biome params with the same default value (or when overriding the default value with the actual default value expression)
 		auto vf = val.func(ctx);
-		vf->setDestription("PROXY:" + sym->desc());
+		vf->setDescription("PROXY:" + sym->desc());
 		ctx.addSymbolMapping(sym, ctx.api->proxy(vf));
 	});
 }
@@ -714,7 +725,7 @@ WGLImplementationPass::ExpressionResult WGLImplementationPass::functionCall(cons
 	return ExpressionResult{
 		[fid, args, desc](WGLAPIContext &ctx) {
 			auto r = ctx.api->function(fid, iterator(args).mapx(x.func(ctx)).toList());
-			r->setDestription(desc);
+			r->setDescription(desc);
 			return r;
 		},
 		f.returnValue.type

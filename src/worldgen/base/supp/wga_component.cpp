@@ -3,7 +3,7 @@
 #include "wga_componentnode.h"
 
 WGA_Component::WGA_Component() {
-	setDestription("(component)");
+	setDescription("(component)");
 
 	static const PragmaList pg{
 		{"allowMirroring", false},

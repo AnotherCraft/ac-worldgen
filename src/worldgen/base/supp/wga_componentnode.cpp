@@ -1,7 +1,7 @@
 #include "wga_componentnode.h"
 
 WGA_ComponentNode::WGA_ComponentNode() {
-	setDestription("(componentNode)");
+	setDescription("(componentNode)");
 
 	static const PragmaList pg{
 		{"allowRotation",  false},

@@ -48,7 +48,7 @@ structureConditionStatement:
 	(targetType=('component' | 'rule') target=extendedIdentifier?)? 'condition' cond=expression ';';
 
 ruleExpansionStatement:
-	'rule' target=extendedIdentifier? '->' (component=extendedIdentifier '::' node=Identifier | 'void') ('!' priority=NumericLiteral)? (':' probabilityRatio=NumericLiteral)? content=contentOrSemicolon;
+	'rule' target=extendedIdentifier? '->' (expansionTarget=extendedIdentifier ('::' node=Identifier)? | 'void') ('!' priority=NumericLiteral)? (':' probabilityRatio=NumericLiteral)? content=contentOrSemicolon;
 
 componentNodeStatement:
 	('component' target=extendedIdentifier)? 'node' pos=positionExpression cmn=componentNodeStatementCommonPart;

@@ -633,7 +633,7 @@ Rules define... well rules of what component will actually be spawned. The used 
 ### Rule expansions
 > ```g4
 > ruleExpansionStatement:
->	'rule' target=extendedIdentifier? '->' (component=extendedIdentifier '::' node=Identifier | 'void') ('!' priority=NumericLiteral)? (':' probabilityRatio=NumericLiteral)? content=contentOrSemicolon;
+>	'rule' target=extendedIdentifier? '->' (expansionTarget=extendedIdentifier ('::' node=Identifier)? | 'void') ('!' priority=NumericLiteral)? (':' probabilityRatio=NumericLiteral)? content=contentOrSemicolon;
 > ```
 
 ```WOGLAC
@@ -674,6 +674,17 @@ The `!prio` construct is used to define a priority and the `:prob` is used to de
 
 Probabilities are defined as ratios, meaning a rule expansion with probability ratio `200` is twice as likely to be selected as rule expansion with probability ratio `100`. Default probability ratio is `100`. If an expansion randomly selected based on the probability ratios fails, another expansion candidate is selected respecting probability ratios of the remaining candidates.
 
+
+### Rule-rule expansion
+A rule can be set up to expand to another rule:
+```WOGLAC
+rule R {
+
+}
+rule R2 {
+    rule -> R;
+}
+```
 
 ### Void rule expansion
 A rule can be also set up to expand into nothing. This can be achieved using the `rule -> void;` syntax:
