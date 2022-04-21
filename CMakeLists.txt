@@ -55,6 +55,7 @@ ExternalProject_Add(
 ExternalProject_Add(x_ac_worldgen
         SOURCE_DIR "${PROJECT_SOURCE_DIR}/src"
         BUILD_ALWAYS ON
+        INSTALL_COMMAND ""
         STEP_TARGETS build
         CMAKE_ARGS ${EXTERNAL_ARGS}
         )
@@ -74,7 +75,6 @@ file(
 )
 target_compile_definitions(x_ac_worldgen_dummy PRIVATE TRACY_ENABLE)
 target_sources(x_ac_worldgen_dummy PRIVATE ${ac_client_src})
-target_sources(x_ac_worldgen_dummy PRIVATE "${PROJECT_BASE_DIR}/qt6.natvis")
 target_precompile_headers(x_ac_worldgen_dummy PRIVATE "${PROJECT_BASE_DIR}/src/pch.h")
 target_include_directories(x_ac_worldgen_dummy PRIVATE "${PROJECT_BASE_DIR}/src")
 target_include_directories(x_ac_worldgen_dummy SYSTEM PRIVATE

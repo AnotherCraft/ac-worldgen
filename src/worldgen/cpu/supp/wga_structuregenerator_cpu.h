@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <stack>
+#include <list>
 
 #include "util/matrix.h"
 #include "util/blockorientation.h"
@@ -21,9 +22,7 @@ public:
 		int nameID; ///< using areaNameMapping
 		BlockWorldPos startPos, endPos;
 	};
-	struct State {
-		int areaCount, componentExpansionCount, ruleExpansionCount, currentlyExpandedRuleIx;
-	};
+
 	struct DataContext {
 
 	public:
@@ -107,11 +106,13 @@ public:
 		DataContext currentExpansionData;
 		std::vector<WGA_Rule::CompiledExpansion> possibleExpansions;
 		std::vector<RuleExpansionNode> possibleExpansionNodes;
-		int currentExpansionIndex = -1;
-		int currentExpansionNodeIndex = -1;
+		size_t currentExpansionIndex = -1;
+		size_t currentExpansionNodeIndex = -1;
 
 	};
 	using RuleExpansionStatePtr = std::shared_ptr<RuleExpansionState>;
+	using RuleExpansionList = std::list<RuleExpansionStatePtr>;
+	using RuleExpansionIterator = RuleExpansionList::iterator;
 
 	struct ComponentExpansionState {
 
@@ -125,6 +126,11 @@ public:
 
 	};
 	using ComponentExpansionStatePtr = std::shared_ptr<ComponentExpansionState>;
+
+	struct State {
+		size_t areaCount, componentExpansionCount, ruleExpansionCount;
+		RuleExpansionIterator currentlyExpandedRuleIx;
+	};
 
 public:
 	WGA_StructureGenerator_CPU(WorldGenAPI_CPU &api);
@@ -172,12 +178,12 @@ private:
 	std::stack<State> stateStack_;
 	std::vector<Area> areas_;
 	std::vector<ComponentExpansionStatePtr> componentExpansions_;
-	std::vector<RuleExpansionStatePtr> ruleExpansions_;
-	int currentlyExpandedRuleIx_ = -1; ///< Index to ruleExpansion to the current rule being processed
+	RuleExpansionList ruleExpansions_;
+	RuleExpansionIterator currentlyExpandedRuleIx_; ///< Index to ruleExpansion to the current rule being processed
 
 private:
-	int expansionCount_ = 0, maxExpansionCount_ = 16384; ///< Limits how many expansion attempts can be made
-	int maxStackDepth_ = 512;
+	size_t expansionCount_ = 0, maxExpansionCount_ = 16384; ///< Limits how many expansion attempts can be made
+	size_t maxStackDepth_ = 512;
 	Seed seed_;
 	std::unordered_map<std::string, int> areaNameMapping_; ///< Mapping are names to int to speed up comparison
 

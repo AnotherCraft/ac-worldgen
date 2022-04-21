@@ -33,12 +33,15 @@ void WGA_StructureGenerator_CPU::setup(WGA_Rule *entryRule, const BlockWorldPos 
 	stateStack_ = {};
 
 	seed_ = WorldGen_CPU_Utils::hash(origin.to<uint32_t>(), seed);
-	currentlyExpandedRuleIx_ = 0;
 	expansionCount_ = 0;
 	currentDataContext_ = nullptr;
 
+	currentlyExpandedRuleIx_ = ruleExpansions_.begin();
+
 	addBranch();
 	expandRule(entryRule, origin, BlockOrientation(), nullptr);
+
+	currentlyExpandedRuleIx_ = ruleExpansions_.begin();
 }
 
 bool WGA_StructureGenerator_CPU::process() {
@@ -46,7 +49,7 @@ bool WGA_StructureGenerator_CPU::process() {
 	bind();
 	SCOPE_EXIT(unbind());
 
-	while(currentlyExpandedRuleIx_ < ruleExpansions_.size()) {
+	while(currentlyExpandedRuleIx_ != ruleExpansions_.end()) {
 		expansionCount_++;
 		if(expansionCount_ >= maxExpansionCount_) {
 			std::cerr << "Failed to spawn structure: maximum expansion count exceeded (" << maxExpansionCount_ << ")";
@@ -58,7 +61,7 @@ bool WGA_StructureGenerator_CPU::process() {
 			return false;
 		}
 
-		if(processExpansion(*ruleExpansions_[currentlyExpandedRuleIx_]))
+		if(processExpansion(**currentlyExpandedRuleIx_))
 			currentlyExpandedRuleIx_++;
 
 		/*TracyPlot("structureGenerator.stackSize", static_cast<float>(stateStack_.size()));
@@ -67,7 +70,7 @@ bool WGA_StructureGenerator_CPU::process() {
 		TracyPlot("structureGenerator.expansionCount", static_cast<float>(expansionCount_));*/
 	}
 
-	if(ruleExpansions_.size() == 0) {
+	if(ruleExpansions_.empty()) {
 		std::cerr << "Failed to spawn structure: no solution found, tried all possible expansions. (" << expansionCount_ << ")";
 		return false;
 	}
@@ -197,13 +200,26 @@ bool WGA_StructureGenerator_CPU::expandRule(WGA_Rule *rule, const BlockWorldPos 
 
 	RuleExpansionStatePtr res(new RuleExpansionState());
 	currentDataContext_ = &res->ruleData;
-	ruleExpansions_.push_back(res);
 
 	res->ruleData.load(&api_, data, rule);
 	res->ruleData.localToWorldMatrix() *= BlockTransformMatrix::translation(localOrigin);
 
 	res->orientation = orientation;
 	res->rule = rule;
+
+	bool doDepthFirst = false;
+	if(!ruleExpansions_.empty()) {
+		const float prob = std::get<float>(rule->pragma("depthFirstProbability"));
+		doDepthFirst = WorldGen_CPU_Utils::hash(136841, res->ruleData.seed()) % 1000 < prob * 1000;
+	}
+
+	if(doDepthFirst) {
+		auto it = currentlyExpandedRuleIx_;
+		it++;
+		ruleExpansions_.insert(it, res);
+	}
+	else
+		ruleExpansions_.push_back(res);
 
 	// Check rule conditions
 	if(!checkConditions(rule)) {
@@ -345,13 +361,13 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 	res.currentExpansionNodeIndex++;
 	addBranch();
 
-	ComponentExpansionStatePtr cex(new ComponentExpansionState());
+	ComponentExpansionStatePtr cex(new ComponentExpansionState{
+		.component = comp,
+		.entryNode = node,
+	});
 	currentDataContext_ = &cex->data;
 
 	cex->data.load(&api_, &res.currentExpansionData, comp);
-
-	cex->component = comp;
-	cex->entryNode = node;
 
 	// Calculate component transform matrix
 	{
@@ -395,10 +411,11 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 		const BlockWorldPos pos1 = cex->data.mapToWorld(blockPosValue(arc.startPos, cex->data.constSamplePos()));
 		const BlockWorldPos pos2 = cex->data.mapToWorld(blockPosValue(arc.endPos, cex->data.constSamplePos()));
 
-		Area area;
-		area.nameID = nameID;
-		area.startPos = pos1.min(pos2);
-		area.endPos = pos1.max(pos2);
+		Area area{
+			.nameID = nameID,
+			.startPos = pos1.min(pos2),
+			.endPos = pos1.max(pos2),
+		};
 
 		// Check if the area is not overlapping other areas with the same name
 		if(!arc.canOverlap || arc.mustOverlap) {
@@ -467,14 +484,12 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 void WGA_StructureGenerator_CPU::addBranch() {
 	// ZoneScoped;
 
-	State s;
-
-	s.areaCount = areas_.size();
-	s.ruleExpansionCount = ruleExpansions_.size();
-	s.componentExpansionCount = componentExpansions_.size();
-	s.currentlyExpandedRuleIx = currentlyExpandedRuleIx_;
-
-	stateStack_.push(s);
+	stateStack_.push(State{
+		.areaCount = areas_.size(),
+		.componentExpansionCount = componentExpansions_.size(),
+		.ruleExpansionCount = ruleExpansions_.size(),
+		.currentlyExpandedRuleIx = currentlyExpandedRuleIx_,
+	});
 }
 
 void WGA_StructureGenerator_CPU::failBranch() {

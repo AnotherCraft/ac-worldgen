@@ -5,6 +5,11 @@
 
 WGA_Rule::WGA_Rule() {
 	setDestription("(rule)");
+
+	static const PragmaList pg{
+		{"depthFirstProbability", 0.0f},
+	};
+	pragmas_ = pg;
 }
 
 WGA_Symbol::SymbolType WGA_Rule::symbolType() const {
