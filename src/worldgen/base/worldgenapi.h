@@ -76,8 +76,9 @@
   FUNC(sampleAt, 2, ((ANY, variable), (T, node, ComponentNode)), (ARG, valueAtNodePos, 1), DIM_MIN_ARGS_2, (EXT_CONTEXTUAL, Structure), "Returns value of `variable` sampled on position of the given node.") \
   \
   SECTION("Noise functions") \
-  FUNC(randC, 1, ((T, seed, Float)), (T, result, Float), DIM_C(Const), (EXT, Noise), "Returns random value [0–1], constant everywhere.") \
-  FUNC(randPC, 1, ((T, seed, Float)), (T, result, Float), DIM_C(PerChunk), (EXT, Noise), "Returns random value [0–1], different for each chunk.") \
+  FUNC(randC, 1, ((T, seed, Float)), (T, result, Float), DIM_C(Const), (EXT, Noise), "Returns random value [0–1], constant everywhere.")                              \
+  FUNC(randL, 1, ((T, seed, Float)), (T, result, Float), DIM_C(Const), (EXT_CONTEXTUAL, Structure), "Returns random value [0–1], constant everywhere. Incorporates local seed of the currently generated structure (works similarly to `randC(localSeed() + seed)`).") \
+	FUNC(randPC, 1, ((T, seed, Float)), (T, result, Float), DIM_C(PerChunk), (EXT, Noise), "Returns random value [0–1], different for each chunk.") \
   FUNC(rand2D, 1, ((T, seed, Float)), (T, result, Float), DIM_C(2D), (EXT, Noise), "Returns random value [0–1], different for every column.") \
   FUNC(rand3D, 1, ((T, seed, Float)), (T, result, Float), DIM_C(3D), (EXT, Noise), "Returns random value [0–1], different for every block.") \
   FUNC(valueNoisePC, 3, ((T, octaveSize, Float), (T, seed, Float), (T, nodeValue, Float)), (T, result, Float), DIM_C(PerChunk), (EXT, Noise), "Linearly interpolates between values at node points that are determined by `nodeValue`.") \

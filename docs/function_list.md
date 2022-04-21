@@ -261,6 +261,12 @@ Float randC(Float seed)
 ```
 
 Returns random value [0–1], constant everywhere.
+## `randL` 
+```WOGLAC
+Float randL(Float seed)
+```
+
+Returns random value [0–1], constant everywhere. Incorporates local seed of the currently generated structure (works similarly to `randC(localSeed() + seed)`).
 ## `randPC` 
 ```WOGLAC
 Float randPC(Float seed)

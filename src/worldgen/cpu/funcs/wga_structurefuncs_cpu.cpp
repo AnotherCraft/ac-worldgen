@@ -74,7 +74,6 @@ void WGA_StructureFuncs_CPU::localPos(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key
 }
 
 void WGA_StructureFuncs_CPU::localSeed(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key key, DH <WGA_Value::ValueType::Float> result) {
-	ASSERT(api->structureGen);
 	if(!api->structureGen)
 		throw std::exception("localSeed() called outside structure generation");
 
@@ -83,6 +82,14 @@ void WGA_StructureFuncs_CPU::localSeed(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Ke
 
 void WGA_StructureFuncs_CPU::distanceTo(Api api, Key key, DH <VT::Float> result, V <VT::ComponentNode> node) {
 	WGA_SF_NODE_POS_SHENANIGANS((nodeWorldPos.to<float>() - worldPos.to<float>()).length());
+}
+
+void WGA_StructureFuncs_CPU::randL(WGA_Funcs_CPU::Api api, const WGA_DataRecord_CPU::Key &key, WGA_Funcs_CPU::DH<VT::Float> result, WGA_Funcs_CPU::V<VT::Float> seed) {
+	if(!api->structureGen)
+		throw std::exception("localSeed() called outside structure generation");
+
+	const Seed seedv = WorldGen_CPU_Utils::hash(api->structureGen->currentDataContext()->seed(), static_cast<Seed>(seed.constValue()));
+	result[0] = static_cast<float>(seedv & 65535) / 65535.0f;
 }
 
 void WGA_StructureFuncs_CPU::_spawn(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key key, DH <VT::Block> result, V <VT::Float> maxRadius, V <VT::Float> seed, const WGA_StructureFuncs_CPU::SpawnFunc &spawnFunc) {

@@ -42,6 +42,8 @@ public:
 	template<VT t>
 	static void sampleAt(Api api, Key key, DH <t> result, V <t> value, V <VT::ComponentNode> node);
 
+	static void randL(Api api, Key key, DH <VT::Float> result, V <VT::Float> seed);
+
 private:
 	using StructureRec = WGA_StructureOutputDataRecord_CPU;
 	using StructureRecPtr = std::shared_ptr<StructureRec>;

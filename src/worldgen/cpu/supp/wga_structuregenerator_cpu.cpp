@@ -294,7 +294,11 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 		if(!comp)
 			return true;
 
-		for(WGA_ComponentNode *targetNode: comp->nodes(rex->node())) {
+		const auto nodeList = comp->nodes(rex->node());
+		if(nodeList.empty())
+			std::cerr << std::format("There are no '{}' nodes in the '{}' component.\n", rex->node(), comp->description());
+
+		for(WGA_ComponentNode *targetNode: nodeList) {
 			BlockOrientation ori = targetNode->config().orientation;
 
 			if(ori.isSpecified() && std::get<bool>(targetNode->pragma("allowRotation"))) {

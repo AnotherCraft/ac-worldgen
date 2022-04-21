@@ -556,8 +556,7 @@ void WGA_NoiseFuncs_CPU::poissonDisc2DBool(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU
 }
 
 void WGA_NoiseFuncs_CPU::rand(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key key, DH <WGA_Value::ValueType::Float> result, V <WGA_Value::ValueType::Float> seedv) {
-	const Seed seed = api->seed() ^ static_cast<Seed>(seedv.constValue());
-	const Seed localSeed = WorldGen_CPU_Utils::hash(key.origin.to<uint32_t>(), seed);
+	const Seed localSeed = WorldGen_CPU_Utils::hash(key.origin.to<uint32_t>(), WorldGen_CPU_Utils::hash(api->seed(), static_cast<Seed>(seedv.constValue())));
 
 	for(int i = 0; i < result.size; i++)
 		result[i] = static_cast<float>(WorldGen_CPU_Utils::hash(localSeed ^ i) & 65535) / 65535.0f;
