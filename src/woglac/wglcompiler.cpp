@@ -4,6 +4,8 @@
 #include <fstream>
 #include <format>
 
+#include "util/iterators.h"
+
 #include "wglcompiler.h"
 
 #include "supp/wglmodule.h"
@@ -40,7 +42,7 @@ std::string WGLCompiler::lookupFile(const std::string &filename, antlr4::ParserR
 			return filePath;
 	}
 
-	throw WGLError(std::format("Failed to lookup file '{}'", filename), ctx);
+	throw WGLError(std::format("Failed to lookup file '{}' in directories:\n{}", filename, iterator(lookupDirectories_).join('\n')), ctx);
 }
 
 void WGLCompiler::compile() {

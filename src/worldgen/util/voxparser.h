@@ -26,6 +26,10 @@ public:
 		return voxels_.empty();
 	}
 
+	inline const std::string &fileName() const {
+		return fileName_;
+	}
+
 	void clear();
 
 private:
@@ -39,6 +43,7 @@ private:
 	Chunk readChunk(std::basic_istream<char> &b);
 
 private:
+	std::string fileName_;
 	std::unordered_map<uint8_t, std::vector<VoxelPos>> voxels_;
 
 };

@@ -234,6 +234,10 @@ void WGLImplementationPass::enterComponentIncludeStatementBlockParam(WoglacParse
 	ASSERT(component->symbolType() == SymbolType::Component);
 
 	const int id = WGLUtils::numericLiteral(ctx->id);
+	if(!voxParser_.voxels().contains(id)) {
+		std::cerr << std::format("Vox file '{}' does not contain voxels of ID {}", voxParser_.fileName(), id);
+		return;
+	}
 
 	DependencyList deps;
 	const auto val = expression(ctx->val, deps);
