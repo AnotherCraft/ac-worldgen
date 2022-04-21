@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <vector>
 #include <mutex>
+#include <map>
 
 #include "pch.h"
 #include "wga_grammarsymbol.h"
@@ -21,7 +22,7 @@ public:
 	};
 	struct CompiledExpansionList {
 		/// Expansions are grouped by priority into lists.
-		std::unordered_map<float, SamePriorityCompiledExpansionList> subLists;
+		std::map<float, SamePriorityCompiledExpansionList> subLists;
 	};
 
 public:
