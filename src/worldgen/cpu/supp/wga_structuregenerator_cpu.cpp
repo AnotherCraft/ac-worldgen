@@ -400,18 +400,29 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 		area.endPos = pos1.max(pos2);
 
 		// Check if the area is not overlapping other areas with the same name
-		for(const Area &testArea: areas_) {
-			if(testArea.nameID != area.nameID)
-				continue;
+		if(!arc.canOverlap || arc.mustOverlap) {
+			bool overlaps = false;
 
-			// Areas with the same name cannot intersect
-			if((testArea.endPos >= area.startPos).all() && (testArea.startPos <= area.endPos).all()) {
+			for(const Area &testArea: areas_) {
+				if(testArea.nameID != area.nameID)
+					continue;
+
+				// Areas with the same name cannot intersect
+				if((testArea.endPos >= area.startPos).all() && (testArea.startPos <= area.endPos).all()) {
+					overlaps = true;
+					break;
+				}
+			}
+
+			if(overlaps != arc.mustOverlap) {
 				failBranch();
 				return false;
 			}
 		}
 
-		areas_.push_back(area);
+		// Overlap areas are just for checking
+		if(!arc.isVirtual)
+			areas_.push_back(area);
 	}
 
 	// Check component conditions

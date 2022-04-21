@@ -22,5 +22,6 @@ This is more or less true even in practice, except the worldgen system works wit
 5. [Domain warping, mountains](05_warping.md)
 6. [Biomes](06_biomes.md)
 7. [Trees, structure generation](07_trees.md)
-8. [Dungeons, structure generation](08_structures.md)
-9. Structures, structure imports
+8. [Dungeons, structure generation](08_dungeons.md)
+9. [Mazes, structure generation](09_mazes.md)
+10. Structures, structure imports

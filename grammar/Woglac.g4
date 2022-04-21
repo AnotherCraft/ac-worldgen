@@ -67,7 +67,7 @@ componentNodeOrientationExpression:
 	dir=Identifier sign=('+' | '-');
 
 componentAreaStatement:
-	('component' target=extendedIdentifier)? 'area' startPos=positionExpression endPos=positionExpression name=Identifier? ';';
+	('component' target=extendedIdentifier)? 'area' startPos=positionExpression endPos=positionExpression ('(' canOverlap='#'? mustOverlap='!'? isVirtual='?'? ')')? name=Identifier? ';';
 
 componentBlockStatement:
 	('component' target=extendedIdentifier)? 'block' startPos=positionExpression endPos=positionExpression? '=' val=expression ';';

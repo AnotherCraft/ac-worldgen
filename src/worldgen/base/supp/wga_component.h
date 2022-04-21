@@ -15,6 +15,10 @@ public:
 		std::string name;
 		WGA_Value *startPos = nullptr; ///< Component-local position
 		WGA_Value *endPos = nullptr; ///< Component-local position
+
+		bool canOverlap = false; ///< If true, the area can overlap other areas
+		bool mustOverlap = false; ///< If true, the area is REQUIRED to overlap other areas
+		bool isVirtual = false; ///< If true, the area is only used for checking against other areas, but is not actually generated
 	};
 
 	/// Area of parametrically defined blocks

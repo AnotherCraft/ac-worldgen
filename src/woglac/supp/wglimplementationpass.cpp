@@ -314,11 +314,15 @@ void WGLImplementationPass::enterComponentAreaStatement(WoglacParser::ComponentA
 	ExpressionResult startPos = positionExpression(ctx->startPos, deps);
 	ExpressionResult endPos = positionExpression(ctx->endPos, deps);
 
-	const std::string name = WGLUtils::identifier(ctx->name);
+	const WGA_Component::Area iarea {
+		.name = WGLUtils::identifier(ctx->name),
+		.canOverlap = static_cast<bool>(ctx->canOverlap),
+		.mustOverlap = static_cast<bool>(ctx->mustOverlap),
+		.isVirtual = static_cast<bool>(ctx->isVirtual),
+	};
 
-	ctx_->addApiCmd(nullptr, deps, [component, startPos, endPos, name](WGLAPIContext &ctx) {
-		WGA_Component::Area area;
-		area.name = name;
+	ctx_->addApiCmd(nullptr, deps, [component, startPos, endPos, iarea](WGLAPIContext &ctx) {
+		WGA_Component::Area area = iarea;
 		area.startPos = startPos.func(ctx);
 		area.endPos = endPos.func(ctx);
 

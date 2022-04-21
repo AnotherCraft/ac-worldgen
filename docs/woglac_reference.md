@@ -31,7 +31,7 @@ namespace test;
 ## Keywords
 Keywords are:
 
-	area, biome, block, component, condition, extend, false, include, node, param, pragma, rule, true, void
+	area, biome, block, component, condition, extend, false, include, node, overlap, param, pragma, rule, true, void
 
 ## Comments
 WOGLAC uses standard C++ comment syntax. Block comments can be nested however.
@@ -434,7 +434,7 @@ This would for example generate a sphere with radius 5 and center at `(5, 5, 5)`
 ### Component areas
 > ```g4
 > componentAreaStatement:
->	('component' target=extendedIdentifier)? 'area' startPos=positionExpression endPos=positionExpression name=Identifier? ';';
+>	('component' target=extendedIdentifier)? 'area' startPos=positionExpression endPos=positionExpression ('(' canOverlap='#'? mustOverlap='!'? isVirtual='?'? ')')? name=Identifier? ';';
 > ```
 
 By default, components can be spawned in such way that they overlap each other. To prevent this, it is necessary to define areas. Once they are defined, the structure generator ensures that no areas with the same name overlap. Areas are always cuboid shaped.
@@ -446,6 +446,16 @@ component c {
 ```
 
 The code above will create an area spanning across the given coordinates (inclusive). The name of the area can be omitted (the overlap will then be checked against all other areas that don't have a name).
+
+Areas can have their behaviour altered optionally:
+```WOGLAC
+component c {
+  area (0, 0, 0) (1, 1, 1) (# ! ?) areaName;
+}
+```
+* The `#` symbol can be used to specify that the area actually can overlap a previously spawned area (but further spawned areas cannot overlap this area).
+* The `!` symbol can be used to specify that the area is **required** to overlap some previously spawned area.
+* The `?` symbol can be used to specify that the area is virtual – it is used only for checking and further areas should completely ignore it.
 
 ### Component includes
 > ```g4

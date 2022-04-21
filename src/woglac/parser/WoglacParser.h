@@ -418,6 +418,9 @@ public:
     WoglacParser::ExtendedIdentifierContext *target = nullptr;;
     WoglacParser::PositionExpressionContext *startPos = nullptr;;
     WoglacParser::PositionExpressionContext *endPos = nullptr;;
+    antlr4::Token *canOverlap = nullptr;;
+    antlr4::Token *mustOverlap = nullptr;;
+    antlr4::Token *isVirtual = nullptr;;
     antlr4::Token *name = nullptr;;
     ComponentAreaStatementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
