@@ -692,8 +692,8 @@ By default, the void expansion has priority `9999`, meaning it is only used as a
 
 | Pragma | Type | Default value | Description |
 | --- | --- | --- | --- |
-`priority` | `Float` | `1` (or `9999` for void expansion) | Priority of the expansion. Lower number means higher priority.
-`probabilityRatio` | `Float` | `100` | Probability of selecting the expansion, relative to other expansions.
+`priority` | `Float` | `1` (or `9999` for void expansion) | Priority of the expansion. Lower number means higher priority. You can also use the `:xxx` shorthand syntax.
+`probabilityRatio` | `Float` | `100` | Probability of selecting the expansion, relative to other expansions. You can also use the `!xxx` shorthand syntax.
 
 </center>
 

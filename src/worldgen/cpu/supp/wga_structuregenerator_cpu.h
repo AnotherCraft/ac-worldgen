@@ -183,7 +183,7 @@ private:
 
 private:
 	size_t expansionCount_ = 0, maxExpansionCount_ = 16384; ///< Limits how many expansion attempts can be made
-	size_t maxStackDepth_ = 512;
+	size_t maxStackDepth_ = 4096;
 	Seed seed_;
 	std::unordered_map<std::string, int> areaNameMapping_; ///< Mapping are names to int to speed up comparison
 
