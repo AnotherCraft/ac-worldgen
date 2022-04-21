@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <vector>
 #include <string>
+#include <map>
 
 #include "wga_grammarsymbol.h"
 #include "wga_value.h"

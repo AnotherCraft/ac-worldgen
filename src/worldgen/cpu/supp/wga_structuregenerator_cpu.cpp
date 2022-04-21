@@ -314,9 +314,9 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 		// Randomize the order of the nodes using Fisher-Yates shuffle
 		{
 			const size_t sz = res.possibleExpansionNodes.size();
-			std::default_random_engine rand(WorldGen_CPU_Utils::hash((res.ruleData.localToWorldMatrix() * BlockWorldPos()).to<uint32_t>(), seed_ ^ 0x12));
-			for(int i = 0; i < sz; i++) {
-				const int j = i + (rand() % (sz - i));
+			const Seed seed = WorldGen_CPU_Utils::hash((res.ruleData.localToWorldMatrix() * BlockWorldPos()).to<uint32_t>(), seed_ ^ 0x12);
+			for(size_t i = 0; i < sz; i++) {
+				const size_t j = i + (WorldGen_CPU_Utils::hash(i, seed) % (sz - i));
 				std::swap(res.possibleExpansionNodes[i], res.possibleExpansionNodes[j]);
 			}
 		}
@@ -375,13 +375,14 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 	}
 
 	// Check if there already isn't the same component with the same position (so we can create a loop)
-	for(const ComponentExpansionStatePtr &ocex: componentExpansions_) {
+	// This is basically useless, dropping
+	/*for(const ComponentExpansionStatePtr &ocex: componentExpansions_) {
 		// If there already is the same component with the same position, return true
 		// This means that this expansion branch joined with a previously build structure
 		if(ocex->placementHash == cex->placementHash && ocex->component == cex->component && ocex->data.localToWorldMatrix() == cex->data.localToWorldMatrix()) {
 			return true;
 		}
-	}
+	}*/
 
 	componentExpansions_.push_back(cex);
 
@@ -440,9 +441,9 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 	// Randomize the order of the nodes using Fisher-Yates shuffle
 	{
 		const size_t sz = nodes.size();
-		std::default_random_engine rand(HashUtils::multiHash(cex->placementHash, seed_, 1215));
+		const Seed seed = WorldGen_CPU_Utils::hash(cex->data.seed() ^ 1531, seed_);
 		for(int i = 0; i < sz; i++) {
-			const int j = i + (rand() % (sz - i));
+			const int j = i + (WorldGen_CPU_Utils::hash(i, seed) % (sz - i));
 			std::swap(nodes[i], nodes[j]);
 		}
 	}
