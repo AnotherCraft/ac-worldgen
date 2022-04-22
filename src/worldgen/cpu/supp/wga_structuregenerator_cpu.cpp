@@ -297,7 +297,6 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 
 		WGA_Rule::CompiledExpansion crex = res.possibleExpansions[res.currentExpansionIndex];
 		WGA_RuleExpansion *rex = crex.expansion;
-		WGA_Component *comp = rex->component();
 		currentDataContext_ = &res.currentExpansionData;
 
 		// Setup for the new rule
@@ -312,53 +311,65 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 		if(!checkConditions(rex))
 			return false;
 
-		// Expansion has no component (expands to nothing) -> success
-		if(!comp)
+		using TT = WGA_RuleExpansion::TargetType;
+
+		// Expands to nothing -> instant success
+		if(rex->targetType() == TT::expandsToVoid)
 			return true;
 
-		const auto nodeList = comp->nodes(rex->node());
-		if(nodeList.empty())
-			std::cerr << std::format("There are no '{}' nodes in the '{}' component.\n", rex->node(), comp->description());
+			// Expands to rule -> we just expand it
+		else if(rex->targetType() == TT::expandsToRule) {
+			return expandRule(rex->targetRule(), BlockWorldPos(), res.orientation, &res.currentExpansionData);
+		}
 
-		for(WGA_ComponentNode *targetNode: nodeList) {
-			BlockOrientation ori = targetNode->config().orientation;
+			// Expands to component -> we generate a list of possible component nodes it can join to and then iterate them
+		else if(rex->targetType() == TT::expandsToComponent) {
+			WGA_Component *comp = rex->component();
 
-			if(ori.isSpecified() && std::get<bool>(targetNode->pragma("allowRotation"))) {
-				for(int i = 0; i < 4; i++) {
+			const auto nodeList = comp->nodes(rex->node());
+			if(nodeList.empty())
+				std::cerr << std::format("There are no '{}' nodes in the '{}' component.\n", rex->node(), comp->description());
+
+			for(WGA_ComponentNode *targetNode: nodeList) {
+				BlockOrientation ori = targetNode->config().orientation;
+
+				if(ori.isSpecified() && std::get<bool>(targetNode->pragma("allowRotation"))) {
+					for(int i = 0; i < 4; i++) {
+						res.possibleExpansionNodes.push_back({targetNode, ori});
+						ori = ori.nextUpVariant();
+					}
+				}
+				else
 					res.possibleExpansionNodes.push_back({targetNode, ori});
-					ori = ori.nextUpVariant();
+			}
+
+			// Randomize the order of the nodes using Fisher-Yates shuffle
+			{
+				const size_t sz = res.possibleExpansionNodes.size();
+				const Seed seed = WorldGen_CPU_Utils::hash((res.ruleData.localToWorldMatrix() * BlockWorldPos()).to<uint32_t>(), seed_ ^ 0x12);
+				for(size_t i = 0; i < sz; i++) {
+					const size_t j = i + (WorldGen_CPU_Utils::hash(i, seed) % (sz - i));
+					std::swap(res.possibleExpansionNodes[i], res.possibleExpansionNodes[j]);
 				}
 			}
-			else
-				res.possibleExpansionNodes.push_back({targetNode, ori});
+
+			/*if(res.possibleExpansionNodes.isEmpty())
+				qDebug() << "Component has no nodes named " << rex->node();*/
+
+			// Process param sets
+			res.currentExpansionData.setParams();
+
+			// Return to check if the expansion has enough target nodes, or go to another expansion if it doesn't
+			return false;
 		}
-
-		// Randomize the order of the nodes using Fisher-Yates shuffle
-		{
-			const size_t sz = res.possibleExpansionNodes.size();
-			const Seed seed = WorldGen_CPU_Utils::hash((res.ruleData.localToWorldMatrix() * BlockWorldPos()).to<uint32_t>(), seed_ ^ 0x12);
-			for(size_t i = 0; i < sz; i++) {
-				const size_t j = i + (WorldGen_CPU_Utils::hash(i, seed) % (sz - i));
-				std::swap(res.possibleExpansionNodes[i], res.possibleExpansionNodes[j]);
-			}
-		}
-
-		/*if(res.possibleExpansionNodes.isEmpty())
-			qDebug() << "Component has no nodes named " << rex->node();*/
-
-		// Process param sets
-		res.currentExpansionData.setParams();
-
-		// Return to check if the expansion has enough target nodes, or go to another expansion if it doesn't
-		return false;
+		else
+			throw;
 	}
 
 	WGA_Rule::CompiledExpansion crex = res.possibleExpansions[res.currentExpansionIndex];
 	WGA_RuleExpansion *rex = crex.expansion;
 
-	// Expansion has no component (expands to nothing) -> success
-	if(!rex->component() && !rex->targetRule())
-		return true;
+	ASSERT(rex->targetType() == WGA_RuleExpansion::TargetType::expandsToComponent);
 
 	const RuleExpansionNode &n = res.possibleExpansionNodes[res.currentExpansionNodeIndex];
 	WGA_ComponentNode *node = n.node;
@@ -366,129 +377,123 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 	res.currentExpansionNodeIndex++;
 	addBranch();
 
-	if(WGA_Rule *rul = rex->targetRule()) {
-		if(!expandRule(rul, res.ruleData.localToWorldMatrix() * BlockWorldPos(), res.orientation, &res.currentExpansionData))
-			return false;
+	WGA_Component *comp = rex->component();
+	ComponentExpansionStatePtr cex(new ComponentExpansionState{
+		.component = comp,
+		.entryNode = node,
+	});
+	currentDataContext_ = &cex->data;
+
+	cex->data.load(&api_, &res.currentExpansionData, comp);
+
+	// Calculate component transform matrix
+	{
+		int transformFlags = 0;
+		if(std::get<bool>(node->pragma("horizontalEdge")))
+			transformFlags |= +BlockOrientation::TransformFlags::horizontalEdge;
+
+		if(std::get<bool>(node->pragma("verticalEdge")))
+			transformFlags |= +BlockOrientation::TransformFlags::verticalEdge;
+
+		if(std::get<bool>(node->pragma("adjacent")))
+			transformFlags |= +BlockOrientation::TransformFlags::adjacent;
+
+		if(crex.mirror)
+			transformFlags |= +BlockOrientation::TransformFlags::mirror;
+
+		cex->data.localToWorldMatrix() *= n.orientation.transformToMatch(res.orientation.adjacent(), transformFlags);
+		cex->data.localToWorldMatrix() *= BlockTransformMatrix::translation(-blockPosValue(node->config().position, res.currentExpansionData.constSamplePos()));
+
+		cex->placementHash = HashUtils::multiHash(cex->data.localToWorldMatrix(), comp);
 	}
-	else if(WGA_Component *comp = rex->component()) {
-		ComponentExpansionStatePtr cex(new ComponentExpansionState{
-			.component = comp,
-			.entryNode = node,
-		});
-		currentDataContext_ = &cex->data;
 
-		cex->data.load(&api_, &res.currentExpansionData, comp);
-
-		// Calculate component transform matrix
-		{
-			int transformFlags = 0;
-			if(std::get<bool>(node->pragma("horizontalEdge")))
-				transformFlags |= +BlockOrientation::TransformFlags::horizontalEdge;
-
-			if(std::get<bool>(node->pragma("verticalEdge")))
-				transformFlags |= +BlockOrientation::TransformFlags::verticalEdge;
-
-			if(std::get<bool>(node->pragma("adjacent")))
-				transformFlags |= +BlockOrientation::TransformFlags::adjacent;
-
-			if(crex.mirror)
-				transformFlags |= +BlockOrientation::TransformFlags::mirror;
-
-			cex->data.localToWorldMatrix() *= n.orientation.transformToMatch(res.orientation.adjacent(), transformFlags);
-			cex->data.localToWorldMatrix() *= BlockTransformMatrix::translation(-blockPosValue(node->config().position, res.currentExpansionData.constSamplePos()));
-
-			cex->placementHash = HashUtils::multiHash(cex->data.localToWorldMatrix(), comp);
+	// Check if there already isn't the same component with the same position (so we can create a loop)
+	// This is basically useless, dropping
+	/*for(const ComponentExpansionStatePtr &ocex: componentExpansions_) {
+		// If there already is the same component with the same position, return true
+		// This means that this expansion branch joined with a previously build structure
+		if(ocex->placementHash == cex->placementHash && ocex->component == cex->component && ocex->data.localToWorldMatrix() == cex->data.localToWorldMatrix()) {
+			return true;
 		}
+	}*/
 
-		// Check if there already isn't the same component with the same position (so we can create a loop)
-		// This is basically useless, dropping
-		/*for(const ComponentExpansionStatePtr &ocex: componentExpansions_) {
-			// If there already is the same component with the same position, return true
-			// This means that this expansion branch joined with a previously build structure
-			if(ocex->placementHash == cex->placementHash && ocex->component == cex->component && ocex->data.localToWorldMatrix() == cex->data.localToWorldMatrix()) {
-				return true;
-			}
-		}*/
+	componentExpansions_.push_back(cex);
 
-		componentExpansions_.push_back(cex);
+	// Generate and check areas
+	for(const WGA_Component::Area &arc: comp->areas()) {
+		int &nameID = areaNameMapping_[arc.name];
+		if(!nameID)
+			nameID = areaNameMapping_.size();
 
-		// Generate and check areas
-		for(const WGA_Component::Area &arc: comp->areas()) {
-			int &nameID = areaNameMapping_[arc.name];
-			if(!nameID)
-				nameID = areaNameMapping_.size();
+		const BlockWorldPos pos1 = cex->data.mapToWorld(blockPosValue(arc.startPos, cex->data.constSamplePos()));
+		const BlockWorldPos pos2 = cex->data.mapToWorld(blockPosValue(arc.endPos, cex->data.constSamplePos()));
 
-			const BlockWorldPos pos1 = cex->data.mapToWorld(blockPosValue(arc.startPos, cex->data.constSamplePos()));
-			const BlockWorldPos pos2 = cex->data.mapToWorld(blockPosValue(arc.endPos, cex->data.constSamplePos()));
+		Area area{
+			.nameID = nameID,
+			.startPos = pos1.min(pos2),
+			.endPos = pos1.max(pos2),
+		};
 
-			Area area{
-				.nameID = nameID,
-				.startPos = pos1.min(pos2),
-				.endPos = pos1.max(pos2),
-			};
+		// Check if the area is not overlapping other areas with the same name
+		if(!arc.canOverlap || arc.mustOverlap) {
+			bool overlaps = false;
 
-			// Check if the area is not overlapping other areas with the same name
-			if(!arc.canOverlap || arc.mustOverlap) {
-				bool overlaps = false;
+			for(const Area &testArea: areas_) {
+				if(testArea.nameID != area.nameID)
+					continue;
 
-				for(const Area &testArea: areas_) {
-					if(testArea.nameID != area.nameID)
-						continue;
-
-					// Areas with the same name cannot intersect
-					if((testArea.endPos >= area.startPos).all() && (testArea.startPos <= area.endPos).all()) {
-						overlaps = true;
-						break;
-					}
-				}
-
-				if(overlaps != arc.mustOverlap) {
-					failBranch();
-					return false;
+				// Areas with the same name cannot intersect
+				if((testArea.endPos >= area.startPos).all() && (testArea.startPos <= area.endPos).all()) {
+					overlaps = true;
+					break;
 				}
 			}
 
-			// Overlap areas are just for checking
-			if(!arc.isVirtual)
-				areas_.push_back(area);
-		}
-
-		// Check component conditions
-		if(!checkConditions(comp)) {
-			//qDebug() << "Component conditions failed";
-			failBranch();
-			return false;
-		}
-
-		// Process param sets
-		cex->data.setParams();
-
-		auto nodes = comp->nodes();
-
-		// Randomize the order of the nodes using Fisher-Yates shuffle
-		{
-			const size_t sz = nodes.size();
-			const Seed seed = WorldGen_CPU_Utils::hash(cex->data.seed() ^ 1531, seed_);
-			for(int i = 0; i < sz; i++) {
-				const int j = i + (WorldGen_CPU_Utils::hash(i, seed) % (sz - i));
-				std::swap(nodes[i], nodes[j]);
-			}
-		}
-
-		// Expand the component node rules
-		for(const WGA_ComponentNode *node: nodes) {
-			if(!node->config().rule || node == cex->entryNode)
-				continue;
-
-			// If the expansion fails, expandRule calls failBranch, so we just return
-			if(!expandRule(node->config().rule, blockPosValue(node->config().position, cex->data.constSamplePos()), node->config().orientation, &cex->data))
+			if(overlaps != arc.mustOverlap) {
+				failBranch();
 				return false;
+			}
+		}
 
-			// expandRule changes the current data context, so we gotta change it back
-			currentDataContext_ = &cex->data;
+		// Overlap areas are just for checking
+		if(!arc.isVirtual)
+			areas_.push_back(area);
+	}
+
+	// Check component conditions
+	if(!checkConditions(comp)) {
+		//qDebug() << "Component conditions failed";
+		failBranch();
+		return false;
+	}
+
+	// Process param sets
+	cex->data.setParams();
+
+	auto nodes = comp->nodes();
+
+	// Randomize the order of the nodes using Fisher-Yates shuffle
+	{
+		const size_t sz = nodes.size();
+		const Seed seed = WorldGen_CPU_Utils::hash(cex->data.seed() ^ 1531, seed_);
+		for(int i = 0; i < sz; i++) {
+			const int j = i + (WorldGen_CPU_Utils::hash(i, seed) % (sz - i));
+			std::swap(nodes[i], nodes[j]);
 		}
 	}
-	else throw;
+
+	// Expand the component node rules
+	for(const WGA_ComponentNode *node: nodes) {
+		if(!node->config().rule || node == cex->entryNode)
+			continue;
+
+		// If the expansion fails, expandRule calls failBranch, so we just return
+		if(!expandRule(node->config().rule, blockPosValue(node->config().position, cex->data.constSamplePos()), node->config().orientation, &cex->data))
+			return false;
+
+		// expandRule changes the current data context, so we gotta change it back
+		currentDataContext_ = &cex->data;
+	}
 
 	return true;
 }

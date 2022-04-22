@@ -65,9 +65,9 @@ void WGLImplementationPass::enterRuleExpansionStatement(WoglacParser::RuleExpans
 
 	if(!target) {}
 	else if(expandsToComponent && target->symbolType() != SymbolType::Component)
-		throw WGLError(std::format("Symbol '{}' is not a structure component.", target->fullName()), ctx->target);
+		throw WGLError(std::format("Symbol '{}' is not a structure component.", target->fullName()), ctx->expansionTarget);
 	else if(!expandsToComponent && target->symbolType() != SymbolType::Rule)
-		throw WGLError(std::format("Symbol '{}' is not a structure rule.", target->fullName()), ctx->target);
+		throw WGLError(std::format("Symbol '{}' is not a structure rule.", target->fullName()), ctx->expansionTarget);
 
 	std::vector<std::pair<std::string, WGA_Symbol::PragmaValue >> pragmaSets;
 
