@@ -432,7 +432,7 @@ WGA_StructureGenerator_CPU::RuleExpansionStatePtr WGA_StructureGenerator_CPU::ne
 		if(expansionIndex >= ctx->possibleExpansions.size())
 			return {};
 
-		if(optionIndex >= superState->possibleOptions.size()) {
+		if(superState && optionIndex >= superState->possibleOptions.size()) {
 			superState = {};
 			expansionIndex++;
 			optionIndex = 0;
