@@ -23,13 +23,16 @@ public:
 		BlockWorldPos startPos, endPos;
 	};
 
+	struct DataContext;
+	using DataContextPtr = std::shared_ptr<DataContext>;
+
 	struct DataContext {
 
 	public:
 		~DataContext();
+		static DataContextPtr create(WorldGenAPI_CPU *api, const DataContextPtr &parentContext, WGA_GrammarSymbol *sym, const BlockTransformMatrix &transform = {});
 
 	public:
-		void load(WorldGenAPI_CPU *api, DataContext *parentContext, WGA_GrammarSymbol *sym, const BlockTransformMatrix &transform = {});
 		void setParams();
 
 		inline WGA_GrammarSymbol *associatedSymbol() {
@@ -62,12 +65,17 @@ public:
 		WGA_Value::Dimensionality getInputParamDimensionality(WGA_Symbol *symbol);
 
 	private:
+		DataContext() = default;
+
+		void load(WorldGenAPI_CPU *api, const DataContextPtr &parentContext, WGA_GrammarSymbol *sym, const BlockTransformMatrix &transform);
+
+	private:
 		static std::string paramKey(const std::string &paramName, WGA_Value::ValueType type);
 
 	private:
 		WorldGenAPI_CPU *api_ = nullptr;
 		WGA_GrammarSymbol *sym_ = nullptr;
-		DataContext *parentContext_ = nullptr;
+		DataContextPtr parentContext_;
 
 		BlockTransformMatrix localToWorldMatrix_;
 
@@ -94,13 +102,15 @@ public:
 	struct RuleExpansionContext {
 
 	public:
-		DataContext ruleData;
 		WGA_Rule *const rule = nullptr;
 		const BlockOrientation orientation;
 
 	public:
 		/// List of all expansions the rule can expand to, in the order they should be attempted to be expanded
 		std::vector<WGA_Rule::CompiledExpansion> possibleExpansions;
+
+	public:
+		const DataContextPtr ruleData;
 
 	};
 	using RuleExpansionContextPtr = std::shared_ptr<RuleExpansionContext>;
@@ -121,7 +131,7 @@ public:
 		std::vector<Option> possibleOptions;
 
 	public:
-		DataContext expansionData;
+		const DataContextPtr expansionData;
 
 	};
 	using RuleExpansionSuperStatePtr = std::shared_ptr<RuleExpansionSuperState>;
@@ -141,9 +151,11 @@ public:
 	struct ComponentExpansionState {
 
 	public:
-		DataContext data;
 		const WGA_Component *component = nullptr;
 		const WGA_ComponentNode *entryNode = nullptr;
+
+	public:
+		const DataContextPtr data;
 
 	};
 	using ComponentExpansionStatePtr = std::shared_ptr<ComponentExpansionState>;
@@ -166,7 +178,7 @@ public:
 
 public:
 	inline DataContext *currentDataContext() {
-		return currentDataContext_;
+		return currentDataContext_.get();
 	}
 
 	/// Used by WorldGenAPI_CPU for obtaining contextual symbols
@@ -181,8 +193,8 @@ private:
 	void unbind();
 
 private:
-	/// Returns false on failBranch
-	bool expandRule(WGA_Rule *rule, const BlockWorldPos &localOrigin, const BlockOrientation &orientation, DataContext *data);
+	/// Returns false when fails, does not call failBranch
+	bool expandRule(WGA_Rule *rule, const BlockWorldPos &localOrigin, const BlockOrientation &orientation, const DataContextPtr &data);
 
 	/// Returns true if the rule was truly expanded
 	bool processExpansion(RuleExpansionState &res);
@@ -216,7 +228,7 @@ private:
 	std::unordered_map<std::string, int> areaNameMapping_; ///< Mapping are names to int to speed up comparison
 
 private:
-	DataContext *currentDataContext_ = nullptr;
+	DataContextPtr currentDataContext_;
 	WorldGenAPI_CPU &api_;
 
 };

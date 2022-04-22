@@ -6,6 +6,7 @@
 #include "util/scopeexit.h"
 #include "util/tracyutils.h"
 #include "util/iterators.h"
+#include "util/valueguard.h"
 
 #include "worldgen/base/supp/wga_rule.h"
 #include "worldgen/base/supp/wga_ruleexpansion.h"
@@ -34,10 +35,9 @@ void WGA_StructureGenerator_CPU::setup(WGA_Rule *entryRule, const BlockWorldPos 
 
 	seed_ = WorldGen_CPU_Utils::hash(origin.to<uint32_t>(), seed);
 	expansionCount_ = 0;
-	currentDataContext_ = nullptr;
+	currentDataContext_ = {};
 	currentlyExpandedRuleIx_ = 0;
 
-	addBranch();
 	expandRule(entryRule, origin, BlockOrientation(), nullptr);
 }
 
@@ -58,11 +58,16 @@ bool WGA_StructureGenerator_CPU::process() {
 			return false;
 		}
 
-		auto &ex = ruleExpansions_[currentlyExpandedRuleIx_];
-		if(processExpansion(*ex))
-			currentlyExpandedRuleIx_++;
-		else
-			ex = nextRuleExpansionState(ex->superState->context, ex.get());
+		auto ex = ruleExpansions_[currentlyExpandedRuleIx_];
+		if(!ex)
+			failBranch();
+		else {
+			// Set the expansion to the next state/option before processing, so that the addBranch() already stores correct data
+			ruleExpansions_[currentlyExpandedRuleIx_] = nextRuleExpansionState(ex->superState->context, ex.get());
+
+			if(processExpansion(*ex))
+				currentlyExpandedRuleIx_++;
+		}
 
 		/*TracyPlot("structureGenerator.stackSize", static_cast<float>(stateStack_.size()));
 		TracyPlot("structureGenerator.componentExpansions", static_cast<float>(componentExpansions_.size()));
@@ -87,7 +92,9 @@ WGA_StructureOutputData_CPUPtr WGA_StructureGenerator_CPU::generateOutput() {
 
 	// Expand all components
 	for(const ComponentExpansionStatePtr &cex: componentExpansions_) {
-		currentDataContext_ = &cex->data;
+		currentDataContext_ = cex->data;
+		SCOPE_EXIT(currentDataContext_ = {});
+		DataContext &dcx = *currentDataContext_;
 
 		for(const WGA_Component::Blocks &bar: cex->component->blockAreas()) {
 			ZoneScopedN("processArea");
@@ -95,8 +102,8 @@ WGA_StructureOutputData_CPUPtr WGA_StructureGenerator_CPU::generateOutput() {
 			auto blockv = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>(bar.block);
 
 			if(bar.startPos) {
-				const BlockWorldPos worldPos1 = cex->data.mapToWorld(blockPosValue(bar.startPos, cex->data.constSamplePos()));
-				const BlockWorldPos worldPos2 = bar.endPos ? cex->data.mapToWorld(blockPosValue(bar.endPos, cex->data.constSamplePos())) : worldPos1;
+				const BlockWorldPos worldPos1 = dcx.mapToWorld(blockPosValue(bar.startPos, dcx.constSamplePos()));
+				const BlockWorldPos worldPos2 = bar.endPos ? cex->data->mapToWorld(blockPosValue(bar.endPos, dcx.constSamplePos())) : worldPos1;
 
 				const BlockWorldPos worldStartPos = worldPos1.min(worldPos2);
 				const BlockWorldPos worldEndPos = worldPos1.max(worldPos2);
@@ -142,10 +149,10 @@ WGA_StructureOutputData_CPUPtr WGA_StructureGenerator_CPU::generateOutput() {
 			if(!bar.positions.empty()) {
 				BlockWorldPos offset;
 				if(bar.positionsOffset)
-					offset = blockPosValue(bar.startPos, cex->data.constSamplePos());
+					offset = blockPosValue(bar.startPos, dcx.constSamplePos());
 
 				for(const BlockWorldPos &pos: bar.positions) {
-					const BlockWorldPos worldPos = cex->data.mapToWorld(pos + offset);
+					const BlockWorldPos worldPos = dcx.mapToWorld(pos + offset);
 
 					const BlockID block = blockv.sampleAt(worldPos);
 					if(block == blockID_undefined)
@@ -201,25 +208,22 @@ void WGA_StructureGenerator_CPU::unbind() {
 	api_.structureGen = nullptr;
 }
 
-bool WGA_StructureGenerator_CPU::expandRule(WGA_Rule *rule, const BlockWorldPos &localOrigin, const BlockOrientation &orientation, WGA_StructureGenerator_CPU::DataContext *data) {
+bool WGA_StructureGenerator_CPU::expandRule(WGA_Rule *rule, const BlockWorldPos &localOrigin, const BlockOrientation &orientation, const DataContextPtr &data) {
 	// ZoneScoped;
 
 	RuleExpansionContextPtr rex(new RuleExpansionContext{
 		.rule = rule,
-		.orientation = orientation
+		.orientation = orientation,
+		.ruleData = DataContext::create(&api_, data, rule, BlockTransformMatrix::translation(localOrigin)),
 	});
-
-	rex->ruleData.load(&api_, data, rule, BlockTransformMatrix::translation(localOrigin));
-	currentDataContext_ = &rex->ruleData;
+	currentDataContext_ = rex->ruleData;
+	SCOPE_EXIT(currentDataContext_ = {});
 
 	// Check rule conditions
-	if(!checkConditions(rule)) {
-		//qDebug() << "Rule conditions failed";
-		failBranch();
+	if(!checkConditions(rule))
 		return false;
-	}
 
-	Seed seed = WorldGen_CPU_Utils::hash((rex->ruleData.localToWorldMatrix() * BlockWorldPos()).to<uint32_t>(), seed_ ^ 13713);
+	Seed seed = WorldGen_CPU_Utils::hash(13713, rex->ruleData->seed());
 
 	// Create list of all possible rule -> expansion
 	// Go from the lowest priority to the highest, randomly reorder expansions for the same priority based on their probability ratio
@@ -257,13 +261,11 @@ bool WGA_StructureGenerator_CPU::expandRule(WGA_Rule *rule, const BlockWorldPos 
 	}
 
 	// No possible expansions -> fail
-	if(rex->possibleExpansions.empty()) {
-		failBranch();
+	if(rex->possibleExpansions.empty())
 		return false;
-	}
 
 	// Process param sets
-	rex->ruleData.setParams();
+	rex->ruleData->setParams();
 
 	RuleExpansionStatePtr res = nextRuleExpansionState(rex, nullptr);
 	ASSERT(res);
@@ -272,7 +274,7 @@ bool WGA_StructureGenerator_CPU::expandRule(WGA_Rule *rule, const BlockWorldPos 
 	bool doDepthFirst = false;
 	if(!ruleExpansions_.empty() && !stateStack_.empty()) {
 		const float prob = std::get<float>(rule->pragma("depthFirstProbability"));
-		doDepthFirst = float(WorldGen_CPU_Utils::hash(136841, rex->ruleData.seed()) % 1000) < float(prob * 1000);
+		doDepthFirst = float(WorldGen_CPU_Utils::hash(136841, rex->ruleData->seed()) % 1000) < float(prob * 1000);
 	}
 
 	// Insert the rule expansion after currently expanded rule, but it must still be after the last state rules list end so that if we potentially fail the branch and revert to the state, the rule expansion list doesn't get screwed up
@@ -300,8 +302,14 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 
 		// Expands to rule -> we just expand it
 	else if(tt == TT::expandsToRule) {
-		// expandRule calls failBranch if it fails, so das simple
-		return expandRule(rex->targetRule(), BlockWorldPos(), ctx.orientation, &ss.expansionData);
+		addBranch();
+
+		if(!expandRule(rex->targetRule(), BlockWorldPos(), ctx.orientation, ss.expansionData)) {
+			failBranch();
+			return false;
+		}
+
+		return true;
 	}
 
 		// Expands to component -> we generate a list of possible component nodes it can join to and then iterate them
@@ -313,10 +321,11 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 		ComponentExpansionStatePtr cex(new ComponentExpansionState{
 			.component = comp,
 			.entryNode = node,
+			.data = DataContext::create(&api_, ss.expansionData, comp),
 		});
-
-		cex->data.load(&api_, &ss.expansionData, comp);
-		currentDataContext_ = &cex->data;
+		currentDataContext_ = cex->data;
+		SCOPE_EXIT(currentDataContext_ = {});
+		auto &dcx = *currentDataContext_;
 
 		// Calculate component transform matrix
 		{
@@ -333,8 +342,8 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 			if(crex.mirror)
 				transformFlags |= +BlockOrientation::TransformFlags::mirror;
 
-			cex->data.localToWorldMatrix() *= opt.orientation.transformToMatch(ctx.orientation.adjacent(), transformFlags);
-			cex->data.localToWorldMatrix() *= BlockTransformMatrix::translation(-blockPosValue(node->config().position, ss.expansionData.constSamplePos()));
+			dcx.localToWorldMatrix() *= opt.orientation.transformToMatch(ctx.orientation.adjacent(), transformFlags);
+			dcx.localToWorldMatrix() *= BlockTransformMatrix::translation(-blockPosValue(node->config().position, ss.expansionData->constSamplePos()));
 		}
 
 		// Check component conditions
@@ -351,8 +360,8 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 			if(!nameID)
 				nameID = areaNameMapping_.size();
 
-			const BlockWorldPos pos1 = cex->data.mapToWorld(blockPosValue(arc.startPos, cex->data.constSamplePos()));
-			const BlockWorldPos pos2 = cex->data.mapToWorld(blockPosValue(arc.endPos, cex->data.constSamplePos()));
+			const BlockWorldPos pos1 = dcx.mapToWorld(blockPosValue(arc.startPos, dcx.constSamplePos()));
+			const BlockWorldPos pos2 = dcx.mapToWorld(blockPosValue(arc.endPos, dcx.constSamplePos()));
 
 			Area area{
 				.nameID = nameID,
@@ -380,14 +389,14 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 		}
 
 		// Process param sets
-		cex->data.setParams();
+		dcx.setParams();
 
 		auto nodes = comp->nodes();
 
 		// Randomize the order of the nodes using Fisher-Yates shuffle
 		{
 			const size_t sz = nodes.size();
-			const Seed seed = WorldGen_CPU_Utils::hash(cex->data.seed() ^ 1531, seed_);
+			const Seed seed = WorldGen_CPU_Utils::hash(dcx.seed() ^ 1531, seed_);
 			for(int i = 0; i < sz; i++) {
 				const int j = i + (WorldGen_CPU_Utils::hash(i, seed) % (sz - i));
 				std::swap(nodes[i], nodes[j]
@@ -400,12 +409,14 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 			if(!node->config().rule || node == cex->entryNode)
 				continue;
 
-			// If the expansion fails, expandRule calls failBranch, so we just return
-			if(!expandRule(node->config().rule, blockPosValue(node->config().position, cex->data.constSamplePos()), node->config().orientation, &cex->data))
-				return false;
+			// expandRule modifies the currentDataContext_, so we have to reset it
+			currentDataContext_ = cex->data;
 
-			// expandRule changes the current data context, so we gotta change it back
-			currentDataContext_ = &cex->data;
+			// If the expansion fails, expandRule calls failBranch, so we just return
+			if(!expandRule(node->config().rule, blockPosValue(node->config().position, dcx.constSamplePos()), node->config().orientation, cex->data)) {
+				failBranch();
+				return false;
+			}
 		}
 
 		return true;
@@ -452,10 +463,11 @@ WGA_StructureGenerator_CPU::RuleExpansionStatePtr WGA_StructureGenerator_CPU::ne
 			superState = RuleExpansionSuperStatePtr(new RuleExpansionSuperState{
 				.context = ctx,
 				.expansionIndex = expansionIndex,
+				.expansionData = DataContext::create(&api_, ctx->ruleData, rex),
 			});
-
-			superState->expansionData.load(&api_, &ctx->ruleData, rex);
-			currentDataContext_ = &superState->expansionData;
+			currentDataContext_ = superState->expansionData;
+			SCOPE_EXIT(currentDataContext_ = {});
+			DataContext &dcx = *superState->expansionData;
 
 			// Check conditions
 			if(!checkConditions(rex))
@@ -487,7 +499,7 @@ WGA_StructureGenerator_CPU::RuleExpansionStatePtr WGA_StructureGenerator_CPU::ne
 				// Randomize the order of the nodes using Fisher-Yates shuffle
 				{
 					const size_t sz = opts.size();
-					const Seed seed = WorldGen_CPU_Utils::hash((ctx->ruleData.localToWorldMatrix() * BlockWorldPos()).to<uint32_t>(), seed_ ^ 0x12);
+					const Seed seed = WorldGen_CPU_Utils::hash(16512, dcx.seed());
 					for(size_t i = 0; i < sz; i++) {
 						const size_t j = i + (WorldGen_CPU_Utils::hash(i, seed) % (sz - i));
 						std::swap(opts[i], opts[j]);
@@ -499,7 +511,7 @@ WGA_StructureGenerator_CPU::RuleExpansionStatePtr WGA_StructureGenerator_CPU::ne
 				superState->possibleOptions.push_back(RuleExpansionSuperState::Option{});
 
 			// Prepare output params
-			currentDataContext_->setParams();
+			dcx.setParams();
 		}
 
 		return RuleExpansionStatePtr(new RuleExpansionState{
@@ -528,9 +540,12 @@ void WGA_StructureGenerator_CPU::failBranch() {
 	const State s = stateStack_.top();
 	stateStack_.pop();
 
+	// Remove areas and component expansions added after the addBranch() was called
 	areas_.resize(s.areaCount);
-	ruleExpansions_ = s.ruleExpansions,
-		componentExpansions_.resize(s.componentExpansionCount);
+	componentExpansions_.resize(s.componentExpansionCount);
+
+	// Restore rule expansions list to the state before addBranch()
+	ruleExpansions_ = s.ruleExpansions;
 	currentlyExpandedRuleIx_ = s.currentlyExpandedRuleIx;
 }
 
@@ -562,7 +577,13 @@ WGA_StructureGenerator_CPU::DataContext::~DataContext() {
 		delete e;
 }
 
-void WGA_StructureGenerator_CPU::DataContext::load(WorldGenAPI_CPU *api, DataContext *parentContext, WGA_GrammarSymbol *sym, const BlockTransformMatrix &transform) {
+WGA_StructureGenerator_CPU::DataContextPtr WGA_StructureGenerator_CPU::DataContext::create(WorldGenAPI_CPU *api, const WGA_StructureGenerator_CPU::DataContextPtr &parentContext, WGA_GrammarSymbol *sym, const BlockTransformMatrix &transform) {
+	DataContextPtr r(new DataContext());
+	r->load(api, parentContext, sym, transform);
+	return r;
+}
+
+void WGA_StructureGenerator_CPU::DataContext::load(WorldGenAPI_CPU *api, const DataContextPtr &parentContext, WGA_GrammarSymbol *sym, const BlockTransformMatrix &transform) {
 	// ZoneScoped;
 
 	ASSERT(!sym_);
@@ -590,21 +611,18 @@ void WGA_StructureGenerator_CPU::DataContext::load(WorldGenAPI_CPU *api, DataCon
 			WGA_Value_CPU *sourceVal = static_cast<WGA_Value_CPU *>(it->second);
 
 			const auto dimFunc = [sourceVal, this] {
-				WorldGenAPI_CPU::structureGen->currentDataContext_ = parentContext_;
-				const WGA_Value::Dimensionality result = parentContext_->getValueDimensionality(sourceVal);
-				WorldGenAPI_CPU::structureGen->currentDataContext_ = this;
+				auto &cdc = WorldGenAPI_CPU::structureGen->currentDataContext_;
+				ASSERT(cdc.get() == this);
 
-				return result;
+				ValueGuard _vg(cdc, parentContext_);
+				return parentContext_->getValueDimensionality(sourceVal);
 			};
 			const auto ctorFunc = [sourceVal, this](const WGA_DataRecord_CPU::Key &key) {
-				ASSERT(WorldGenAPI_CPU::structureGen);
-				ASSERT(WorldGenAPI_CPU::structureGen->currentDataContext_ == this);
+				auto &cdc = WorldGenAPI_CPU::structureGen->currentDataContext_;
+				ASSERT(cdc.get() == this);
 
-				WorldGenAPI_CPU::structureGen->currentDataContext_ = parentContext_;
-				auto result = parentContext_->getDataRecord(key, sourceVal->ctor());
-				WorldGenAPI_CPU::structureGen->currentDataContext_ = this;
-
-				return result;
+				ValueGuard _vg(cdc, parentContext_);
+				return parentContext_->getDataRecord(key, sourceVal->ctor());
 			};
 
 			WGA_Value_CPU *localVal = new WGA_Value_CPU(sourceVal->api(), sourceVal->valueType(), true, dimFunc, ctorFunc);
