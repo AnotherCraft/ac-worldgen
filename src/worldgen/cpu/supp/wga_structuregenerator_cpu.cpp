@@ -279,7 +279,7 @@ bool WGA_StructureGenerator_CPU::expandRule(WGA_Rule *rule, const BlockWorldPos 
 
 	// Insert the rule expansion after currently expanded rule, but it must still be after the last state rules list end so that if we potentially fail the branch and revert to the state, the rule expansion list doesn't get screwed up
 	if(doDepthFirst)
-		ruleExpansions_.insert(ruleExpansions_.begin() + std::max<size_t>(/*stateStack_.top().ruleExpansionCount*/0, currentlyExpandedRuleIx_ + 1), res);
+		ruleExpansions_.insert(ruleExpansions_.begin() + (currentlyExpandedRuleIx_ + 1), res);
 	else
 		ruleExpansions_.push_back(res);
 
@@ -344,6 +344,9 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 
 			dcx.localToWorldMatrix() *= opt.orientation.transformToMatch(ctx.orientation.adjacent(), transformFlags);
 			dcx.localToWorldMatrix() *= BlockTransformMatrix::translation(-blockPosValue(node->config().position, ss.expansionData->constSamplePos()));
+
+			// We've changed the transaltion matrix, so we shall update the seed
+			dcx.updateSeed();
 		}
 
 		// Check component conditions
@@ -473,7 +476,10 @@ WGA_StructureGenerator_CPU::RuleExpansionStatePtr WGA_StructureGenerator_CPU::ne
 			if(!checkConditions(rex))
 				continue;
 
-			// Generate node variants if the exnapsion expands to a component
+			// Prepare output params
+			dcx.setParams();
+
+			// Generate node variants if the rule expands to a component
 			if(tt == TT::expandsToComponent) {
 				auto &opts = superState->possibleOptions;
 
@@ -509,9 +515,6 @@ WGA_StructureGenerator_CPU::RuleExpansionStatePtr WGA_StructureGenerator_CPU::ne
 			else
 				// Push one dummy option to trigger the expansion processing
 				superState->possibleOptions.push_back(RuleExpansionSuperState::Option{});
-
-			// Prepare output params
-			dcx.setParams();
 		}
 
 		return RuleExpansionStatePtr(new RuleExpansionState{
@@ -591,14 +594,12 @@ void WGA_StructureGenerator_CPU::DataContext::load(WorldGenAPI_CPU *api, const D
 	parentContext_ = parentContext;
 	api_ = api;
 
-	if(parentContext) {
+	if(parentContext)
 		localToWorldMatrix_ = parentContext->localToWorldMatrix_ * transform;
-		seed_ = WorldGen_CPU_Utils::hash((parentContext_->localToWorldMatrix_ * BlockWorldPos()).to<uint32_t>(), parentContext_->seed_);
-	}
-	else {
+	else
 		localToWorldMatrix_ = transform;
-		seed_ = api->structureGen->seed_;
-	}
+
+	updateSeed();
 
 	for(const WGA_GrammarSymbol::ParamDeclare &pd: sym->paramDeclares()) {
 		const std::string key = paramKey(pd.paramName, pd.type);
@@ -643,6 +644,10 @@ void WGA_StructureGenerator_CPU::DataContext::load(WorldGenAPI_CPU *api, const D
 void WGA_StructureGenerator_CPU::DataContext::setParams() {
 	for(const WGA_GrammarSymbol::ParamSet &ps: sym_->paramSets())
 		paramOutputs_[paramKey(ps.paramName, ps.value->valueType())] = ps.value;
+}
+
+void WGA_StructureGenerator_CPU::DataContext::updateSeed() {
+	seed_ = WorldGen_CPU_Utils::hash((localToWorldMatrix_ * BlockWorldPos()).to<uint32_t>(), parentContext_ ? parentContext_->seed_ : api_->structureGen->seed_);
 }
 
 WGA_DataRecord_CPU::Ptr WGA_StructureGenerator_CPU::DataContext::getDataRecord(const WGA_DataRecord_CPU::Key &key, const WGA_DataRecord_CPU::Ctor &ctor) {

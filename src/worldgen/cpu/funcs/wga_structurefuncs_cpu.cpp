@@ -161,8 +161,10 @@ void WGA_StructureFuncs_CPU::_spawn(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key k
 				}
 			}
 			else
-				for(const auto &v: schr.associativeData)
+				for(const auto &v: schr.associativeData) {
+					ASSERT(v.second != blockID_undefined);
 					result[v.first] = v.second;
+				}
 		}
 	}
 }

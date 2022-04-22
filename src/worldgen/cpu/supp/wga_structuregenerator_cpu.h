@@ -46,6 +46,7 @@ public:
 		inline Seed seed() const {
 			return seed_;
 		}
+		void updateSeed();
 
 	public:
 		inline BlockWorldPos mapToWorld(const BlockWorldPos &localPos) const {
