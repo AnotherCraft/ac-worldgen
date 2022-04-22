@@ -29,7 +29,7 @@ public:
 		~DataContext();
 
 	public:
-		void load(WorldGenAPI_CPU *api, DataContext *parentContext, WGA_GrammarSymbol *sym);
+		void load(WorldGenAPI_CPU *api, DataContext *parentContext, WGA_GrammarSymbol *sym, const BlockTransformMatrix &transform = {});
 		void setParams();
 
 		inline WGA_GrammarSymbol *associatedSymbol() {
@@ -90,46 +90,70 @@ public:
 
 	};
 	friend struct DataContext;
-	struct RuleExpansionNode {
-		WGA_ComponentNode *node;
-		BlockOrientation orientation;
+
+	struct RuleExpansionContext {
+
+	public:
+		DataContext ruleData;
+		WGA_Rule *const rule = nullptr;
+		const BlockOrientation orientation;
+
+	public:
+		/// List of all expansions the rule can expand to, in the order they should be attempted to be expanded
+		std::vector<WGA_Rule::CompiledExpansion> possibleExpansions;
+
 	};
+	using RuleExpansionContextPtr = std::shared_ptr<RuleExpansionContext>;
+
+	struct RuleExpansionSuperState {
+
+	public:
+		const RuleExpansionContextPtr context;
+		const size_t expansionIndex = -1; ///< ix in RuleExpansionContext::possibleExpansions
+
+	public:
+		struct Option {
+			WGA_ComponentNode *node = nullptr;
+			BlockOrientation orientation;
+		};
+
+		/// List of all nodes that should be attempted to be expanded
+		std::vector<Option> possibleOptions;
+
+	public:
+		DataContext expansionData;
+
+	};
+	using RuleExpansionSuperStatePtr = std::shared_ptr<RuleExpansionSuperState>;
 
 	struct RuleExpansionState {
 
 	public:
-		DataContext ruleData;
-		WGA_Rule *rule = nullptr;
-		BlockOrientation orientation;
+		const RuleExpansionSuperStatePtr superState;
 
 	public:
-		DataContext currentExpansionData;
-		std::vector<WGA_Rule::CompiledExpansion> possibleExpansions;
-		std::vector<RuleExpansionNode> possibleExpansionNodes;
-		size_t currentExpansionIndex = -1;
-		size_t currentExpansionNodeIndex = -1;
+		const size_t optionIndex = -1; ///< ix in RuleExpansionSuperState::possibleOptions
 
 	};
 	using RuleExpansionStatePtr = std::shared_ptr<RuleExpansionState>;
-	using RuleExpansionList = std::list<RuleExpansionStatePtr>;
-	using RuleExpansionIterator = RuleExpansionList::iterator;
+	using RuleExpansionStateList = std::vector<RuleExpansionStatePtr>;
 
 	struct ComponentExpansionState {
 
 	public:
 		DataContext data;
-		WGA_Component *component = nullptr;
-		WGA_ComponentNode *entryNode = nullptr;
-
-		/// Hash incorporates component type and transform matrix
-		size_t placementHash = 0;
+		const WGA_Component *component = nullptr;
+		const WGA_ComponentNode *entryNode = nullptr;
 
 	};
 	using ComponentExpansionStatePtr = std::shared_ptr<ComponentExpansionState>;
 
 	struct State {
-		size_t areaCount, componentExpansionCount, ruleExpansionCount;
-		RuleExpansionIterator currentlyExpandedRuleIx;
+		const size_t areaCount, componentExpansionCount, currentlyExpandedRuleIx;
+
+		// We straight up copy the rule expansion list to the state so we can safely work with both depth first and breath first expansion (just shrinking the expansion list wouldn't work on depth first expansion)
+		const RuleExpansionStateList ruleExpansions;
+
 	};
 
 public:
@@ -163,6 +187,10 @@ private:
 	/// Returns true if the rule was truly expanded
 	bool processExpansion(RuleExpansionState &res);
 
+	/// Generates next expansion variant state. Returns false if you run out of states. null previousState -> generate first expansion
+	/// One rule can be expanded into various expansions, each expansion can construct a component originating in multiple possible nodes
+	RuleExpansionStatePtr nextRuleExpansionState(const RuleExpansionContextPtr &ctx, const RuleExpansionState *previousState);
+
 private:
 	void addBranch();
 	void failBranch();
@@ -178,8 +206,8 @@ private:
 	std::stack<State> stateStack_;
 	std::vector<Area> areas_;
 	std::vector<ComponentExpansionStatePtr> componentExpansions_;
-	RuleExpansionList ruleExpansions_;
-	RuleExpansionIterator currentlyExpandedRuleIx_; ///< Index to ruleExpansion to the current rule being processed
+	RuleExpansionStateList ruleExpansions_;
+	size_t currentlyExpandedRuleIx_; ///< Index to ruleExpansion to the current rule being processed
 
 private:
 	size_t expansionCount_ = 0, maxExpansionCount_ = 16384; ///< Limits how many expansion attempts can be made

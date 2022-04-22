@@ -41,6 +41,7 @@ const WGA_Rule::CompiledExpansionList &WGA_Rule::compiledExpansionList() {
 
 		if(allowMirroring) {
 			ce.mirror = true;
+			spl.probabilityRatioSum += probabilityRatio;
 			spl.expansions.push_back(ce);
 		}
 

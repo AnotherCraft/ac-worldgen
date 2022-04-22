@@ -24,6 +24,17 @@ While this looks interesting, it's not really suitable for caves generation. But
 ```WOGLAC
 Bool isoSurface1 = abs(perlin3D(~2, #352)) < 0.05;
 Bool isoSurface2 = abs(perlin3D(~2, #1324)) < 0.05;
+export Block resultBlock =
+	isoSurface1 ? block.core.sand :
+	isoSurface2 ? block.core.dirt :
+	block.air
+	;
+```
+![](img/caves10.jpg)
+
+```WOGLAC
+Bool isoSurface1 = abs(perlin3D(~2, #352)) < 0.05;
+Bool isoSurface2 = abs(perlin3D(~2, #1324)) < 0.05;
 export Block resultBlock = (isoSurface1 && isoSurface2) ? block.core.dirt : block.air;
 ```
 ![](img/caves4.jpg)
