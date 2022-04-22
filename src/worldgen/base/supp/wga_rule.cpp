@@ -7,7 +7,7 @@ WGA_Rule::WGA_Rule() {
 	setDescription("(rule)");
 
 	static const PragmaList pg{
-		{"depthFirstProbability", 0.0f},
+		{"depthFirstProbability", 1.0f},
 	};
 	pragmas_ = pg;
 }

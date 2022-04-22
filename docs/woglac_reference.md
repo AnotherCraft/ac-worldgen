@@ -375,7 +375,7 @@ The structure generation process works like this:
 * When rule is added on the stack, list of possible expansions is generated.
 * System then attempts to find a valid expansion for the rule.
 * Expansions usually result in spawning a component. Components can contain nodes that expand into further components based on further rules.
-* This expansion traversal is done in a breadth-first manner (by default, can be altered to depth-first using the `depthFirstProbability` rule pragma), meaning the system first attempts to fully expand a current expansion candidate with all its dependencies before it gives up and tries another candidate.
+* This expansion traversal is done in a depth-first manner (by default, can be altered to breadth-first using the `depthFirstProbability` rule pragma), meaning the system first attempts to fully expand a current expansion candidate with all its dependencies before it gives up and tries another candidate.
 
 ### Spawning the structures
 For structure spawning, `spawn*` function family is used (more on that can be found on the function documentation page). But the basic idea is that the `spawn*` function realises a structure generation pass and returns a field representing blocks of the generated structures.
@@ -626,7 +626,7 @@ Rules define... well rules of what component will actually be spawned. The used 
 
 | Pragma | Type | Default value | Description |
 | --- | --- | --- | --- |
-`depthFirstProbability` | `Float` | `0` | Probability that the rule will expand depth-first (will put current rule expansions to the top of the queue) opposed to breadth-frist (would add current rule expansions to the end of the queue)
+`depthFirstProbability` | `Float` | `1` | Probability that the rule will expand depth-first (will put current rule expansions to the top of the queue) opposed to breadth-frist (would add current rule expansions to the end of the queue)
 
 ``</center>
 

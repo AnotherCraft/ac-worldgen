@@ -91,7 +91,7 @@ Now that was quite a big jump, so let's see what we've done here:
   * The `!` symbol says that the area has to overlap a previously defined area of the same name (so the `inside` area we've defined in the `maze` component), in contrast to the default behaviour that would require the area **not** to overlap any of the other areas of the same name.
   * The `?` symbol then states to only use the area for checking and do not actually spawn it, because we don't need it.
 * We also don't want the corridors to intersect, so we defined `area (0, 1, 1) (0, 1, 1);`.
-* The last integral part of the code is defining `pragma depthFirstProbability = 0.98;` for the `Inside` rule. This says to expand the rule depth-first in `98 %` of the cases, meaining the generator will first try to follow one corridor path as long as possible and only after then will move to generating side paths. Higher value of this pragma will result in more linear maze without side branches, lower value will result in more branched maze.
+* The last part of the code is defining `pragma depthFirstProbability = 0.98;` for the `Inside` rule. This says to expand the rule depth-first in `98 %` of the cases, meaining the generator will first try to follow one corridor path as long as possible and only after then will move to generating side paths. Higher value of this pragma will result in more linear maze without side branches, lower value will result in more branched maze. Low values will also make the maze contain uniform patterns, because as the nodes expand at the same time, they prevent each other from turning, resulting in a lot of parallel paths. 
 
 Let's see how the maze would look like with various values of `depthFirstProbability`:
 ### `pragma depthFirstProbability = 0;`
