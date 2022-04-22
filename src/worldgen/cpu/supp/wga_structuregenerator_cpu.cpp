@@ -35,8 +35,10 @@ void WGA_StructureGenerator_CPU::setup(WGA_Rule *entryRule, const BlockWorldPos 
 
 	seed_ = WorldGen_CPU_Utils::hash(origin.to<uint32_t>(), seed);
 	expansionCount_ = 0;
+	queuedRuleExpansions_ = {};
 	currentDataContext_ = {};
-	currentlyExpandedRuleIx_ = 0;
+
+	dbgFile_ = std::make_unique<std::ofstream>("struct.txt", std::ios::out);
 
 	expandRule(entryRule, origin, BlockOrientation(), nullptr);
 }
@@ -46,41 +48,62 @@ bool WGA_StructureGenerator_CPU::process() {
 	bind();
 	SCOPE_EXIT(unbind());
 
-	while(currentlyExpandedRuleIx_ < ruleExpansions_.size()) {
+	if(queuedRuleExpansions_.empty())
+		return false;
+
+	addBranch();
+	ruleExpansions_.push_back(queuedRuleExpansions_.front());
+	queuedRuleExpansions_.pop_front();
+
+	while(true) {
+		if(ruleExpansions_.empty()) {
+			std::cerr << std::format("Failed to spawn structure: no solution found, tried all possible expansions. ({})", expansionCount_);
+			return false;
+		}
+
 		expansionCount_++;
 		if(expansionCount_ >= maxExpansionCount_) {
 			std::cerr << std::format("Failed to spawn structure: maximum expansion count exceeded ({})", maxExpansionCount_);
 			return false;
 		}
 
-		if(stateStack_.size() > maxStackDepth_) {
+		if(ruleExpansions_.size() > maxStackDepth_) {
 			std::cerr << std::format("Failed to spawn structure: maximum stack depth exceeded ({})", maxStackDepth_);
 			return false;
 		}
 
-		auto ex = ruleExpansions_[currentlyExpandedRuleIx_];
-		if(!ex)
-			failBranch();
-		else {
-			// Set the expansion to the next state/option before processing, so that the addBranch() already stores correct data
-			ruleExpansions_[currentlyExpandedRuleIx_] = nextRuleExpansionState(ex->superState->context, ex.get());
+		auto ex = ruleExpansions_.back();
 
-			if(processExpansion(*ex))
-				currentlyExpandedRuleIx_++;
+		// We've trued all options for this expansion, and have failed
+		if(!ex) {
+			failBranch();
+			continue;
 		}
+
+		const auto ps = ex->superState->expansionData->localToWorldMatrix() * BlockWorldPos();
+		const std::string pss = std::format("({},{},{})", ps.x(), ps.y(), ps.z());
+		*dbgFile_ << std::format("{} {}/{} {}/{} {} {}\n", ruleExpansions_.size(), ex->superState->expansionIndex, ex->superState->context->possibleExpansions.size(), ex->optionIndex, ex->superState->possibleOptions.size(), pss, ex->superState->expansionData->seed());
+
+		// Set the expansion to the next state/option before processing, so that the addBranch() already stores correct data
+		ruleExpansions_.back() = nextRuleExpansionOption(ex->superState->context, ex.get());
+
+		// Expansion failed -> try again the next option
+		if(!processExpansion(*ex))
+			continue;
+
+		// Everything succeeded, no queued expansions -> success
+		if(queuedRuleExpansions_.empty())
+			return true;
+
+		// Expansion succeded -> put another expansion to process
+		ruleExpansions_.push_back(queuedRuleExpansions_.front());
+		queuedRuleExpansions_.pop_front();
 
 		/*TracyPlot("structureGenerator.stackSize", static_cast<float>(stateStack_.size()));
 		TracyPlot("structureGenerator.componentExpansions", static_cast<float>(componentExpansions_.size()));
 		TracyPlot("structureGenerator.ruleExpansions", static_cast<float>(ruleExpansions_.size()));
 		TracyPlot("structureGenerator.expansionCount", static_cast<float>(expansionCount_));*/
 	}
-
-	if(ruleExpansions_.empty()) {
-		std::cerr << std::format("Failed to spawn structure: no solution found, tried all possible expansions. ({})", expansionCount_);
-		return false;
-	}
-
-	return true;
 }
 
 WGA_StructureOutputData_CPUPtr WGA_StructureGenerator_CPU::generateOutput() {
@@ -127,6 +150,7 @@ WGA_StructureOutputData_CPUPtr WGA_StructureGenerator_CPU::generateOutput() {
 
 						for(const BlockWorldPos &pos: vectorIterator(start, end)) {
 							const int i = pos.x() | (pos.y() << 4) | (pos.z() << 8);
+							ASSERT(i < srr.flatData.size());
 
 							const BlockID blockv = blockh[i];
 							if(blockv != blockID_undefined)
@@ -140,7 +164,7 @@ WGA_StructureOutputData_CPUPtr WGA_StructureGenerator_CPU::generateOutput() {
 
 							const BlockID blockv = blockh[i];
 							if(blockv != blockID_undefined)
-								srr.associativeData.push_back({i, blockv});
+								srr.associativeData.emplace_back(i, blockv);
 						}
 					}
 				}
@@ -163,10 +187,12 @@ WGA_StructureOutputData_CPUPtr WGA_StructureGenerator_CPU::generateOutput() {
 					auto &srr = result->subChunkRecords[subChunkPos];
 					const ChunkBlockIndex six = worldPos.subChunkBlockIndex(0);
 
-					if(srr.shouldUseFlat(1))
+					if(srr.shouldUseFlat(1)) {
+						ASSERT(six < srr.flatData.size());
 						srr.flatData[six] = block;
+					}
 					else
-						srr.associativeData.push_back({six, block});
+						srr.associativeData.emplace_back(six, block);
 				}
 			}
 
@@ -267,7 +293,7 @@ bool WGA_StructureGenerator_CPU::expandRule(WGA_Rule *rule, const BlockWorldPos 
 	// Process param sets
 	rex->ruleData->setParams();
 
-	RuleExpansionStatePtr res = nextRuleExpansionState(rex, nullptr);
+	RuleExpansionStatePtr res = nextRuleExpansionOption(rex, nullptr);
 	ASSERT(res);
 
 	// Add the rule to the expansion list
@@ -279,9 +305,9 @@ bool WGA_StructureGenerator_CPU::expandRule(WGA_Rule *rule, const BlockWorldPos 
 
 	// Insert the rule expansion after currently expanded rule, but it must still be after the last state rules list end so that if we potentially fail the branch and revert to the state, the rule expansion list doesn't get screwed up
 	if(doDepthFirst)
-		ruleExpansions_.insert(ruleExpansions_.begin() + (currentlyExpandedRuleIx_ + 1), res);
+		queuedRuleExpansions_.push_front(res);
 	else
-		ruleExpansions_.push_back(res);
+		queuedRuleExpansions_.push_back(res);
 
 	return true;
 }
@@ -428,7 +454,7 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 		throw;
 }
 
-WGA_StructureGenerator_CPU::RuleExpansionStatePtr WGA_StructureGenerator_CPU::nextRuleExpansionState(const RuleExpansionContextPtr &ctx, const RuleExpansionState *previousState) {
+WGA_StructureGenerator_CPU::RuleExpansionStatePtr WGA_StructureGenerator_CPU::nextRuleExpansionOption(const RuleExpansionContextPtr &ctx, const RuleExpansionState *previousState) {
 	size_t expansionIndex = 0;
 	size_t optionIndex = 0;
 	RuleExpansionSuperStatePtr superState;
@@ -457,7 +483,7 @@ WGA_StructureGenerator_CPU::RuleExpansionStatePtr WGA_StructureGenerator_CPU::ne
 		const WGA_Rule::CompiledExpansion &cex = ctx->possibleExpansions[expansionIndex];
 		WGA_RuleExpansion *rex = cex.expansion;
 
-		ASSERT((optionIndex == 0) == bool(superState));
+		ASSERT(!optionIndex == !superState);
 
 		using TT = WGA_RuleExpansion::TargetType;
 		const TT tt = rex->targetType();
@@ -530,8 +556,8 @@ void WGA_StructureGenerator_CPU::addBranch() {
 	stateStack_.push(State{
 		.areaCount = areas_.size(),
 		.componentExpansionCount = componentExpansions_.size(),
-		.currentlyExpandedRuleIx = currentlyExpandedRuleIx_,
-		.ruleExpansions = ruleExpansions_,
+		.ruleExpansionCount = ruleExpansions_.size(),
+		.queuedRuleExpansions = queuedRuleExpansions_,
 	});
 }
 
@@ -544,23 +570,26 @@ void WGA_StructureGenerator_CPU::failBranch() {
 	stateStack_.pop();
 
 	// Remove areas and component expansions added after the addBranch() was called
+	ASSERT(s.areaCount < areas_.size());
 	areas_.resize(s.areaCount);
+
+	ASSERT(s.componentExpansionCount < componentExpansions_.size());
 	componentExpansions_.resize(s.componentExpansionCount);
 
-	// Restore rule expansions list to the state before addBranch()
-	ruleExpansions_ = s.ruleExpansions;
-	currentlyExpandedRuleIx_ = s.currentlyExpandedRuleIx;
+	ASSERT(s.ruleExpansionCount <= ruleExpansions_.size());
+	ruleExpansions_.resize(s.ruleExpansionCount);
+
+	queuedRuleExpansions_ = s.queuedRuleExpansions;
 }
 
 bool WGA_StructureGenerator_CPU::checkConditions(WGA_GrammarSymbol *sym) {
 	// ZoneScoped;
 
-	for(const WGA_GrammarSymbol::Condition &cond: sym->conditions()) {
-		if(!boolValue(cond.value, currentDataContext_->constSamplePos()))
-			return false;
-	}
+	const bool result = iterator(sym->conditions()).mapx(boolValue(x.value, currentDataContext_->constSamplePos())).all();
 
-	return true;
+	*dbgFile_ << std::format("checkCondition {} {} {}\n", result, currentDataContext_->seed(), sym->description());
+
+	return result;
 }
 
 BlockWorldPos WGA_StructureGenerator_CPU::blockPosValue(WGA_Value *val, const BlockWorldPos &samplePoint) {

@@ -3,6 +3,7 @@
 #include <vector>
 #include <stack>
 #include <list>
+#include <fstream>
 
 #include "util/matrix.h"
 #include "util/blockorientation.h"
@@ -147,7 +148,7 @@ public:
 
 	};
 	using RuleExpansionStatePtr = std::shared_ptr<RuleExpansionState>;
-	using RuleExpansionStateList = std::vector<RuleExpansionStatePtr>;
+	using RuleExpansionQueue = std::list<RuleExpansionStatePtr>;
 
 	struct ComponentExpansionState {
 
@@ -162,10 +163,10 @@ public:
 	using ComponentExpansionStatePtr = std::shared_ptr<ComponentExpansionState>;
 
 	struct State {
-		const size_t areaCount, componentExpansionCount, currentlyExpandedRuleIx;
+		const size_t areaCount, componentExpansionCount, ruleExpansionCount;
 
 		// We straight up copy the rule expansion list to the state so we can safely work with both depth first and breath first expansion (just shrinking the expansion list wouldn't work on depth first expansion)
-		const RuleExpansionStateList ruleExpansions;
+		const RuleExpansionQueue queuedRuleExpansions;
 
 	};
 
@@ -202,7 +203,7 @@ private:
 
 	/// Generates next expansion variant state. Returns false if you run out of states. null previousState -> generate first expansion
 	/// One rule can be expanded into various expansions, each expansion can construct a component originating in multiple possible nodes
-	RuleExpansionStatePtr nextRuleExpansionState(const RuleExpansionContextPtr &ctx, const RuleExpansionState *previousState);
+	RuleExpansionStatePtr nextRuleExpansionOption(const RuleExpansionContextPtr &ctx, const RuleExpansionState *previousState);
 
 private:
 	void addBranch();
@@ -219,14 +220,17 @@ private:
 	std::stack<State> stateStack_;
 	std::vector<Area> areas_;
 	std::vector<ComponentExpansionStatePtr> componentExpansions_;
-	RuleExpansionStateList ruleExpansions_;
-	size_t currentlyExpandedRuleIx_; ///< Index to ruleExpansion to the current rule being processed
+	std::vector<RuleExpansionStatePtr> ruleExpansions_;
+	RuleExpansionQueue queuedRuleExpansions_;
 
 private:
 	size_t expansionCount_ = 0, maxExpansionCount_ = 16384; ///< Limits how many expansion attempts can be made
 	size_t maxStackDepth_ = 4096;
 	Seed seed_;
 	std::unordered_map<std::string, int> areaNameMapping_; ///< Mapping are names to int to speed up comparison
+
+private:
+	std::unique_ptr<std::ofstream> dbgFile_;
 
 private:
 	DataContextPtr currentDataContext_;

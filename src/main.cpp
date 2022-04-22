@@ -222,16 +222,22 @@ int main(int argc, char *argv[]) {
 				};
 				std::function < Data() > f;
 
-				const auto genf = [val, pos]<WGA_Value::ValueType VT>() {
+				const auto genf = [val, pos]<WGA_Value::ValueType vt>() {
 					return [val, pos] {
 						ZoneScopedN("getData");
 
-						auto h = WGA_ValueWrapper_CPU<VT>(static_cast<WGA_Value_CPU *>(val)).dataHandle(pos);
+						auto h = WGA_ValueWrapper_CPU<vt>(static_cast<WGA_Value_CPU *>(val)).dataHandle(pos);
 						Data r{
 							.recordCount = h.size
 						};
 
-						const size_t bytes = sizeof(WGA_ValueRec_CPU<VT>::T) * h.size;
+						/*if constexpr(vt == WGA_Value::ValueType::Block) {
+							for(size_t i = 0; i < h.size; i++)
+								if(h.data[i] == blockID_undefined)
+									__debugbreak();
+						}*/
+
+						const size_t bytes = sizeof(WGA_ValueRec_CPU<vt>::T) * h.size;
 						r.data.resize(bytes);
 						memcpy(r.data.data(), reinterpret_cast<const char *>(h.data), bytes);
 						return r;

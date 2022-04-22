@@ -11,8 +11,6 @@
 #include "wga_structurefuncs_cpu.h"
 #include "wga_samplingfuncs_cpu.h"
 
-#pragma optimize("gt", on)
-
 std::unordered_map<WorldGenAPI::FunctionID, WGA_Funcs_CPU::Func> WGA_Funcs_CPU::functions() {
 	static const auto result = [] {
 		std::unordered_map<WorldGenAPI::FunctionID, Func> result;

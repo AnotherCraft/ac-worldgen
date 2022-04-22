@@ -16,8 +16,10 @@ bool WGA_StructureOutputData_CPU::SubChunkRecord::shouldUseFlat(int addedRecordC
 		flatData.resize(chunkVolume, blockID_undefined);
 
 		auto resh = flatData.data();
-		for(const auto &v : associativeData)
+		for(const auto &v : associativeData) {
+			ASSERT(v.first < flatData.size());
 			resh[v.first] = v.second;
+		}
 
 		associativeData.clear();
 		return true;

@@ -36,10 +36,7 @@ void WGA_StructureFuncs_CPU::spawn2D(Api api, Key key, DH <VT::Block> result, V 
 			if(!(spawnConditionHandle[ix]))
 				continue;
 
-			spawnList.push_back({
-				                    key.origin + BlockWorldPos(i % chunkSize, i / chunkSize, z),
-				                    api->mapToSymbol<WGA_Rule>(entryRuleHandle[ix])
-			                    });
+			spawnList.emplace_back(key.origin + BlockWorldPos(i % chunkSize, i / chunkSize, z), api->mapToSymbol<WGA_Rule>(entryRuleHandle[ix]));
 		}
 	};
 
@@ -49,8 +46,6 @@ void WGA_StructureFuncs_CPU::spawn2D(Api api, Key key, DH <VT::Block> result, V 
 void WGA_StructureFuncs_CPU::worldPos(Api api, Key key, DH <VT::Float3> result, V <VT::ComponentNode> node) {
 	WGA_SF_NODE_POS_SHENANIGANS(nodeWorldPos.to<float>())
 }
-
-#pragma optimize("gt", on)
 
 void WGA_StructureFuncs_CPU::localPos(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key key, DH <WGA_Value::ValueType::Float3> result) {
 	ASSERT(api->structureGen);
@@ -77,7 +72,8 @@ void WGA_StructureFuncs_CPU::localSeed(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Ke
 	if(!api->structureGen)
 		throw std::exception("localSeed() called outside structure generation");
 
-	result[0] = Vector<float, 1>(api->structureGen->currentDataContext()->seed());
+	// Mod by 65535 so the float does not lose precision, should be okay for most shenanigans
+	result[0] = Vector<float, 1>(api->structureGen->currentDataContext()->seed() % 65535);
 }
 
 void WGA_StructureFuncs_CPU::distanceTo(Api api, Key key, DH <VT::Float> result, V <VT::ComponentNode> node) {
@@ -156,8 +152,8 @@ void WGA_StructureFuncs_CPU::_spawn(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key k
 
 				const auto dt = schr.flatData.data();
 				for(int i = 0; i < chunkVolume; i++) {
-					if(dt[i] != blockID_undefined)
-						result[i] = dt[i];
+					if(auto v = dt[i]; v != blockID_undefined)
+						result[i] = v;
 				}
 			}
 			else
