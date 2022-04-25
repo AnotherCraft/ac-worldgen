@@ -33,6 +33,8 @@ public:
 		~DataContext();
 		static DataContextPtr create(WorldGenAPI_CPU *api, const DataContextPtr &parentContext, WGA_GrammarSymbol *sym, const BlockTransformMatrix &transform = {});
 
+		size_t ix;
+
 	public:
 		void setParams();
 
@@ -41,13 +43,15 @@ public:
 		}
 
 		inline BlockWorldPos constSamplePos() const {
-			return localToWorldMatrix_ * BlockWorldPos(0);
+			return constSamplePos_;
 		}
 
 		inline Seed seed() const {
 			return seed_;
 		}
-		void updateSeed();
+
+		/// Call this when localToWorldMatrix has been changed (to recalculate some stuff)
+		void updateMatrix();
 
 	public:
 		inline BlockWorldPos mapToWorld(const BlockWorldPos &localPos) const {
@@ -80,9 +84,10 @@ public:
 		DataContextPtr parentContext_;
 
 		BlockTransformMatrix localToWorldMatrix_;
+		BlockWorldPos constSamplePos_;
 
 	private:
-		std::unordered_map<WGA_DataRecord_CPU::Key, WGA_DataRecord_CPU::Ptr> dataCache_;
+		std::map<WGA_DataRecord_CPU::Key, WGA_DataRecord_CPU::Ptr> dataCache_;
 		std::unordered_map<const WGA_Value *, WGA_Value::Dimensionality> dimensionalityCache_;
 
 		/// List of all passed param inputs and outputs
@@ -228,9 +233,6 @@ private:
 	size_t maxStackDepth_ = 4096;
 	Seed seed_;
 	std::unordered_map<std::string, int> areaNameMapping_; ///< Mapping are names to int to speed up comparison
-
-private:
-	std::unique_ptr<std::ofstream> dbgFile_;
 
 private:
 	DataContextPtr currentDataContext_;

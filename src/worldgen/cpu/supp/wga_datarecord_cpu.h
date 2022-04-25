@@ -1,6 +1,9 @@
 #pragma once
 
 #include <functional>
+#include <format>
+
+#include "util/vector.h"
 
 class WGA_DataRecord_CPU {
 
@@ -20,15 +23,19 @@ public:
 		SubKey subKey = 0;
 
 	public:
-		inline bool operator ==(const Key &other) const {
-			return symbol == other.symbol && origin == other.origin && subKey == other.subKey;
-		}
+		inline bool operator ==(const Key &other) const = default;
+		std::strong_ordering operator <=>(const Key &other) const;
 
 	};
 	using Ctor = std::function<Ptr(const Key &key)>;
 
 public:
 	virtual int dataSize() const = 0;
+
+public:
+	virtual std::string debugInfo() const {
+		return {};
+	}
 
 };
 
@@ -76,8 +83,12 @@ public:
 
 public:
 	virtual int dataSize() const override {
-		return sizeof(WGA_StaticArrayDataRecord_CPU<T, size_>);
+		return sizeof(T) * size_;
 	};
+
+	virtual std::string debugInfo() const override {
+		return std::format("s={} v0={}", size_, data_[0]);
+	}
 
 private:
 	T data_[size_];

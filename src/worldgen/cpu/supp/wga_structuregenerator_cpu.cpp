@@ -3,6 +3,8 @@
 #include <iostream>
 #include <format>
 
+#include "main.h"
+
 #include "util/scopeexit.h"
 #include "util/tracyutils.h"
 #include "util/iterators.h"
@@ -37,8 +39,6 @@ void WGA_StructureGenerator_CPU::setup(WGA_Rule *entryRule, const BlockWorldPos 
 	expansionCount_ = 0;
 	queuedRuleExpansions_ = {};
 	currentDataContext_ = {};
-
-	dbgFile_ = std::make_unique<std::ofstream>("struct.txt", std::ios::out);
 
 	expandRule(entryRule, origin, BlockOrientation(), nullptr);
 }
@@ -82,7 +82,11 @@ bool WGA_StructureGenerator_CPU::process() {
 
 		const auto ps = ex->superState->expansionData->localToWorldMatrix() * BlockWorldPos();
 		const std::string pss = std::format("({},{},{})", ps.x(), ps.y(), ps.z());
-		*dbgFile_ << std::format("{} {}/{} {}/{} {} {}\n", ruleExpansions_.size(), ex->superState->expansionIndex, ex->superState->context->possibleExpansions.size(), ex->optionIndex, ex->superState->possibleOptions.size(), pss, ex->superState->expansionData->seed());
+
+		{
+			std::unique_lock _ml(dbgFileMutex);
+			dbgFile << std::format("{} {}/{} {}/{} {} {}\n", ruleExpansions_.size(), ex->superState->expansionIndex, ex->superState->context->possibleExpansions.size(), ex->optionIndex, ex->superState->possibleOptions.size(), pss, ex->superState->expansionData->seed());
+		}
 
 		// Set the expansion to the next state/option before processing, so that the addBranch() already stores correct data
 		ruleExpansions_.back() = nextRuleExpansionOption(ex->superState->context, ex.get());
@@ -277,6 +281,12 @@ bool WGA_StructureGenerator_CPU::expandRule(WGA_Rule *rule, const BlockWorldPos 
 					rex->possibleExpansions.push_back(cex);
 					unprocessedExpansions.erase(i);
 					sum = -1;
+
+					{
+						std::unique_lock _ml(dbgFileMutex);
+						const auto pos = currentDataContext_->constSamplePos();
+						dbgFile << std::format("possibleExpansion {} -> {}\n", cex.expansion->description(), cex.expansion->component() ? cex.expansion->component()->description() : cex.expansion->targetRule() ? cex.expansion->targetRule()->description() : "void");
+					}
 					break;
 				}
 			}
@@ -289,6 +299,8 @@ bool WGA_StructureGenerator_CPU::expandRule(WGA_Rule *rule, const BlockWorldPos 
 	// No possible expansions -> fail
 	if(rex->possibleExpansions.empty())
 		return false;
+
+	ASSERT(currentDataContext_ == rex->ruleData);
 
 	// Process param sets
 	rex->ruleData->setParams();
@@ -372,7 +384,7 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 			dcx.localToWorldMatrix() *= BlockTransformMatrix::translation(-blockPosValue(node->config().position, ss.expansionData->constSamplePos()));
 
 			// We've changed the transaltion matrix, so we shall update the seed
-			dcx.updateSeed();
+			dcx.updateMatrix();
 		}
 
 		// Check component conditions
@@ -423,13 +435,12 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 		auto nodes = comp->nodes();
 
 		// Randomize the order of the nodes using Fisher-Yates shuffle
-		{
+		if(0) {
 			const size_t sz = nodes.size();
 			const Seed seed = WorldGen_CPU_Utils::hash(dcx.seed() ^ 1531, seed_);
 			for(int i = 0; i < sz; i++) {
 				const int j = i + (WorldGen_CPU_Utils::hash(i, seed) % (sz - i));
-				std::swap(nodes[i], nodes[j]
-				);
+				std::swap(nodes[i], nodes[j]);
 			}
 		}
 
@@ -529,7 +540,7 @@ WGA_StructureGenerator_CPU::RuleExpansionStatePtr WGA_StructureGenerator_CPU::ne
 				}
 
 				// Randomize the order of the nodes using Fisher-Yates shuffle
-				{
+				if(0) {
 					const size_t sz = opts.size();
 					const Seed seed = WorldGen_CPU_Utils::hash(16512, dcx.seed());
 					for(size_t i = 0; i < sz; i++) {
@@ -570,10 +581,10 @@ void WGA_StructureGenerator_CPU::failBranch() {
 	stateStack_.pop();
 
 	// Remove areas and component expansions added after the addBranch() was called
-	ASSERT(s.areaCount < areas_.size());
+	ASSERT(s.areaCount <= areas_.size());
 	areas_.resize(s.areaCount);
 
-	ASSERT(s.componentExpansionCount < componentExpansions_.size());
+	ASSERT(s.componentExpansionCount <= componentExpansions_.size());
 	componentExpansions_.resize(s.componentExpansionCount);
 
 	ASSERT(s.ruleExpansionCount <= ruleExpansions_.size());
@@ -585,9 +596,19 @@ void WGA_StructureGenerator_CPU::failBranch() {
 bool WGA_StructureGenerator_CPU::checkConditions(WGA_GrammarSymbol *sym) {
 	// ZoneScoped;
 
+	{
+		std::unique_lock _ml(dbgFileMutex);
+		const auto pos = currentDataContext_->constSamplePos();
+		dbgFile << std::format("checkCondition pos={} start cnt={} ctx={}\n", pos.to<BlockWorldPos_T>(), sym->conditions().size(), currentDataContext_->seed());
+	}
+
 	const bool result = iterator(sym->conditions()).mapx(boolValue(x.value, currentDataContext_->constSamplePos())).all();
 
-	*dbgFile_ << std::format("checkCondition {} {} {}\n", result, currentDataContext_->seed(), sym->description());
+	{
+		std::unique_lock _ml(dbgFileMutex);
+		const auto pos = currentDataContext_->constSamplePos();
+		dbgFile << std::format("checkCondition {} pos={} {} {}\n", result, pos.to<BlockWorldPos_T>(), currentDataContext_->seed(), sym->description());
+	}
 
 	return result;
 }
@@ -612,6 +633,8 @@ WGA_StructureGenerator_CPU::DataContext::~DataContext() {
 WGA_StructureGenerator_CPU::DataContextPtr WGA_StructureGenerator_CPU::DataContext::create(WorldGenAPI_CPU *api, const WGA_StructureGenerator_CPU::DataContextPtr &parentContext, WGA_GrammarSymbol *sym, const BlockTransformMatrix &transform) {
 	DataContextPtr r(new DataContext());
 	r->load(api, parentContext, sym, transform);
+	static size_t ix = 0;
+	r->ix = ix++;
 	return r;
 }
 
@@ -628,7 +651,7 @@ void WGA_StructureGenerator_CPU::DataContext::load(WorldGenAPI_CPU *api, const D
 	else
 		localToWorldMatrix_ = transform;
 
-	updateSeed();
+	updateMatrix();
 
 	for(const WGA_GrammarSymbol::ParamDeclare &pd: sym->paramDeclares()) {
 		const std::string key = paramKey(pd.paramName, pd.type);
@@ -652,12 +675,22 @@ void WGA_StructureGenerator_CPU::DataContext::load(WorldGenAPI_CPU *api, const D
 				ASSERT(cdc.get() == this);
 
 				ValueGuard _vg(cdc, parentContext_);
+
+				{
+					std::unique_lock _ml(dbgFileMutex);
+					dbgFile << std::format("parent six={}\n", cdc->ix);
+				}
 				return parentContext_->getDataRecord(key, sourceVal->ctor());
 			};
 
 			WGA_Value_CPU *localVal = new WGA_Value_CPU(sourceVal->api(), sourceVal->valueType(), true, dimFunc, ctorFunc);
 			temporarySymbols_.push_back(localVal);
 			paramInputs_[it->first] = localVal;
+
+			{
+				std::unique_lock _ml(dbgFileMutex);
+				dbgFile << std::format("temps cix={} kix={}\n", ix, localVal->ix);
+			}
 		}
 	}
 
@@ -671,27 +704,55 @@ void WGA_StructureGenerator_CPU::DataContext::load(WorldGenAPI_CPU *api, const D
 }
 
 void WGA_StructureGenerator_CPU::DataContext::setParams() {
-	for(const WGA_GrammarSymbol::ParamSet &ps: sym_->paramSets())
+	for(const WGA_GrammarSymbol::ParamSet &ps: sym_->paramSets()) {
 		paramOutputs_[paramKey(ps.paramName, ps.value->valueType())] = ps.value;
+		dbgFile << std::format("cspos={} seed={} param={} val0={}\n", constSamplePos_.to<BlockWorldPos_T>(), seed_, paramKey(ps.paramName, ps.value->valueType()), static_cast<WGA_Value_CPU *>(ps.value)->getDataRecord({}, 0)->debugInfo());
+	}
 }
 
-void WGA_StructureGenerator_CPU::DataContext::updateSeed() {
-	seed_ = WorldGen_CPU_Utils::hash((localToWorldMatrix_ * BlockWorldPos()).to<uint32_t>(), parentContext_ ? parentContext_->seed_ : api_->structureGen->seed_);
+void WGA_StructureGenerator_CPU::DataContext::updateMatrix() {
+	constSamplePos_ = localToWorldMatrix_ * BlockWorldPos();
+	seed_ = WorldGen_CPU_Utils::hash(constSamplePos_.to<uint32_t>(), parentContext_ ? parentContext_->seed_ : api_->structureGen->seed_);
 }
 
 WGA_DataRecord_CPU::Ptr WGA_StructureGenerator_CPU::DataContext::getDataRecord(const WGA_DataRecord_CPU::Key &key, const WGA_DataRecord_CPU::Ctor &ctor) {
+	{
+		std::unique_lock _ml(dbgFileMutex);
+		dbgFile << std::format("cache cix={} sz={}\n{}\n", ix, dataCache_.size(), iterator(dataCache_).mapx(std::format("kix={} pos={}", x.first.symbol->ix, x.first.origin.to<BlockWorldPos_T>())).join(" | "));
+	}
+
 	WGA_DataRecord_CPU::Ptr result = dataCache_[key];
-	if(result)
+
+	const auto ff = [&] {
+		return std::format("{} kix={} cix={} cspos={} seed={} {}", key.symbol->description(), key.symbol->ix, ix, constSamplePos_.to<BlockWorldPos_T>(), seed_, result->debugInfo());
+	};
+
+	if(result) {
+		{
+			std::unique_lock _ml(dbgFileMutex);
+			dbgFile << ff() << std::format("cached\n");
+		}
+
 		return result;
+	}
 
 	// Check if the symbol is param declare value, map it to actual param value
-	;
+	bool isParam = true;
 	if(const auto f = paramKeyMapping_.find(key.symbol); f != paramKeyMapping_.end())
 		result = static_cast<WGA_Value_CPU *>(paramInputs_[f->second])->getDataRecord(key.origin, key.subKey);
-	else
+	else {
 		result = ctor(key);
+		isParam = false;
+	}
 
 	dataCache_[key] = result;
+
+	{
+		std::unique_lock _ml(dbgFileMutex);
+		dbgFile << ff() << std::format("isParam={}\n", isParam);
+	}
+
+
 	return result;
 }
 

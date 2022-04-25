@@ -14,6 +14,8 @@
 
 #endif
 
+#include "main.h"
+
 #include "util/forit.h"
 #include "util/iterators.h"
 #include "util/tracyutils.h"
@@ -24,6 +26,9 @@
 #include "worldgen/cpu/supp/wga_valuewrapper_cpu.h"
 #include "woglac/wglcompiler.h"
 #include "woglac/wglfile.h"
+
+std::ofstream dbgFile;
+std::mutex dbgFileMutex;
 
 std::mutex stdoutMutex;
 
@@ -37,6 +42,8 @@ int main(int argc, char *argv[]) {
 	// Set stdout mode to binary to prevent unwanted \n -> \r\n in binary data
 	setmode(fileno(stdout), O_BINARY);
 #endif
+
+	dbgFile.open("dbg.txt", std::ios::out);
 
 	std::vector<std::thread> pool;
 

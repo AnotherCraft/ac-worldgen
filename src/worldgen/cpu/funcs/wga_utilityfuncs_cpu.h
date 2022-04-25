@@ -58,7 +58,9 @@ void WGA_UtilityFuncs_CPU::select(Api api, Key key, DH <t> result, V <VT::Bool> 
 		auto vh = thnv.dataHandle(key.origin);
 		for(int i = 0; i < result.size; i++)
 			result[i] = vh[i];
-	} else {
+	}
+
+	else {
 		auto thnh = thnv.dataHandle(key.origin);
 		auto elsh = elsv.dataHandle(key.origin);
 		for(int i = 0; i < result.size; i++)

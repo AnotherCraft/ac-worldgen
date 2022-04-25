@@ -12,3 +12,22 @@ WGA_DataRecord_CPU::Key::Key(const WGA_DataRecord_CPU::Key &other)
 	: symbol(other.symbol), origin(other.origin), subKey(other.subKey) {
 
 }
+
+std::strong_ordering WGA_DataRecord_CPU::Key::operator <=>(const WGA_DataRecord_CPU::Key &other) const {
+	if(auto v = (symbol->ix <=> other.symbol->ix); v != 0)
+		return v;
+
+	if(auto v = (origin.x() <=> other.origin.x()); v != 0)
+		return v;
+
+	if(auto v = (origin.y() <=> other.origin.y()); v != 0)
+		return v;
+
+	if(auto v = (origin.z() <=> other.origin.z()); v != 0)
+		return v;
+
+	if(auto v = (subKey <=> other.subKey); v != 0)
+		return v;
+
+	return std::strong_ordering();
+}

@@ -3,9 +3,11 @@
 #include <type_traits>
 #include <math.h>
 #include <random>
+#include <format>
 
 #include "util/assert.h"
 #include "util/hashutils.h"
+#include "util/iterators.h"
 
 #define VECTOR_COMPONENT_OP(expr) Vector<T, D> result; for(int i = 0; i < D; i++) result[i] = expr; return result
 #define VECTOR_COMPONENT_OP_RT(RT, expr) RT result; for(int i = 0; i < D; i++) result[i] = expr; return result
@@ -514,6 +516,14 @@ struct std::hash<Vector<T, D>> {
 			HashUtils::combineHash(r, h(c));
 
 		return r;
+	}
+};
+
+template<typename T, int D>
+struct std::formatter<Vector<T, D>> : public std::formatter<std::string> {
+
+	auto format(const Vector<T, D> &v, format_context &ctx) {
+		return formatter<string>::format(std::format("({})", ::iterator(v.data).mapx(std::format("{}", x)).join(", ")), ctx);
 	}
 };
 

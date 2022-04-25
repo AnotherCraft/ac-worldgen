@@ -2,6 +2,9 @@
 
 #include <vector>
 #include <mutex>
+#include <format>
+
+#include "main.h"
 
 #include "util/enumutils.h"
 #include "util/tracyutils.h"
@@ -53,13 +56,19 @@ WGA_DataCache_CPU::DataRecordPtr wga_dimFillCtor(const WGA_DataRecord_CPU::Key &
 		fillFunc(key, handle);
 	}
 
+	/*{
+		std::unique_lock _ml(dbgFileMutex);
+
+		if(key.symbol && key.symbol->isContextual())
+			dbgFile << std::format("{} ({},{},{}) subKey={} size={} v={}\n", key.symbol ? key.symbol->description() : "no symbol", key.origin.x(), key.origin.y(), key.origin.z(), key.subKey, rec->size, rec->data[0]);
+	}*/
+
 	return recPtr;
 }
 
 
 template<WGA_Value::ValueType t>
-WGA_DataRecord_CPU::Ctor
-wga_fillCtor(const WGA_Value_CPU::DimensionalityFunc &dimFunc, const WGA_FillFunc<t> &fillFunc, const char *funcName) {
+WGA_DataRecord_CPU::Ctor wga_fillCtor(const WGA_Value_CPU::DimensionalityFunc &dimFunc, const WGA_FillFunc<t> &fillFunc, const char *funcName) {
 	static const auto dimFillFs = std::vector<std::function<WGA_DataCache_CPU::DataRecordPtr(const WGA_DataRecord_CPU::Key &, const WGA_FillFunc<t> &)> >{
 		/* Unknown dimensionality */ &wga_dimFillCtor<t, 0>, &wga_dimFillCtor<t, 0>, &wga_dimFillCtor<t, 1>, &wga_dimFillCtor<t, 2>, &wga_dimFillCtor<t, 3>
 	};
