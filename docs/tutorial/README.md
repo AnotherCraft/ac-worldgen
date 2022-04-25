@@ -24,4 +24,4 @@ This is more or less true even in practice, except the worldgen system works wit
 7. [Trees, structure generation](07_trees.md)
 8. [Dungeons, structure generation](08_dungeons.md)
 9. [Mazes, structure generation](09_mazes.md)
-10. Structures, structure imports
+10. [Castle walls, structure generation imports, loops](10_walls.md)

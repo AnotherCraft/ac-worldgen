@@ -168,7 +168,12 @@ int main(int argc, char *argv[]) {
 						jobs.pop();
 					}
 
-					job();
+					try {
+						job();
+					}
+					catch(const std::exception &e) {
+						std::cerr << e.what() << "\n";
+					}
 
 					{
 						std::unique_lock lock(jobsMutex);
