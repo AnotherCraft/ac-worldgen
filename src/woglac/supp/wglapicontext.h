@@ -6,6 +6,7 @@
 #include "worldgen/base/worldgenapi.h"
 
 #include "wglsymbol.h"
+#include "wgldefines.h"
 
 class WGLAPIContext {
 
@@ -22,8 +23,11 @@ public:
 		return sym ? static_cast<T *>(symbolMapping_.at(sym)) : nullptr;
 	};
 
+	WGA_Value *expr(const WGLExpressionResult &expr);
+
 private:
 	std::unordered_map<const WGLSymbol *, WGA_Symbol *> symbolMapping_;
+	std::unordered_map<std::string, WGA_Value*> exprCache_;
 
 };
 

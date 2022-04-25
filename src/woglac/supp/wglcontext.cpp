@@ -28,7 +28,7 @@ void WGLContext::clear() {
 	//markSymbolDefined(rootSymbol);
 }
 
-void WGLContext::addApiCmd(WGLSymbol *definingSymbol, const DependencyList &dependencies, const WGLContext::APICommand &cmd) {
+void WGLContext::addApiCmd(WGLSymbol *definingSymbol, const WGLDependencyList &dependencies, const WGLContext::APICommand &cmd) {
 	ASSERT(!definedSymbols_.contains(definingSymbol));
 
 	int unresolvedCount = 0;

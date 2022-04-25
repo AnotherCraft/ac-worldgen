@@ -9,12 +9,12 @@
 
 #include "wglsymbol.h"
 #include "wglapicontext.h"
+#include "wgldefines.h"
 
 class WGLContext {
 
 public:
 	using APICommand = std::function<void(WGLAPIContext &)>;
-	using DependencyList = std::unordered_set<WGLSymbol *>;
 
 public:
 	WGLContext();
@@ -31,7 +31,7 @@ public:
 	std::unordered_map<antlr4::ParserRuleContext *, WGLSymbol *> astSymbolMapping;
 
 public:
-	void addApiCmd(WGLSymbol *definingSymbol, const DependencyList &dependencies, const APICommand &cmd);
+	void addApiCmd(WGLSymbol *definingSymbol, const WGLDependencyList &dependencies, const APICommand &cmd);
 	void checkCircularDependencies();
 
 	inline const auto &apiCommands() {
