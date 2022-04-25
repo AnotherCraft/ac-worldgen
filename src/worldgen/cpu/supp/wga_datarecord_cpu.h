@@ -76,7 +76,7 @@ public:
 
 public:
 	virtual int dataSize() const override {
-		return sizeof(WGA_StaticArrayDataRecord_CPU<T, size_>) * size_;
+		return sizeof(WGA_StaticArrayDataRecord_CPU<T, size_>);
 	};
 
 private:
