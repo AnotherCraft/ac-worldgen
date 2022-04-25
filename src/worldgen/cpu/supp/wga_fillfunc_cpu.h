@@ -2,9 +2,6 @@
 
 #include <vector>
 #include <mutex>
-#include <format>
-
-#include "main.h"
 
 #include "util/enumutils.h"
 #include "util/tracyutils.h"
@@ -55,13 +52,6 @@ WGA_DataCache_CPU::DataRecordPtr wga_dimFillCtor(const WGA_DataRecord_CPU::Key &
 	{
 		fillFunc(key, handle);
 	}
-
-	/*{
-		std::unique_lock _ml(dbgFileMutex);
-
-		if(key.symbol && key.symbol->isContextual())
-			dbgFile << std::format("{} ({},{},{}) subKey={} size={} v={}\n", key.symbol ? key.symbol->description() : "no symbol", key.origin.x(), key.origin.y(), key.origin.z(), key.subKey, rec->size, rec->data[0]);
-	}*/
 
 	return recPtr;
 }

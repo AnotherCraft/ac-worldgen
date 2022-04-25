@@ -1,24 +1,13 @@
 #include "wga_symbol.h"
 
-#include "main.h"
-
 #include "util/assert.h"
 
 WGA_Symbol::WGA_Symbol() {
-	static size_t ixc = 0;
-	ix = ixc++;
 
-	{
-		std::unique_lock _ml(dbgFileMutex);
-		dbgFile << std::format("newSymbol {}\n", ix);
-	}
 }
 
 WGA_Symbol::~WGA_Symbol() {
-	{
-		std::unique_lock _ml(dbgFileMutex);
-		dbgFile << std::format("destroySymbol {}\n", ix);
-	}
+
 }
 
 WGA_Symbol::SymbolType WGA_Symbol::symbolType() const {

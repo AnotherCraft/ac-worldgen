@@ -23,8 +23,6 @@ public:
 	WGA_Symbol();
 	virtual ~WGA_Symbol();
 
-	size_t ix;
-
 public:
 	virtual SymbolType symbolType() const;
 

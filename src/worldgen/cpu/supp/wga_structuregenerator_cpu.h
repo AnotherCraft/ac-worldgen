@@ -33,8 +33,6 @@ public:
 		~DataContext();
 		static DataContextPtr create(WorldGenAPI_CPU *api, const DataContextPtr &parentContext, WGA_GrammarSymbol *sym, const BlockTransformMatrix &transform = {});
 
-		size_t ix;
-
 	public:
 		void setParams();
 
@@ -82,13 +80,12 @@ public:
 		WorldGenAPI_CPU *api_ = nullptr;
 		WGA_GrammarSymbol *sym_ = nullptr;
 		DataContextPtr parentContext_;
-		std::weak_ptr<DataContext> selfPtr_;
 
 		BlockTransformMatrix localToWorldMatrix_;
 		BlockWorldPos constSamplePos_;
 
 	private:
-		std::map<WGA_DataRecord_CPU::Key, WGA_DataRecord_CPU::Ptr> dataCache_;
+		std::unordered_map<WGA_DataRecord_CPU::Key, WGA_DataRecord_CPU::Ptr> dataCache_;
 		std::unordered_map<const WGA_Value *, WGA_Value::Dimensionality> dimensionalityCache_;
 
 		/// List of all passed param inputs and outputs

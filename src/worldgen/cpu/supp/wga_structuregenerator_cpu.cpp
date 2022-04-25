@@ -3,8 +3,6 @@
 #include <iostream>
 #include <format>
 
-#include "main.h"
-
 #include "util/scopeexit.h"
 #include "util/tracyutils.h"
 #include "util/iterators.h"
@@ -78,14 +76,6 @@ bool WGA_StructureGenerator_CPU::process() {
 		if(!ex) {
 			failBranch();
 			continue;
-		}
-
-		const auto ps = ex->superState->expansionData->localToWorldMatrix() * BlockWorldPos();
-		const std::string pss = std::format("({},{},{})", ps.x(), ps.y(), ps.z());
-
-		{
-			std::unique_lock _ml(dbgFileMutex);
-			dbgFile << std::format("{} {}/{} {}/{} {} {}\n", ruleExpansions_.size(), ex->superState->expansionIndex, ex->superState->context->possibleExpansions.size(), ex->optionIndex, ex->superState->possibleOptions.size(), pss, ex->superState->expansionData->seed());
 		}
 
 		// Set the expansion to the next state/option before processing, so that the addBranch() already stores correct data
@@ -281,12 +271,6 @@ bool WGA_StructureGenerator_CPU::expandRule(WGA_Rule *rule, const BlockWorldPos 
 					rex->possibleExpansions.push_back(cex);
 					unprocessedExpansions.erase(i);
 					sum = -1;
-
-					{
-						std::unique_lock _ml(dbgFileMutex);
-						const auto pos = currentDataContext_->constSamplePos();
-						dbgFile << std::format("possibleExpansion {} -> {}\n", cex.expansion->description(), cex.expansion->component() ? cex.expansion->component()->description() : cex.expansion->targetRule() ? cex.expansion->targetRule()->description() : "void");
-					}
 					break;
 				}
 			}
@@ -435,7 +419,7 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 		auto nodes = comp->nodes();
 
 		// Randomize the order of the nodes using Fisher-Yates shuffle
-		if(0) {
+		{
 			const size_t sz = nodes.size();
 			const Seed seed = WorldGen_CPU_Utils::hash(dcx.seed() ^ 1531, seed_);
 			for(int i = 0; i < sz; i++) {
@@ -540,7 +524,7 @@ WGA_StructureGenerator_CPU::RuleExpansionStatePtr WGA_StructureGenerator_CPU::ne
 				}
 
 				// Randomize the order of the nodes using Fisher-Yates shuffle
-				if(0) {
+				{
 					const size_t sz = opts.size();
 					const Seed seed = WorldGen_CPU_Utils::hash(16512, dcx.seed());
 					for(size_t i = 0; i < sz; i++) {
@@ -596,19 +580,7 @@ void WGA_StructureGenerator_CPU::failBranch() {
 bool WGA_StructureGenerator_CPU::checkConditions(WGA_GrammarSymbol *sym) {
 	// ZoneScoped;
 
-	{
-		std::unique_lock _ml(dbgFileMutex);
-		const auto pos = currentDataContext_->constSamplePos();
-		dbgFile << std::format("checkCondition pos={} start cnt={} ctx={}\n", pos.to<BlockWorldPos_T>(), sym->conditions().size(), currentDataContext_->seed());
-	}
-
 	const bool result = iterator(sym->conditions()).mapx(boolValue(x.value, currentDataContext_->constSamplePos())).all();
-
-	{
-		std::unique_lock _ml(dbgFileMutex);
-		const auto pos = currentDataContext_->constSamplePos();
-		dbgFile << std::format("checkCondition {} pos={} {} {}\n", result, pos.to<BlockWorldPos_T>(), currentDataContext_->seed(), sym->description());
-	}
 
 	return result;
 }
@@ -626,33 +598,13 @@ BlockID WGA_StructureGenerator_CPU::blockValue(WGA_Value *val, const BlockWorldP
 }
 
 WGA_StructureGenerator_CPU::DataContext::~DataContext() {
-	{
-		std::unique_lock _ml(dbgFileMutex);
-		dbgFile << std::format("destroy cix={}\n", ix);
-	}
-
 	for(const auto e: temporarySymbols_)
 		delete e;
 }
 
 WGA_StructureGenerator_CPU::DataContextPtr WGA_StructureGenerator_CPU::DataContext::create(WorldGenAPI_CPU *api, const WGA_StructureGenerator_CPU::DataContextPtr &parentContext, WGA_GrammarSymbol *sym, const BlockTransformMatrix &transform) {
 	DataContextPtr r(new DataContext());
-	static size_t ix = 0;
-	r->ix = ix++;
-	r->selfPtr_ = r;
-
-	{
-		std::unique_lock _ml(dbgFileMutex);
-		dbgFile << std::format("new cix={} pcix={}\n", r->ix, parentContext ? parentContext->ix : -1);
-	}
-
 	r->load(api, parentContext, sym, transform);
-
-	{
-		std::unique_lock _ml(dbgFileMutex);
-		dbgFile << std::format("new2 cix={} pcix={}\n", r->ix, parentContext ? parentContext->ix : -1);
-	}
-
 	return r;
 }
 
@@ -660,16 +612,11 @@ void WGA_StructureGenerator_CPU::DataContext::load(WorldGenAPI_CPU *api, const D
 	// ZoneScoped;
 
 	ASSERT(!sym_);
-	ASSERT(sym_);
+	ASSERT(sym);
 
 	sym_ = sym;
 	parentContext_ = parentContext;
 	api_ = api;
-
-	{
-		std::unique_lock _ml(dbgFileMutex);
-		dbgFile << std::format("load cix={} pcix={}\n", ix, parentContext ? parentContext->ix : -1);
-	}
 
 	if(parentContext)
 		localToWorldMatrix_ = parentContext->localToWorldMatrix_ * transform;
@@ -682,11 +629,6 @@ void WGA_StructureGenerator_CPU::DataContext::load(WorldGenAPI_CPU *api, const D
 		const std::string key = paramKey(pd.paramName, pd.type);
 		paramInputs_[key] = pd.defaultValue;
 		paramKeyMapping_[pd.value] = key;
-	}
-
-	{
-		std::unique_lock _ml(dbgFileMutex);
-		dbgFile << std::format("load2 cix={} pcix={}\n", ix, parentContext ? parentContext->ix : -1);
 	}
 
 	if(parentContext) {
@@ -705,35 +647,16 @@ void WGA_StructureGenerator_CPU::DataContext::load(WorldGenAPI_CPU *api, const D
 				ASSERT(cdc.get() == this);
 
 				ValueGuard _vg(cdc, parentContext_);
-
-				{
-					std::unique_lock _ml(dbgFileMutex);
-					dbgFile << std::format("parent cix={} ocix={} kix={}\n", cdc->ix, this->ix, key.symbol ? key.symbol->ix : -1);
-				}
 				auto adjKey = key;
 				adjKey.symbol = sourceVal;
-				auto result = parentContext_->getDataRecord(adjKey, sourceVal->ctor());
-				{
-					std::unique_lock _ml(dbgFileMutex);
-					dbgFile << std::format("parent end cix={} ocix={}\n", cdc->ix, this->ix);
-				}
-				return result;
+				
+				return parentContext_->getDataRecord(adjKey, sourceVal->ctor());
 			};
 
 			WGA_Value_CPU *localVal = new WGA_Value_CPU(sourceVal->api(), sourceVal->valueType(), true, dimFunc, ctorFunc);
 			temporarySymbols_.push_back(localVal);
 			paramInputs_[it->first] = localVal;
-
-			{
-				std::unique_lock _ml(dbgFileMutex);
-				dbgFile << std::format("temps cix={} kix={}\n", ix, localVal->ix);
-			}
 		}
-	}
-
-	{
-		std::unique_lock _ml(dbgFileMutex);
-		dbgFile << std::format("load3 cix={} pcix={}\n", ix, parentContext ? parentContext->ix : -1);
 	}
 
 	for(const WGA_GrammarSymbol::ParamDeclare &pd: sym->paramDeclares()) {
@@ -743,18 +666,11 @@ void WGA_StructureGenerator_CPU::DataContext::load(WorldGenAPI_CPU *api, const D
 	}
 
 	paramOutputs_ = paramInputs_;
-
-	{
-		std::unique_lock _ml(dbgFileMutex);
-		dbgFile << std::format("load4 cix={} pcix={}\n", ix, parentContext ? parentContext->ix : -1);
-	}
 }
 
 void WGA_StructureGenerator_CPU::DataContext::setParams() {
-	for(const WGA_GrammarSymbol::ParamSet &ps: sym_->paramSets()) {
+	for(const WGA_GrammarSymbol::ParamSet &ps: sym_->paramSets())
 		paramOutputs_[paramKey(ps.paramName, ps.value->valueType())] = ps.value;
-		dbgFile << std::format("cspos={} seed={} param={} val0={}\n", constSamplePos_.to<BlockWorldPos_T>(), seed_, paramKey(ps.paramName, ps.value->valueType()), static_cast<WGA_Value_CPU *>(ps.value)->getDataRecord({}, 0)->debugInfo());
-	}
 }
 
 void WGA_StructureGenerator_CPU::DataContext::updateMatrix() {
@@ -763,43 +679,18 @@ void WGA_StructureGenerator_CPU::DataContext::updateMatrix() {
 }
 
 WGA_DataRecord_CPU::Ptr WGA_StructureGenerator_CPU::DataContext::getDataRecord(const WGA_DataRecord_CPU::Key &key, const WGA_DataRecord_CPU::Ctor &ctor) {
-	{
-		std::unique_lock _ml(dbgFileMutex);
-		dbgFile << std::format("cache cix={} sz={}\n{}\n", ix, dataCache_.size(), iterator(dataCache_).mapx(std::format("kix={} pos={}", x.first.symbol->ix, x.first.origin.to<BlockWorldPos_T>())).join(" | "));
-	}
-
 	WGA_DataRecord_CPU::Ptr result = dataCache_[key];
-
-	const auto ff = [&] {
-		return std::format("{} kix={} cix={} cspos={} seed={} {}", key.symbol->description(), key.symbol->ix, ix, constSamplePos_.to<BlockWorldPos_T>(), seed_, result->debugInfo());
-	};
-
-	if(result) {
-		{
-			std::unique_lock _ml(dbgFileMutex);
-			dbgFile << ff() << std::format("cached\n");
-		}
-
+	if(result)
 		return result;
-	}
 
 	// Check if the symbol is param declare value, map it to actual param value
-	bool isParam = true;
+	;
 	if(const auto f = paramKeyMapping_.find(key.symbol); f != paramKeyMapping_.end())
 		result = static_cast<WGA_Value_CPU *>(paramInputs_[f->second])->getDataRecord(key.origin, key.subKey);
-	else {
+	else
 		result = ctor(key);
-		isParam = false;
-	}
 
 	dataCache_[key] = result;
-
-	{
-		std::unique_lock _ml(dbgFileMutex);
-		dbgFile << ff() << std::format("isParam={}\n", isParam);
-	}
-
-
 	return result;
 }
 
