@@ -626,15 +626,33 @@ BlockID WGA_StructureGenerator_CPU::blockValue(WGA_Value *val, const BlockWorldP
 }
 
 WGA_StructureGenerator_CPU::DataContext::~DataContext() {
+	{
+		std::unique_lock _ml(dbgFileMutex);
+		dbgFile << std::format("destroy cix={}\n", ix);
+	}
+
 	for(const auto e: temporarySymbols_)
 		delete e;
 }
 
 WGA_StructureGenerator_CPU::DataContextPtr WGA_StructureGenerator_CPU::DataContext::create(WorldGenAPI_CPU *api, const WGA_StructureGenerator_CPU::DataContextPtr &parentContext, WGA_GrammarSymbol *sym, const BlockTransformMatrix &transform) {
 	DataContextPtr r(new DataContext());
-	r->load(api, parentContext, sym, transform);
 	static size_t ix = 0;
 	r->ix = ix++;
+	r->selfPtr_ = r;
+
+	{
+		std::unique_lock _ml(dbgFileMutex);
+		dbgFile << std::format("new cix={} pcix={}\n", r->ix, parentContext ? parentContext->ix : -1);
+	}
+
+	r->load(api, parentContext, sym, transform);
+
+	{
+		std::unique_lock _ml(dbgFileMutex);
+		dbgFile << std::format("new2 cix={} pcix={}\n", r->ix, parentContext ? parentContext->ix : -1);
+	}
+
 	return r;
 }
 
@@ -642,9 +660,16 @@ void WGA_StructureGenerator_CPU::DataContext::load(WorldGenAPI_CPU *api, const D
 	// ZoneScoped;
 
 	ASSERT(!sym_);
+	ASSERT(sym_);
+
 	sym_ = sym;
 	parentContext_ = parentContext;
 	api_ = api;
+
+	{
+		std::unique_lock _ml(dbgFileMutex);
+		dbgFile << std::format("load cix={} pcix={}\n", ix, parentContext ? parentContext->ix : -1);
+	}
 
 	if(parentContext)
 		localToWorldMatrix_ = parentContext->localToWorldMatrix_ * transform;
@@ -657,6 +682,11 @@ void WGA_StructureGenerator_CPU::DataContext::load(WorldGenAPI_CPU *api, const D
 		const std::string key = paramKey(pd.paramName, pd.type);
 		paramInputs_[key] = pd.defaultValue;
 		paramKeyMapping_[pd.value] = key;
+	}
+
+	{
+		std::unique_lock _ml(dbgFileMutex);
+		dbgFile << std::format("load2 cix={} pcix={}\n", ix, parentContext ? parentContext->ix : -1);
 	}
 
 	if(parentContext) {
@@ -678,9 +708,16 @@ void WGA_StructureGenerator_CPU::DataContext::load(WorldGenAPI_CPU *api, const D
 
 				{
 					std::unique_lock _ml(dbgFileMutex);
-					dbgFile << std::format("parent six={}\n", cdc->ix);
+					dbgFile << std::format("parent cix={} ocix={} kix={}\n", cdc->ix, this->ix, key.symbol ? key.symbol->ix : -1);
 				}
-				return parentContext_->getDataRecord(key, sourceVal->ctor());
+				auto adjKey = key;
+				adjKey.symbol = sourceVal;
+				auto result = parentContext_->getDataRecord(adjKey, sourceVal->ctor());
+				{
+					std::unique_lock _ml(dbgFileMutex);
+					dbgFile << std::format("parent end cix={} ocix={}\n", cdc->ix, this->ix);
+				}
+				return result;
 			};
 
 			WGA_Value_CPU *localVal = new WGA_Value_CPU(sourceVal->api(), sourceVal->valueType(), true, dimFunc, ctorFunc);
@@ -694,6 +731,11 @@ void WGA_StructureGenerator_CPU::DataContext::load(WorldGenAPI_CPU *api, const D
 		}
 	}
 
+	{
+		std::unique_lock _ml(dbgFileMutex);
+		dbgFile << std::format("load3 cix={} pcix={}\n", ix, parentContext ? parentContext->ix : -1);
+	}
+
 	for(const WGA_GrammarSymbol::ParamDeclare &pd: sym->paramDeclares()) {
 		const std::string key = paramKey(pd.paramName, pd.type);
 		if(!paramInputs_[key])
@@ -701,6 +743,11 @@ void WGA_StructureGenerator_CPU::DataContext::load(WorldGenAPI_CPU *api, const D
 	}
 
 	paramOutputs_ = paramInputs_;
+
+	{
+		std::unique_lock _ml(dbgFileMutex);
+		dbgFile << std::format("load4 cix={} pcix={}\n", ix, parentContext ? parentContext->ix : -1);
+	}
 }
 
 void WGA_StructureGenerator_CPU::DataContext::setParams() {

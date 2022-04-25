@@ -82,6 +82,7 @@ public:
 		WorldGenAPI_CPU *api_ = nullptr;
 		WGA_GrammarSymbol *sym_ = nullptr;
 		DataContextPtr parentContext_;
+		std::weak_ptr<DataContext> selfPtr_;
 
 		BlockTransformMatrix localToWorldMatrix_;
 		BlockWorldPos constSamplePos_;
