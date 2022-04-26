@@ -3,7 +3,7 @@ AnotherCraft project procedural voxel world generation system. The system is com
 
 > **!! This repository is only for the worldgen system itself. World rendering/visualisation is up to you to implement.**
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/2J9Yz_xckP0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[![AC Worldgen Youtube Playlist](img/video.png)](https://www.youtube.com/watch?v=2J9Yz_xckP0&list=PL1ORR7k1MR2G_tjmxt4GLn3EXZbd9JuSn&index=1)
 
 ## System premise & features
 * **Standalone application**, easy to integrate with your project, communicates with the client via the `stdin` and `stdout` pipes (see [the interface documentation](docs/app_interface.md)).
