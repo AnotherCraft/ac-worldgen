@@ -84,7 +84,7 @@ Float z = worldPos()::z();
 Float noiseHeight = 20;
 Float waterZ = 10;
 
-Float terrainZDecimal = 10 + perlin2D(~4, #6648) * noiseHeight + perlin2D(~2, #6648) * noiseHeight * 0.5;
+Float terrainZDecimal = 10 + (perlin2D(~4, #6648) + perlin2D(~2, #6648) * 0.5) * noiseHeight;
 Float terrainZ = round(terrainZDecimal);
 
 Float terrainZGradient = max(

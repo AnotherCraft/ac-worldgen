@@ -1,9 +1,13 @@
 # AC Worldgen
-This is a repository for a worldgen system for AnotherCraft. The system is completely standalone and can be used for world generation in any voxel-based game. This is not a hard coded one-trick pony earth-like gen, this is a framework that allows you to easily generate and weak any voxel terrain you desire!
+AnotherCraft project procedural voxel world generation system. The system is completely standalone and can be used for world generation in any voxel-based game. This is not a hard coded one-trick pony earth-like gen, this is a framework that allows you to easily generate and tweak any voxel terrain you desire!
 
 > **!! This repository is only for the worldgen system itself. World rendering/visualisation is up to you to implement.**
 
-![](img/4.png)
+<div align="center">
+
+[![AC Worldgen Youtube Playlist](http://img.youtube.com/vi/2J9Yz_xckP0/0.jpg)](https://youtube.com/playlist?list=PL1ORR7k1MR2G_tjmxt4GLn3EXZbd9JuSn)
+
+</div>
 
 ## System premise & features
 * **Standalone application**, easy to integrate with your project, communicates with the client via the `stdin` and `stdout` pipes (see [the interface documentation](docs/app_interface.md)).
@@ -36,7 +40,7 @@ This is a repository for a worldgen system for AnotherCraft. The system is compl
 
 
 * [Full ANTLR grammar](grammar/Woglac.g4)
-* [Worldgen basics (youtube video)](https://www.youtube.com/watch?v=yqHEID7LIU4)
+* [AC Worldgen videos/tutorials playlist](https://youtube.com/playlist?list=PL1ORR7k1MR2G_tjmxt4GLn3EXZbd9JuSn)
 
 ### Contact/social
 * [AC Worldgen dedicated **subreddit**](https://www.reddit.com/r/acworldgen/)
