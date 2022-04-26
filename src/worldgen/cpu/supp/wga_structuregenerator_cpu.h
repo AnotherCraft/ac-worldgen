@@ -48,6 +48,11 @@ public:
 			return seed_;
 		}
 
+		/// Hash of the local to world matrix. Only for matrix comparison speedup, do not use for worldgen stuff, is not same between runs!
+		inline size_t matrixHash() const {
+			return matrixHash_;
+		}
+
 		/// Call this when localToWorldMatrix has been changed (to recalculate some stuff)
 		void updateMatrix();
 
@@ -100,6 +105,8 @@ public:
 		std::unordered_map<WGA_Symbol *, WGA_Value::Dimensionality> inputParamDimensionalityCache_;
 
 		Seed seed_ = 0;
+
+		size_t matrixHash_;
 
 	};
 	friend struct DataContext;

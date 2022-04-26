@@ -375,6 +375,15 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 		if(!checkConditions(comp))
 			return false;
 
+		// Check if there already isn't the same component with the same position (so we can create a loop)
+		// This is basically useless, dropping
+		for(const ComponentExpansionStatePtr &ocex: componentExpansions_) {
+			// If there already is the same component with the same position, return true
+			// This means that this expansion branch joined with a previously build structure
+			if(ocex->component == cex->component && ocex->data->matrixHash() == cex->data->matrixHash() && ocex->data->localToWorldMatrix() == cex->data->localToWorldMatrix())
+				return true;
+		}
+
 		// Create branch - now we can start changing the structure generator state
 		addBranch();
 		componentExpansions_.push_back(cex);
@@ -649,7 +658,7 @@ void WGA_StructureGenerator_CPU::DataContext::load(WorldGenAPI_CPU *api, const D
 				ValueGuard _vg(cdc, parentContext_);
 				auto adjKey = key;
 				adjKey.symbol = sourceVal;
-				
+
 				return parentContext_->getDataRecord(adjKey, sourceVal->ctor());
 			};
 
@@ -676,6 +685,7 @@ void WGA_StructureGenerator_CPU::DataContext::setParams() {
 void WGA_StructureGenerator_CPU::DataContext::updateMatrix() {
 	constSamplePos_ = localToWorldMatrix_ * BlockWorldPos();
 	seed_ = WorldGen_CPU_Utils::hash(constSamplePos_.to<uint32_t>(), parentContext_ ? parentContext_->seed_ : api_->structureGen->seed_);
+	matrixHash_ = std::hash<BlockTransformMatrix>()(localToWorldMatrix_);
 }
 
 WGA_DataRecord_CPU::Ptr WGA_StructureGenerator_CPU::DataContext::getDataRecord(const WGA_DataRecord_CPU::Key &key, const WGA_DataRecord_CPU::Ctor &ctor) {
