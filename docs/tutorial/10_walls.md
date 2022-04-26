@@ -121,3 +121,6 @@ export Block resultBlock =
  * To prevent the towers from spawning too close, we introduced the `distanceFromTower` parameter.
  * The code is written in such a way that the walls always end with a tower. The `Part` rule the `wall` component is using always expands either to a wall or to a tower. The only rule that can expand into nothing is `MaybePart` that is only used in the towers. This means that for each side of the tower, either another string of walls ending with a tower will spawn, or nothing will be spawned.
  * You can notice that the `tower` component has four nodes that are all named `side` and that all expand to `MaybePart`. These are used as both entry and exit nodes, meaning that the `Part` rule expansion `rule -> tower::side :40` can choose (randomly) either of the `side` nodes to spawn the component from. The remaining nodes will then be used as exit nodes and will expand to `MaybePart`.
+
+## Creating loops
+Say we want to create a single closed loop with the walls, creating city/castle walls. The structure generation system is tree-based by nature

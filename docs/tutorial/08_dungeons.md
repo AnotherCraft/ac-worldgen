@@ -190,7 +190,7 @@ We achieve this by adding the following code:
     param Float remainingDepth;
     param remainingDepth = remainingDepth - 1;
     ```
-  This code declares the `remainingDepth` parameter so we can work wiht it. The second line then decreases `remainingDepth` for all child expansions.
+  This code declares the `remainingDepth` parameter so we can work wiht it. The second line then decreases `remainingDepth` for all child expansions. Param setting is not applied to the working scope itself – even when we use `param remainingDepth = remainingDepth - 1`, the `remainingDepth` is still the same, the command is only applied to the children expansions.
 * And finally, in the `MoreDungeon` rule expansion to `corridor`, we add the following code:
   ```
   rule -> corridor::entry {

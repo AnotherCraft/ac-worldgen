@@ -368,14 +368,30 @@ As an addition to the functional-based procgen, the system provides a grammar-ba
 * Then there are **rules** that define ways in how the various components can be connected.
 * Components are connected through **nodes** – those are placed inside components and define mounting points where other components can be connected to.
 * To prevent overlapping, **areas** can be used. Areas are also defined inside the components. The worldgen generates structures in a way that forbids overlapping of the areas with the same name. If you don't define areas, your structures can overlap.
+  * Areas can also be used for forcing the overlap using special flags.
 
 The structure generation process works like this:
 * First, the spawning position and entry rule is determined (passed as spawning function parameters).
-* There is a stack of unprocessed rules. The rule on the top of the stack is the one currently processed.
-* When rule is added on the stack, list of possible expansions is generated.
-* System then attempts to find a valid expansion for the rule.
-* Expansions usually result in spawning a component. Components can contain nodes that expand into further components based on further rules.
-* This expansion traversal is done in a depth-first manner (by default, can be altered to breadth-first using the `depthFirstProbability` rule pragma), meaning the system first attempts to fully expand a current expansion candidate with all its dependencies before it gives up and tries another candidate.
+* There is an expansion stack and a list of unprocessed rules. The generation starts with the first possible expansion of the entry rule in the rule expansions stack.
+* Loop until all rules are sucessfully expanded:
+  * Try to process rule expansion on the top of the rule expansions stack.
+    * Rules can expand into:
+      * Other rules.
+      * Components (that can require more rule expansions from the component nodes).
+        * When a rule expands to a component, it does so through component nodes, which are anchor points of the compoents. Syntax `rule -> component::node` tells the rule it can expand into a commponent through a node with a given name.
+        * Components can have multiple nodes of the same name. In that case, all nodes with the name will be considered as options for expanding from.
+        * Nodes can also have orientation specified. In that case, components can be rotated to match orientations between connecting nodes. The components can also optionally be allowed to rotate perpendicularly to the orientation. All rotations are considered for expanding.
+      * Nothing. This must be explicitly allowed using the `rule -> void` syntax, otherwise a rule must always expand into something.
+    * Rule expansion can result in adding more rules to the unprocessed rule list (to the end or to the beginning of the list, depending on `depthFirstProbability`). By default (with `depthFirstProbability = 1`), the new rules are added to the front of the unprocessed rule list, resulting in depth-first traversal of the possible expansion space.
+    * The expansion can fail because of following reasons:
+      * The expansion would result in overlapping areas (see component areas).
+      * Conditions are not met (`condition XX` syntax).
+      * All children expansion options failed.
+    * If the expansion fails, revert to the previous state and try another expansion option for the rule (different expansion/node/orietnation).
+      * If there are no remaining options, revert to the state before the rule itself was added to the expansion queue and try another option.
+      * If there are no options left at all, fail the structure generation.
+    * If the expansion succeeds, take a rule from the front of the unprocessed rule list and add its first expansion option to the expansion stack.
+      * If the unprocessed rule list is empty, the generation was successful.
 
 ### Spawning the structures
 For structure spawning, `spawn*` function family is used (more on that can be found on the function documentation page). But the basic idea is that the `spawn*` function realises a structure generation pass and returns a field representing blocks of the generated structures.
@@ -575,9 +591,9 @@ component c {
 This node would expand according to rule `R`.
 
 ### Component node orientations
-![](etc/img/nodeOrientations.png)
+![](img/nodeOrientations.png)
 
-It is usually useful to connect components in such way that the connection is seamless. For example you can have a T-shaped intersection corridor and you want the components to connect corretly in the way that is illustrated in the image above.
+It is usually useful to connect components in such way that the connection is seamless. For example you can have a T-shaped intersection corridor and you want the components to connect correctly in the way that is illustrated in the image above.
 
 For these use cases, it is possible to specify node orientation. That can be achieved by adding extra parentheses after the node position and specifying the orientation in there (corresponds to the `componentNodePropertiesSection` nonterminal in the grammar):
 ```WOGLAC
@@ -602,7 +618,7 @@ node (0, 0, 0) (= x+) n;
 ```
 
 ### Edge component nodes
-![](etc/img/nodeEdges.png)
+![](img/nodeEdges.png)
 
 In certain situations, for example when you have even block count wide corridors, the point of symmetry/connection is not in the center of a block but on the edge. For that, nodes can be defined to operate on an edge. This can be configured separately for vertical and horizontal direction using the `horizontalEdge` and `verticalEdge` pragmas. There is also a special syntax for it where you can put `|` (for horizontal edge) and `-` (for vertical edge) in the node orientation parenthesis (the required order is `(=|- primaryOri secondaryOri)`).
 
