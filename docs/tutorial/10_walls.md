@@ -124,8 +124,8 @@ export Block resultBlock =
 
 ## Creating loops
 Say we want to create a single closed loop with the walls, creating city/castle walls. The structure generation system is tree-based in principle and connecting branches is generally a bit complicated, because they cannot communicate with each other. However there are two ways in how such connection/loop could be made:
-1. We could pass the loop end position as a parameter and allow `rule -> void` only on the given position.
-2. We could utilize the force-overlap area functionality.
+1. We can pass the loop end position as a parameter and allow `rule -> void` only on the given position.
+2. We can utilize the force-overlap area functionality.
 3. The system merges two components that are attempted to be spawned on the exact same position, with the exact same orientation and exact same component type.
 
 Let's try creating a single closed loop of wall using every of the mentioned methods.
@@ -206,3 +206,155 @@ The structure generator has a limited number of attempts it will make when tryin
 * Limit maximum number of components to 25 using hte `depth` param.
 * Make the `tower` component only spawn walls to the right of the `entry` node. This makes the wall generation always only turn right.
 * Don't allow spawning more than `4` towers.
+
+In the `tower` component, the `endPos` parameter is declared using the `param Float3 endPos ?= entry::worldPos();` syntax. The `?=` operator is used for defining the default parameter value to be used if the parameter was not defined yet. In the first tower generated, the parameter is not yet defined so it is assigned to the tower's `entry` node. For further towers, the parameter value propagates from the first tower. If we used `param endPos = entry::worldPos();` instead, the value of the parameter would be changed at each tower, which we don't want.
+
+The key part of this method is the `rule -> void` statement in the `Part` rule with condition that stops the generation if we're within 1 block of `endPos`, which is position of the entry node of the first tower. We have to check for the 1 block distance, the position of the `wall` component exit node will never match the `endPos` exactly, because the nodes are supposed to be adjacent, not overlapping. 
+
+## Creating loops using area overlap
+The code is very similar to the previous case. We've just changed the `rule -> void` with condition to `rule -> finalOverlap::entry`, added the `entryOverlap` area to the `tower`, and defined the `finalOverlap` component that can only spawn if it's `entryOverlap` area overlaps with a previously defined area with the same name (that's what the `(!)` is for). The result looks the same, so no need for another image.
+
+```WOGLAC
+namespace castle {
+	rule Start {
+		param depth = 0;
+		param towerCount = 0;
+		rule -> tower::center;
+	}
+
+	rule Part {
+		param Float distanceFromTower;
+		param distanceFromTower = distanceFromTower + 1;
+
+		param Float depth;
+		param depth = depth + 1;
+		condition depth < 25;
+
+		rule -> tower::entry :50;
+		rule -> wall::entry;
+		rule -> finalOverlap::entry;
+	}
+
+	component tower {
+		param Float distanceFromTower ?= 999;
+		condition distanceFromTower > 1;
+		param distanceFromTower = 0;
+
+		param Float towerCount;
+		param towerCount = towerCount + 1;
+		condition towerCount < 4;
+
+		param Float3 endPos ?= entry::worldPos();
+
+		node (0, 0, 0) center;
+
+		component include "worldgen/castle_tower.vox" {
+			1 -> block block.core.stone;
+			2 -> block block.core.iron;
+		}
+
+		node (9, 6, 0) (x+) -> Part;
+		node (6, 3, 0) (y-) entry;
+
+		area (6, 3, 0) (6, 3, 0) entryOverlap;
+
+		area (3, 3, 0) (9, 9, 0);
+	}
+	
+	component wall {
+		node (0, 2, 0) (x-) entry;
+		node (7, 2, 0) (x+) -> Part;
+
+		area (0, 0, 0) (7, 4, 0);
+
+		component include "worldgen/castle_wall.vox" {
+			1 -> block block.core.stone;
+		}
+	}
+
+	component finalOverlap {
+		node (0, 0, 0) (x-) entry;
+		area (0, 0, 0) (0, 0, 0) (!) entryOverlap;
+	}
+}
+
+Float3 pos = worldPos();
+Float terrainZ = 16;
+
+export Block resultBlock =
+	spawn2D(castle.Start, ~16, #151, terrainZ, pos::xy() == float2(0, 0)) ?:
+	pos::z() < terrainZ ? block.core.grass :
+	block.air
+	;
+```
+
+### Creating loops using component merging
+In this case, the component merging method can be achieved by simply removing the special code for the previous cases. The only solution for the generation to succeed is then when the last wall in the loop tries to spawn a tower on the same exact position and in the same exact orientation the first tower is spawned. The spawning itself would fail because of the `condition towerCount < 4`, but merging is checked before conditions, so the components are successfully merged and we've created a loop.
+
+```WOGLAC
+namespace castle {
+	rule Start {
+		param depth = 0;
+		param towerCount = 0;
+		rule -> tower::center;
+	}
+
+	rule Part {
+		param Float distanceFromTower;
+		param distanceFromTower = distanceFromTower + 1;
+
+		param Float depth;
+		param depth = depth + 1;
+		condition depth < 25;
+
+		rule -> tower::entry :50;
+		rule -> wall::entry;
+	}
+
+	component tower {
+		param Float distanceFromTower ?= 999;
+		condition distanceFromTower > 1;
+		param distanceFromTower = 0;
+		
+		param Float towerCount;
+		param towerCount = towerCount + 1;
+		condition towerCount < 4;
+
+		param Float3 endPos ?= entry::worldPos();
+
+		node (0, 0, 0) center;
+
+		component include "worldgen/castle_tower.vox" {
+			1 -> block block.core.stone;
+			2 -> block block.core.iron;
+		}
+
+		node (9, 6, 0) (x+) -> Part;
+		node (6, 3, 0) (y-) entry;
+
+		area (6, 3, 0) (6, 3, 0) entryOverlap;
+
+		area (3, 3, 0) (9, 9, 0);
+	}
+	
+	component wall {
+		node (0, 2, 0) (x-) entry;
+		node (7, 2, 0) (x+) -> Part;
+
+		area (0, 0, 0) (7, 4, 0);
+
+		component include "worldgen/castle_wall.vox" {
+			1 -> block block.core.stone;
+		}
+	}
+}
+
+Float3 pos = worldPos();
+Float terrainZ = 16;
+
+export Block resultBlock =
+	spawn2D(castle.Start, ~16, #151, terrainZ, pos::xy() == float2(0, 0)) ?:
+	pos::z() < terrainZ ? block.core.grass :
+	block.air
+	;
+```

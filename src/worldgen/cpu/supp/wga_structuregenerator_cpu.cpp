@@ -371,10 +371,6 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 			dcx.updateMatrix();
 		}
 
-		// Check component conditions
-		if(!checkConditions(comp))
-			return false;
-
 		// Check if there already isn't the same component with the same position (so we can create a loop)
 		for(const ComponentExpansionStatePtr &ocex: componentExpansions_) {
 			// If there already is the same component with the same position, return true
@@ -382,6 +378,10 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 			if(ocex->component == cex->component && ocex->data->matrixHash() == cex->data->matrixHash() && ocex->data->localToWorldMatrix() == cex->data->localToWorldMatrix())
 				return true;
 		}
+
+		// Check component conditions
+		if(!checkConditions(comp))
+			return false;
 
 		// Create branch - now we can start changing the structure generator state
 		addBranch();
