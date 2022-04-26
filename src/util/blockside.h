@@ -72,5 +72,3 @@ const Vector3F &blockSideNormalVectorF(BlockSide s);
 inline const Vector3F &blockSideNormalVectorF(int s) {
 	return blockSideNormalVectorF(static_cast<BlockSide>(s));
 }
-
-const QString &blockSideName(BlockSide s);

@@ -38,7 +38,7 @@ public:
 		using Rec = WGA_StaticArrayDataRecordBase_CPU<T>;
 
 		WGA_DataRecord_CPU::Ptr rec = v->getDataRecord(origin, subKey);
-		Rec *rp = static_cast<Rec *>(rec.data());
+		Rec *rp = static_cast<Rec *>(rec.get());
 
 		cachedHandle_.data = rp->data;
 		cachedHandle_.handle = rec;

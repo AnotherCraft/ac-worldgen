@@ -1,9 +1,11 @@
 #pragma once
 
 #include <functional>
-
-#include <QObject>
-#include <QSet>
+#include <set>
+#include <vector>
+#include <map>
+#include <unordered_map>
+#include <unordered_set>
 
 #include "supp/wga_value.h"
 #include "supp/wga_biome.h"
@@ -66,15 +68,18 @@
   SECTION("Structure functions") \
   FUNC(spawn2D, 5, ((T, entryRule, Rule), (T, maxRadius, Float), (T, seed, Float), (T, spawnZ, Float), (T, spawnCondition, Bool)), (T, result, Block), DIM_C(3D), (EXT, Structure), "Creates a structure procgen pass and returns generated blocks (block.undefined on places where nothing was generated to differentiate from generated block.air). Structures can expand up to `maxRadius` chunks from the entry chunk. For each (x, y, `spawnZ`) point in space, the `entryRule` is expanded if `spawnCondition` is `true`.") \
   \
-  FUNC(worldPos, 1, ((T, node, ComponentNode)), (T, worldPos, Float3), DIM_ARG(1), (EXT_CONTEXTUAL, Structure), "Returns position of the provided component node in global world coordinates.") \
+  FUNC(worldPos, 1, ((T, node, ComponentNode)), (T, worldPos, Float3), DIM_ARG(1), (EXT_CONTEXTUAL, Structure), "Returns position of the provided component node in global world coordinates (only usable in structure generation).")                \
+  FUNC(worldPos, 1, ((T, localPos, Float3)), (T, worldPos, Float3), DIM_ARG(1), (EXT_CONTEXTUAL, Structure), "Transforms world component-local position to world position.") \
   FUNC(localPos, 0, (), (T, localPos, Float3), DIM_C(3D), (EXT_CONTEXTUAL, Structure), "Returns component-local position.") \
-  FUNC(localSeed, 0, (), (T, seed, Float), DIM_C(Const), (EXT_CONTEXTUAL, Structure), "Returns component-local seed.") \
+  FUNC(localPos, 1, ((T, worldPos, Float3)), (T, localPos, Float3), DIM_ARG(1), (EXT_CONTEXTUAL, Structure), "Transforms world position to component-local position.") \
+	FUNC(localSeed, 0, (), (T, seed, Float), DIM_C(Const), (EXT_CONTEXTUAL, Structure), "Returns component-local seed.") \
   \
   FUNC(distanceTo, 1, ((T, node, ComponentNode)), (T, dist, Float), DIM_C(3D), (EXT_CONTEXTUAL, Structure), "Returns distance from the current block to the provided component node.") \
   FUNC(sampleAt, 2, ((ANY, variable), (T, node, ComponentNode)), (ARG, valueAtNodePos, 1), DIM_MIN_ARGS_2, (EXT_CONTEXTUAL, Structure), "Returns value of `variable` sampled on position of the given node.") \
   \
   SECTION("Noise functions") \
-  FUNC(randC, 1, ((T, seed, Float)), (T, result, Float), DIM_C(Const), (EXT, Noise), "Returns random value [0–1], constant everywhere.") \
+  FUNC(randC, 1, ((T, seed, Float)), (T, result, Float), DIM_C(Const), (EXT, Noise), "Returns random value [0–1], constant everywhere.")                              \
+  FUNC(randL, 1, ((T, seed, Float)), (T, result, Float), DIM_C(Const), (EXT_CONTEXTUAL, Structure), "Returns random value [0–1], constant everywhere. Incorporates local seed of the currently generated structure (works similarly to `randC(localSeed() + seed)`).") \
   FUNC(randPC, 1, ((T, seed, Float)), (T, result, Float), DIM_C(PerChunk), (EXT, Noise), "Returns random value [0–1], different for each chunk.") \
   FUNC(rand2D, 1, ((T, seed, Float)), (T, result, Float), DIM_C(2D), (EXT, Noise), "Returns random value [0–1], different for every column.") \
   FUNC(rand3D, 1, ((T, seed, Float)), (T, result, Float), DIM_C(3D), (EXT, Noise), "Returns random value [0–1], different for every block.") \
@@ -82,7 +87,7 @@
   FUNC(valueNoise2D, 3, ((T, octaveSize, Float), (T, seed, Float), (T, nodeValue, Float)), (T, result, Float), DIM_C(2D), (EXT, Noise), "Linearly interpolates between values at node points that are determined by `nodeValue`.") \
   FUNC(perlin2D, 2, ((T, octaveSize, Float), (T, seed, Float)), (T, result, Float), DIM_C(2D), (EXT, Noise), "Returns 2D Perlin noise value [-1–1].") \
   FUNC(perlin3D, 2, ((T, octaveSize, Float), (T, seed, Float)), (T, result, Float), DIM_C(3D), (EXT, Noise), "Returns 3D Perlin noise value [-1–1].") \
-  FUNC(voronoi2D, 4, ((T, octaveSize, Float), (T, seed, Float), (T, resultType, Float), (T, metricExponent, Float)), (T, result, Float), DIM_C(2D), (EXT, Noise), "Returns 2D Voronoi-diagram based value. \n* `resultType=0` -> distance to the edge (2ndDist-1stDist)\n* `resultType=1` -> distance to the nearest point (1stDist)\n* `resultType=2` -> 1stDist / 2ndDist") \
+  FUNC(voronoi2D, 4, ((T, octaveSize, Float), (T, seed, Float), (T, resultType, Float), (T, metricExponent, Float)), (T, result, Float), DIM_C(2D), (EXT, Noise), "Returns 2D Voronoi-diagram based value. Use `metricExponent = 2` for standard euclidean metric.\n* `resultType=0` -> distance to the edge (2ndDist-1stDist)\n* `resultType=1` -> distance to the nearest point (1stDist)\n* `resultType=2` -> 1stDist / 2ndDist") \
   FUNC(voronoi2DColored, 5, ((T, octaveSize, Float), (T, seed, Float), (T, resultType, Float), (T, metricExponent, Float), (T, coloring, Float)), (T, result, Float), DIM_C(2D), (EXT, Noise), "Same as voronoi2D, except each node now accepts `coloring`; there are no edges between nodes of the same color. For that to work, there are special `resultType` values:\n* `resultType=10` -> weighted distance from center\n* `resultType=11` -> nearest point coloring\n* `resultType=12` -> weighted distance from border") \
   /*FUNC(voronoi3D, 4, ((T, octaveSize, Float), (T, seed, Float), (T, resultType, Float), (T, metricExponent, Float)), (T, result, Float), DIM_C(3D), (EXT, Noise), "Returns 3D Voronoi-diagram based value. \n* `resultType=0` -> distance to the edge (2ndDist-1stDist)\n* `resultType=1` -> distance to the nearest point (1stDist)\n* `resultType=2` -> 1stDist / 2ndDist") \
 	FUNC(voronoi3DParam, 5, ((T, octaveSize, Float), (T, seed, Float), (T, resultType, Float), (T, metricExponent, Float), (T, coloring, Float)), (T, result, Float), DIM_C(3D), (EXT, Noise), "Same as voronoi3D, but supports more `resultType` values:\n* `resultType=10` -> nearest `param`\n* `resultType=11` -> interpolated `param` between the two nearest points")*/ \
@@ -106,7 +111,7 @@
   FUNC(ceil, 1, ((NUM, v)), (ARG, r, 1), DIM_ARG(1), (INLINE, arg1.ceil()), "") \
   FUNC(round, 1, ((NUM, v)), (ARG, r, 1), DIM_ARG(1), (INLINE, arg1.round()), "") \
   FUNC(fract, 1, ((NUM, v)), (ARG, r, 1), DIM_ARG(1), (INLINE, arg1.componentUnary([] (float f) { return f - trunc(f); })), "Returns fractional part of the number `x - trunc(x)`.") \
-  \
+  FUNC(ffract, 1, ((NUM, v)), (ARG, r, 1), DIM_ARG(1), (INLINE, arg1.componentUnary([] (float f) { return f - floor(f); })), "Returns fractional part of the number `x - floor(x)`.") \
   FUNC(pow, 2, ((T, v, Float), (T, e, Float)), (T, r, Float), DIM_MAX_ARGS_2, (INLINE, pow(arg1, arg2)), "Returns power of `v` to the exponent `e`.") \
   \
   FUNC(sin, 1, ((T, x, Float)), (T, r, Float), DIM_MAX_ARGS_1, (INLINE, sin(arg1)), "Returns `sin(x)`, `x` is in radians.") \
@@ -138,11 +143,10 @@
   FUNC(compGeq, 2, ((T, a, Float), (ARG, b, 1)), (T, r, Bool), DIM_MAX_ARGS_2, (INLINE, arg1 >= arg2), "") \
 
 class WorldGenAPI {
-	Q_GADGET
 
 public:
 	using Seed = uint32_t;
-	using FunctionArgs = QVarLengthArray<WGA_Value *, 6>;
+	using FunctionArgs = std::vector<WGA_Value *>;
 	using FunctionID = int;
 	using Type = WGA_Value::ValueType;
 
@@ -152,11 +156,11 @@ public:
 	public:
 		FunctionArgument() {}
 
-		inline FunctionArgument(Type type, const QString &name) : type(type), name(name) {}
+		inline FunctionArgument(Type type, const std::string &name) : type(type), name(name) {}
 
 	public:
 		Type type;
-		QString name;
+		std::string name;
 
 	};
 	struct Function {
@@ -166,36 +170,36 @@ public:
 		FunctionID id;
 
 		/// Name of the function
-		QString name;
+		std::string name;
 
 		/// name(Arg1, Arg2, ...)
-		QString prototype;
+		std::string prototype;
 
 		/// For documentation purposes
-		QString description;
+		std::string description;
 
-		QString section;
+		std::string section;
 
 	public:
-		QVector <FunctionArgument> arguments;
+		std::vector<FunctionArgument> arguments;
 		FunctionArgument returnValue;
 
 	public:
-		static QString composePrototype(const QString &functionName, const QVector <WGA_Value::ValueType> &argTypes);
+		static std::string composePrototype(const std::string &functionName, const std::vector<WGA_Value::ValueType> &argTypes);
 
 	};
 	struct Functions {
 
 	public:
-		QList<Function> list;
-		QMap <QString, FunctionID> prototypeMapping;
-		QSet<QString> nameSet;
-		QStringList nameList; ///< Ordered name list
-		QMap <QString, QVector<FunctionID>> nameMapping;
+		std::vector<Function> list;
+		std::map<std::string, FunctionID> prototypeMapping;
+		std::unordered_set<std::string> nameSet;
+		std::vector<std::string> nameList; ///< Ordered name list
+		std::map<std::string, std::vector<FunctionID>> nameMapping;
 
 	public:
 		/// Generates documentation in markdown format
-		void generateDocumentation(QTextStream &ts) const;
+		void generateDocumentation() const;
 
 	};
 	static const Functions &functions();
@@ -212,12 +216,23 @@ public:
 		seed_ = set;
 	}
 
-	inline const QHash<QString, BlockID> &blockUIDMapping() const {
+	inline const std::unordered_map<std::string, BlockID> &blockUIDMapping() const {
 		return blockUIDMapping_;
 	}
 
-	virtual void setBlockUIDMapping(const QHash<QString, BlockID> &set) {
+	virtual void setBlockUIDMapping(const std::unordered_map<std::string, BlockID> &set) {
 		blockUIDMapping_ = set;
+	}
+
+	inline auto biomeGridSize() const {
+		return biomeGridSize_;
+	}
+
+	inline void setBiomeGridSize(BlockWorldPos_T set) {
+		if(set < 16 || !std::has_single_bit(static_cast<uint64_t>(set)))
+			throw std::exception("Biome grid size must be larger than 16 and be power of 2.");
+
+		biomeGridSize_ = set;
 	}
 
 public:
@@ -232,18 +247,27 @@ public:
 		return constBlock(BlockID(0));
 	}
 
-	inline WGA_Value *constBlock(const QString &uid) {
-		const BlockID id = blockUIDMapping_.value(uid, -1);
-		if(id == -1)
-			throw std::exception(QStringLiteral("Block UID '%1' not defined.").arg(uid).toStdString().c_str());
+	inline WGA_Value *constBlock(const std::string &uid) {
+		const auto r = blockUIDMapping_.find(uid);
+		if(r == blockUIDMapping_.end())
+			throw std::exception(std::format("Block UID '{}' not defined.", uid).c_str());
 
-		return constBlock(id);
+		return constBlock(r->second);
 	}
 
 public:
 	virtual WGA_Biome *newBiome() = 0;
 	virtual WGA_Rule *newRule() = 0;
-	virtual WGA_RuleExpansion *newRuleExpansion(WGA_Rule *rule, WGA_Component *component, const QString &node) = 0;
+
+	/// New rule expansion that expands to nothing
+	virtual WGA_RuleExpansion *newRuleExpansion(WGA_Rule *rule) = 0;
+
+	/// Rule expansion to a component
+	virtual WGA_RuleExpansion *newRuleExpansion(WGA_Rule *rule, WGA_Component *component, const std::string &node) = 0;
+
+	/// Rule expansion to another rule
+	virtual WGA_RuleExpansion *newRuleExpansion(WGA_Rule *rule, WGA_Rule *targetRule) = 0;
+
 	virtual WGA_Component *newComponent() = 0;
 	virtual WGA_ComponentNode *newComponentNode() = 0;
 
@@ -256,11 +280,12 @@ public:
 	virtual WGA_Value *proxy(WGA_Value *v) = 0;
 
 	/// Returns value representing given grammar symbol param.
-	virtual WGA_Value *grammarSymbolParam(WGA_GrammarSymbol *sym, const QString &name, WGA_Value::ValueType type, WGA_Value *defaultValue) = 0;
+	virtual WGA_Value *grammarSymbolParam(WGA_GrammarSymbol *sym, const std::string &name, WGA_Value::ValueType type, WGA_Value *defaultValue) = 0;
 
 private:
 	WorldGenSeed seed_ = 0;
-	QHash<QString, BlockID> blockUIDMapping_;
+	std::unordered_map<std::string, BlockID> blockUIDMapping_;
+	BlockWorldPos_T biomeGridSize_ = 256;
 
 };
 

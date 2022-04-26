@@ -1,5 +1,8 @@
 #pragma once
 
+#include <vector>
+#include <mutex>
+
 #include "util/enumutils.h"
 #include "util/tracyutils.h"
 
@@ -17,22 +20,24 @@ WGA_DataCache_CPU::DataRecordPtr wga_dimFillCtor(const WGA_DataRecord_CPU::Key &
 	using DataRecord = WGA_StaticArrayDataRecord_CPU<T, cnt>;
 	using DataHandle = WGA_DataHandle_CPU<t>;
 
-	static QVector<DataRecord *> recycleList_;
-	static QMutex recycleMutex_;
+	static std::vector<DataRecord *> recycleList_;
+	static std::mutex recycleMutex_;
 
 	static const auto dtor = [](DataRecord *rec) {
-		QMutexLocker _ml(&recycleMutex_);
+		std::unique_lock _ml(recycleMutex_);
 		if(recycleList_.size() > 1024)
 			delete rec;
 		else
-			recycleList_ += rec;
+			recycleList_.push_back(rec);
 	};
 
 	DataRecord *rec = nullptr;
 	{
-		QMutexLocker _ml(&recycleMutex_);
-		if(!recycleList_.isEmpty())
-			rec = recycleList_.takeLast();
+		std::unique_lock _ml(recycleMutex_);
+		if(!recycleList_.empty()) {
+			rec = recycleList_.back();
+			recycleList_.pop_back();
+		}
 	}
 
 	if(!rec)
@@ -40,7 +45,7 @@ WGA_DataCache_CPU::DataRecordPtr wga_dimFillCtor(const WGA_DataRecord_CPU::Key &
 	else
 		rec = new(rec) DataRecord();
 
-	const QSharedPointer<WGA_DataRecord_CPU> recPtr(rec, dtor);
+	const std::shared_ptr<WGA_DataRecord_CPU> recPtr(rec, dtor);
 
 	DataHandle handle{recPtr, rec->data, cnt, cnt - 1};
 
@@ -53,9 +58,8 @@ WGA_DataCache_CPU::DataRecordPtr wga_dimFillCtor(const WGA_DataRecord_CPU::Key &
 
 
 template<WGA_Value::ValueType t>
-WGA_DataRecord_CPU::Ctor
-wga_fillCtor(const WGA_Value_CPU::DimensionalityFunc &dimFunc, const WGA_FillFunc<t> &fillFunc, const char *funcName) {
-	static const auto dimFillFs = QVector<std::function<WGA_DataCache_CPU::DataRecordPtr(const WGA_DataRecord_CPU::Key &, const WGA_FillFunc<t> &)> >{
+WGA_DataRecord_CPU::Ctor wga_fillCtor(const WGA_Value_CPU::DimensionalityFunc &dimFunc, const WGA_FillFunc<t> &fillFunc, const char *funcName) {
+	static const auto dimFillFs = std::vector<std::function<WGA_DataCache_CPU::DataRecordPtr(const WGA_DataRecord_CPU::Key &, const WGA_FillFunc<t> &)> >{
 		/* Unknown dimensionality */ &wga_dimFillCtor<t, 0>, &wga_dimFillCtor<t, 0>, &wga_dimFillCtor<t, 1>, &wga_dimFillCtor<t, 2>, &wga_dimFillCtor<t, 3>
 	};
 	ASSERT(dimFillFs.size() == +WGA_Value::Dimensionality::_count);

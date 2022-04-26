@@ -1,0 +1,1 @@
+"../bin/bin_worldgen_win_x86_64/ac_worldgen" --functionList > docs/function_list.md

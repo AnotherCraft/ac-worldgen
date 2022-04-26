@@ -1,12 +1,12 @@
 #pragma once
 
-#include <QSharedPointer>
+#include <functional>
 
 class WGA_DataRecord_CPU {
 
 public:
 	using SubKey = uint32_t;
-	using Ptr = QSharedPointer<WGA_DataRecord_CPU>;
+	using Ptr = std::shared_ptr<WGA_DataRecord_CPU>;
 	struct Key {
 
 	public:
@@ -20,10 +20,8 @@ public:
 		SubKey subKey = 0;
 
 	public:
-		inline bool operator==(const Key &other) const {
-			return symbol == other.symbol && origin == other.origin && subKey == other.subKey;
-		}
-
+		inline bool operator ==(const Key &other) const = default;
+		
 	};
 	using Ctor = std::function<Ptr(const Key &key)>;
 
@@ -32,15 +30,18 @@ public:
 
 };
 
-inline size_t qHash(const WGA_DataRecord_CPU::Key &key, size_t seed = 0) {
-	return qHashMulti(seed, key.symbol, key.origin, key.subKey);
-}
+template<>
+struct std::hash<WGA_DataRecord_CPU::Key> {
+	inline size_t operator ()(const WGA_DataRecord_CPU::Key &key) const {
+		return HashUtils::multiHash(key.symbol, key.origin, key.subKey);
+	}
+};
 
 template<typename T>
 class WGA_DataRecordT_CPU : public WGA_DataRecord_CPU {
 
 public:
-	using Ptr = QSharedPointer<WGA_DataRecordT_CPU<T>>;
+	using Ptr = std::shared_ptr<WGA_DataRecordT_CPU<T>>;
 
 public:
 	T data;
@@ -73,7 +74,7 @@ public:
 
 public:
 	virtual int dataSize() const override {
-		return sizeof(WGA_StaticArrayDataRecord_CPU<T, size_>) * size_;
+		return sizeof(T) * size_;
 	};
 
 private:

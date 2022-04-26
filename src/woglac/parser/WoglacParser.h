@@ -24,20 +24,20 @@ public:
 
   enum {
     RuleModule = 0, RuleStatement = 1, RuleScope = 2, RuleContentOrSemicolon = 3, 
-    RulePragmaStatement = 4, RuleIncludeStatement = 5, RuleVariableDefinition = 6, 
-    RuleParamDefinition = 7, RuleBiomeParamDefinition = 8, RuleParamSetStatement = 9, 
-    RuleBiomeConditionStatement = 10, RuleStructureConditionStatement = 11, 
-    RuleRuleExpansionStatement = 12, RuleComponentNodeStatement = 13, RuleComponentNodeStatementCommonPart = 14, 
-    RuleComponentNodePropertiesSection = 15, RuleComponentNodeOrientationExpression = 16, 
-    RuleComponentAreaStatement = 17, RuleComponentBlockStatement = 18, RuleComponentIncludeStatement = 19, 
-    RuleComponentIncludeStatementParam = 20, RuleComponentIncludeStatementBlockParam = 21, 
-    RuleComponentIncludeStatementNodeParam = 22, RulePositionExpression = 23, 
-    RuleExpression = 24, RuleParentExpression = 25, RuleTernaryExpression = 26, 
-    RuleLogicalExpression = 27, RuleAndExpression = 28, RuleOrExpression = 29, 
-    RuleComparisonExpression = 30, RuleAddExpression = 31, RuleMultExpression = 32, 
-    RuleUnaryExpression = 33, RuleInlineFunctionCallExpression = 34, RuleAtomicExpression = 35, 
-    RuleArugmentListExpression = 36, RuleBiomeParamExpression = 37, RuleFunctionCallExpression = 38, 
-    RuleExtendedIdentifier = 39, RuleLiteralExpression = 40
+    RulePragmaStatement = 4, RuleVariableDefinition = 5, RuleParamDefinition = 6, 
+    RuleBiomeParamDefinition = 7, RuleParamSetStatement = 8, RuleBiomeConditionStatement = 9, 
+    RuleStructureConditionStatement = 10, RuleRuleExpansionStatement = 11, 
+    RuleComponentNodeStatement = 12, RuleComponentNodeStatementCommonPart = 13, 
+    RuleComponentNodePropertiesSection = 14, RuleComponentNodeOrientationExpression = 15, 
+    RuleComponentAreaStatement = 16, RuleComponentBlockStatement = 17, RuleComponentIncludeStatement = 18, 
+    RuleComponentIncludeStatementParam = 19, RuleComponentIncludeStatementBlockParam = 20, 
+    RuleComponentIncludeStatementNodeParam = 21, RulePositionExpression = 22, 
+    RuleExpression = 23, RuleParentExpression = 24, RuleTernaryExpression = 25, 
+    RuleLogicalExpression = 26, RuleAndExpression = 27, RuleOrExpression = 28, 
+    RuleComparisonExpression = 29, RuleAddExpression = 30, RuleMultExpression = 31, 
+    RuleUnaryExpression = 32, RuleInlineFunctionCallExpression = 33, RuleAtomicExpression = 34, 
+    RuleArugmentListExpression = 35, RuleBiomeParamExpression = 36, RuleFunctionCallExpression = 37, 
+    RuleExtendedIdentifier = 38, RuleLiteralExpression = 39
   };
 
   WoglacParser(antlr4::TokenStream *input);
@@ -55,7 +55,6 @@ public:
   class ScopeContext;
   class ContentOrSemicolonContext;
   class PragmaStatementContext;
-  class IncludeStatementContext;
   class VariableDefinitionContext;
   class ParamDefinitionContext;
   class BiomeParamDefinitionContext;
@@ -114,7 +113,6 @@ public:
     StatementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     PragmaStatementContext *pragmaStatement();
-    IncludeStatementContext *includeStatement();
     ParamDefinitionContext *paramDefinition();
     BiomeParamDefinitionContext *biomeParamDefinition();
     ParamSetStatementContext *paramSetStatement();
@@ -189,20 +187,6 @@ public:
   };
 
   PragmaStatementContext* pragmaStatement();
-
-  class  IncludeStatementContext : public antlr4::ParserRuleContext {
-  public:
-    antlr4::Token *file = nullptr;;
-    IncludeStatementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *StringLiteral();
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-   
-  };
-
-  IncludeStatementContext* includeStatement();
 
   class  VariableDefinitionContext : public antlr4::ParserRuleContext {
   public:
@@ -321,7 +305,7 @@ public:
   class  RuleExpansionStatementContext : public antlr4::ParserRuleContext {
   public:
     WoglacParser::ExtendedIdentifierContext *target = nullptr;;
-    WoglacParser::ExtendedIdentifierContext *component = nullptr;;
+    WoglacParser::ExtendedIdentifierContext *expansionTarget = nullptr;;
     antlr4::Token *node = nullptr;;
     antlr4::Token *priority = nullptr;;
     antlr4::Token *probabilityRatio = nullptr;;
@@ -331,9 +315,9 @@ public:
     ContentOrSemicolonContext *contentOrSemicolon();
     std::vector<ExtendedIdentifierContext *> extendedIdentifier();
     ExtendedIdentifierContext* extendedIdentifier(size_t i);
-    antlr4::tree::TerminalNode *Identifier();
     std::vector<antlr4::tree::TerminalNode *> NumericLiteral();
     antlr4::tree::TerminalNode* NumericLiteral(size_t i);
+    antlr4::tree::TerminalNode *Identifier();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -418,6 +402,9 @@ public:
     WoglacParser::ExtendedIdentifierContext *target = nullptr;;
     WoglacParser::PositionExpressionContext *startPos = nullptr;;
     WoglacParser::PositionExpressionContext *endPos = nullptr;;
+    antlr4::Token *canOverlap = nullptr;;
+    antlr4::Token *mustOverlap = nullptr;;
+    antlr4::Token *isVirtual = nullptr;;
     antlr4::Token *name = nullptr;;
     ComponentAreaStatementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;

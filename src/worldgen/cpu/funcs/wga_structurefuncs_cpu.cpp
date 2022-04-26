@@ -1,5 +1,8 @@
 #include "wga_structurefuncs_cpu.h"
 
+#include <iostream>
+#include <format>
+
 #include "util/tracyutils.h"
 
 #include "../supp/wga_structuregenerator_cpu.h"
@@ -33,10 +36,7 @@ void WGA_StructureFuncs_CPU::spawn2D(Api api, Key key, DH <VT::Block> result, V 
 			if(!(spawnConditionHandle[ix]))
 				continue;
 
-			spawnList += SpawnRec{
-				key.origin + BlockWorldPos(i % chunkSize, i / chunkSize, z),
-				api->mapToSymbol<WGA_Rule>(entryRuleHandle[ix])
-			};
+			spawnList.emplace_back(key.origin + BlockWorldPos(i % chunkSize, i / chunkSize, z), api->mapToSymbol<WGA_Rule>(entryRuleHandle[ix]));
 		}
 	};
 
@@ -47,11 +47,21 @@ void WGA_StructureFuncs_CPU::worldPos(Api api, Key key, DH <VT::Float3> result, 
 	WGA_SF_NODE_POS_SHENANIGANS(nodeWorldPos.to<float>())
 }
 
-#pragma optimize("gt", on)
+void WGA_StructureFuncs_CPU::worldPos(WGA_Funcs_CPU::Api api, const WGA_DataRecord_CPU::Key &key, DH <WGA_Value::ValueType::Float3> result, V <WGA_Value::ValueType::Float3> localPos) {
+	if(!api->structureGen)
+		throw std::exception("localPos() called outside structure generation");
+
+	const BlockTransformMatrix m = api->structureGen->currentDataContext()->localToWorldMatrix();
+
+	const auto ph = localPos.dataHandle(key.origin);
+
+	for(size_t i = 0; i < result.size; i++)
+		result[i] = (m * ph[i].to<BlockWorldPos_T>()).to<float>();
+}
 
 void WGA_StructureFuncs_CPU::localPos(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key key, DH <WGA_Value::ValueType::Float3> result) {
-	Q_UNUSED(api);
-	ASSERT(api->structureGen);
+	if(!api->structureGen)
+		throw std::exception("localPos() called outside structure generation");
 
 	const BlockTransformMatrix m = api->structureGen->currentDataContext()->localToWorldMatrix().nonScalingInverted();
 	const BlockWorldPos base = m * result.worldPos(key.origin, 0);
@@ -71,17 +81,36 @@ void WGA_StructureFuncs_CPU::localPos(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key
 	}
 }
 
+void WGA_StructureFuncs_CPU::localPos(WGA_Funcs_CPU::Api api, const WGA_DataRecord_CPU::Key &key, DH <WGA_Value::ValueType::Float3> result, V <WGA_Value::ValueType::Float3> worldPos) {
+	if(!api->structureGen)
+		throw std::exception("localPos() called outside structure generation");
+
+	const BlockTransformMatrix m = api->structureGen->currentDataContext()->localToWorldMatrix().nonScalingInverted();
+
+	const auto ph = worldPos.dataHandle(key.origin);
+
+	for(size_t i = 0; i < result.size; i++)
+		result[i] = (m * ph[i].to<BlockWorldPos_T>()).to<float>();
+}
+
 void WGA_StructureFuncs_CPU::localSeed(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key key, DH <WGA_Value::ValueType::Float> result) {
-	Q_UNUSED(api);
-	Q_UNUSED(key);
+	if(!api->structureGen)
+		throw std::exception("localSeed() called outside structure generation");
 
-	ASSERT(api->structureGen);
-
-	result[0] = Vector<float, 1>(api->structureGen->currentDataContext()->seed());
+	// Mod by 65535 so the float does not lose precision, should be okay for most shenanigans
+	result[0] = Vector<float, 1>(api->structureGen->currentDataContext()->seed() % 65535);
 }
 
 void WGA_StructureFuncs_CPU::distanceTo(Api api, Key key, DH <VT::Float> result, V <VT::ComponentNode> node) {
 	WGA_SF_NODE_POS_SHENANIGANS((nodeWorldPos.to<float>() - worldPos.to<float>()).length());
+}
+
+void WGA_StructureFuncs_CPU::randL(WGA_Funcs_CPU::Api api, const WGA_DataRecord_CPU::Key &key, WGA_Funcs_CPU::DH<VT::Float> result, WGA_Funcs_CPU::V<VT::Float> seed) {
+	if(!api->structureGen)
+		throw std::exception("localSeed() called outside structure generation");
+
+	const Seed seedv = WorldGen_CPU_Utils::hash(api->structureGen->currentDataContext()->seed(), static_cast<Seed>(seed.constValue()));
+	result[0] = static_cast<float>(seedv & 65535) / 65535.0f;
 }
 
 void WGA_StructureFuncs_CPU::_spawn(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key key, DH <VT::Block> result, V <VT::Float> maxRadius, V <VT::Float> seed, const WGA_StructureFuncs_CPU::SpawnFunc &spawnFunc) {
@@ -103,7 +132,7 @@ void WGA_StructureFuncs_CPU::_spawn(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key k
 	const auto ctor = [&api, &seed, &spawnFunc](const WGA_DataRecord_CPU::Key &key) {
 		ZoneScopedN("genStructure");
 
-		StructureRecPtr rec(new StructureRec());
+		auto rec = std::make_shared<StructureRec>();
 
 		SpawnList spawnList;
 		spawnFunc(api, key, spawnList);
@@ -112,7 +141,7 @@ void WGA_StructureFuncs_CPU::_spawn(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key k
 
 		WGA_StructureGenerator_CPU structGen(*api);
 
-		for(const SpawnRec &spawnRec: qAsConst(spawnList)) {
+		for(const SpawnRec &spawnRec: spawnList) {
 			ZoneScopedN("processSpawnRec");
 
 			structGen.setup(spawnRec.entryRule, spawnRec.origin, seedV);
@@ -121,11 +150,11 @@ void WGA_StructureFuncs_CPU::_spawn(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key k
 				continue;
 
 			WGA_StructureOutputData_CPUPtr output = structGen.generateOutput();
-			rec->data += output;
+			rec->data.push_back(output);
 			rec->dataSizeV += output->dataSize;
 		}
 
-		return rec.staticCast<WGA_DataRecord_CPU>();
+		return std::static_pointer_cast<WGA_DataRecord_CPU>(rec);
 	};
 
 
@@ -133,28 +162,30 @@ void WGA_StructureFuncs_CPU::_spawn(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key k
 	const ChunkWorldPos_T maxRadiusV = static_cast<ChunkWorldPos_T>(maxRadius.constValue());
 	for(const ChunkWorldPos &pos: vectorIterator(originChunk - maxRadiusV, originChunk + maxRadiusV)) {
 		const WGA_DataRecord_CPU::Key recKey(key.symbol, BlockWorldPos::fromChunkBlockIndex(pos, 0, 0), 1);
-		const StructureRecPtr rec = api->getDataRecord(recKey, ctor).staticCast<StructureRec>();
+		const StructureRecPtr rec = std::static_pointer_cast<StructureRec>(api->getDataRecord(recKey, ctor));
 
-		for(const WGA_StructureOutputData_CPUPtr &struc: qAsConst(rec->data)) {
+		for(const WGA_StructureOutputData_CPUPtr &struc: rec->data) {
 			ZoneScopedN("procStructureData");
 
 			if(!struc->subChunkRecords.contains(key.origin))
 				continue;
 
-			const auto schr = struc->subChunkRecords.value(key.origin);
+			const auto schr = struc->subChunkRecords.at(key.origin);
 
-			if(!schr.flatData.isEmpty()) {
-				ASSERT(schr.associativeData.isEmpty());
+			if(!schr.flatData.empty()) {
+				ASSERT(schr.associativeData.empty());
 
-				const auto dt = schr.flatData.constData();
+				const auto dt = schr.flatData.data();
 				for(int i = 0; i < chunkVolume; i++) {
-					if(dt[i] != blockID_undefined)
-						result[i] = dt[i];
+					if(auto v = dt[i]; v != blockID_undefined)
+						result[i] = v;
 				}
 			}
 			else
-				for(const auto &v: schr.associativeData)
+				for(const auto &v: schr.associativeData) {
+					ASSERT(v.second != blockID_undefined);
 					result[v.first] = v.second;
+				}
 		}
 	}
 }

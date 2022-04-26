@@ -1,11 +1,7 @@
 #pragma once
 
 #include <functional>
-
-#include <QHash>
-#include <QReadWriteLock>
-#include <QReadLocker>
-#include <QWriteLocker>
+#include <unordered_map>
 
 #include "util/enumutils.h"
 
@@ -40,11 +36,11 @@ public:
 		return isContextual_;
 	}
 
-	inline bool isCrossSampled(uint subKey) const {
+	inline bool isCrossSampled(unsigned subKey) const {
 		return (crossSampledSubKeys_ >> subKey) & 1;
 	}
 
-	inline void markAsCrossSampled(uint subKey) {
+	inline void markAsCrossSampled(unsigned subKey) {
 		crossSampledSubKeys_ |= 1 << subKey;
 	}
 
@@ -68,7 +64,7 @@ private:
 	WorldGenAPI_CPU &api_;
 	ValueType valueType_;
 	bool isContextual_;
-	uint crossSampledSubKeys_ = 0;
+	unsigned crossSampledSubKeys_ = 0;
 
 private:
 	WGA_Value_CPU *proxy_ = nullptr;

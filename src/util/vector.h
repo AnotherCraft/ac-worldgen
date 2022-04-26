@@ -3,14 +3,11 @@
 #include <type_traits>
 #include <math.h>
 #include <random>
-
-#include <QHash>
-#include <QDebug>
-#include <QSize>
-#include <QtMath>
-#include <QVariant>
+#include <format>
 
 #include "util/assert.h"
+#include "util/hashutils.h"
+#include "util/iterators.h"
 
 #define VECTOR_COMPONENT_OP(expr) Vector<T, D> result; for(int i = 0; i < D; i++) result[i] = expr; return result
 #define VECTOR_COMPONENT_OP_RT(RT, expr) RT result; for(int i = 0; i < D; i++) result[i] = expr; return result
@@ -238,11 +235,11 @@ public:
 
 public:
 	constexpr V min(const V &other) const {
-		VECTOR_COMPONENT_OP(qMin(data[i], other[i]));
+		VECTOR_COMPONENT_OP(std::min(data[i], other[i]));
 	}
 
 	constexpr V max(const V &other) const {
-		VECTOR_COMPONENT_OP(qMax(data[i], other[i]));
+		VECTOR_COMPONENT_OP(std::max(data[i], other[i]));
 	}
 
 	constexpr inline V clamp(const V &minv, const V &maxv) const {
@@ -440,32 +437,6 @@ public:
 		);
 	}
 
-	template<typename = void>
-	V rotatedZ(float degrees) {
-		const float rads = qDegreesToRadians(degrees);
-		const float cos = qCos(rads);
-		const float sin = qSin(rads);
-
-		V result;
-		result.x() = this->x() * cos - this->y() * sin;
-		result.y() = this->x() * sin + this->y() * cos;
-		result.z() = this->z();
-		return result;
-	}
-
-	template<typename = void>
-	V rotatedY(float degrees) {
-		const float rads = qDegreesToRadians(degrees);
-		const float cos = qCos(rads);
-		const float sin = qSin(rads);
-
-		V result;
-		result.x() = this->x() * cos - this->z() * sin;
-		result.z() = this->x() * sin + this->z() * cos;
-		result.y() = this->y();
-		return result;
-	}
-
 };
 
 template<typename T, int D>
@@ -509,12 +480,6 @@ public:
 			this->data[i] = v[i];
 	}
 
-	template<typename = void>
-	inline Vector(const QSize &v)
-		: Vector(v.width(), v.height()) {
-		static_assert(D == 2);
-	}
-
 	template<typename A1, typename A2, typename ...Args>
 	constexpr Vector(const A1 &a1, const A2 &a2, Args &&...args) {
 		const V v = concatVectors<T>(a1, a2, std::forward<Args>(args)...);
@@ -523,12 +488,6 @@ public:
 		for(int i = 0; i < D; i++)
 			this->data[i] = v[i];
 	}
-
-public:
-	inline operator QVariant() const {
-		return QVariant::fromValue(*this);
-	}
-
 };
 
 #define OP(op) \
@@ -549,23 +508,24 @@ OP(%)
 #undef VECTOR_BINARY_OP
 
 template<typename T, int D>
-size_t qHash(const Vector<T, D> &v, size_t seed = 0) {
-	size_t result = seed;
-	for(const T &c: v.data)
-		result = qHash(c, result);
+struct std::hash<Vector<T, D>> {
+	size_t operator ()(const Vector<T, D> &v) const {
+		size_t r = 0;
+		const auto h = std::hash<T>{};
+		for(const T &c: v.data)
+			HashUtils::combineHash(r, h(c));
 
-	return result;
-}
+		return r;
+	}
+};
 
 template<typename T, int D>
-QDebug operator <<(QDebug debug, const Vector<T, D> &v) {
-	QStringList s;
-	for(const T &c: v.data)
-		s += QString::number(c);
+struct std::formatter<Vector<T, D>> : public std::formatter<std::string> {
 
-	debug << QStringLiteral("T(%1)").arg(s.join(", "));
-	return debug;
-}
+	auto format(const Vector<T, D> &v, format_context &ctx) {
+		return formatter<string>::format(std::format("({})", ::iterator(v.data).mapx(std::format("{}", x)).join(", ")), ctx);
+	}
+};
 
 template<typename T>
 using Vector2 = Vector<T, 2>;
@@ -608,15 +568,6 @@ using V3U8 = Vector3U8;
 using V3F = Vector3F;
 
 using V4F = Vector4F;
-
-inline QDebug operator <<(QDebug debug, const V3F &v) {
-	QStringList s;
-	for(const float c: v.data)
-		s += QString::number(c);
-
-	debug << QStringLiteral("T(%1)").arg(s.join(", "));
-	return debug;
-}
 
 /// The vector iterator is inclusive with hi!
 template<typename V>
@@ -673,6 +624,3 @@ auto vectorIterator(const V &lo, const V &hi, const V &inc = V(1)) {
 		.c = (lo <= hi).all(),
 	};
 }
-
-Q_DECLARE_METATYPE(V2F);
-Q_DECLARE_METATYPE(V3F);

@@ -30,7 +30,7 @@ struct WGA_ValueRec_CPU<WGA_Value::ValueType::Block> {
 
 template<>
 struct WGA_ValueRec_CPU<WGA_Value::ValueType::Bool> {
-	using T = bool;
+	using T = uint8_t;
 };
 
 template<>

@@ -4,7 +4,12 @@
 #include "wga_component.h"
 
 WGA_Rule::WGA_Rule() {
-	setDestription("(rule)");
+	setDescription("(rule)");
+
+	static const PragmaList pg{
+		{"depthFirstProbability", 1.0f},
+	};
+	pragmas_ = pg;
 }
 
 WGA_Symbol::SymbolType WGA_Rule::symbolType() const {
@@ -15,28 +20,29 @@ const WGA_Rule::CompiledExpansionList &WGA_Rule::compiledExpansionList() {
 	if(compiledReady_)
 		return compiledExpansions_;
 
-	QMutexLocker _ml(&compilingMutex_);
+	std::unique_lock _ml(compilingMutex_);
 	if(compiledReady_)
 		return compiledExpansions_;
 
-	for(WGA_RuleExpansion *e: qAsConst(expansions_)) {
-		const float priority = e->pragma(QStringLiteral("priority")).toFloat();
-		const float probabilityRatio = e->pragma(QStringLiteral("probabilityRatio")).toFloat();
+	for(WGA_RuleExpansion *e: expansions_) {
+		const float priority = std::get<float>(e->pragma("priority"));
+		const float probabilityRatio = std::get<float>(e->pragma("probabilityRatio"));
 
 		ASSERT(probabilityRatio > 0);
 
-		const bool allowMirroring = e->component() && e->component()->pragma("allowMirroring").toBool();
+		const bool allowMirroring = e->component() && std::get<bool>(e->component()->pragma("allowMirroring"));
 
 		CompiledExpansion ce;
 		ce.expansion = e;
 		ce.probabilityRatio = probabilityRatio * (allowMirroring ? 0.5 : 1);
 
 		SamePriorityCompiledExpansionList &spl = compiledExpansions_.subLists[priority];
-		spl.expansions += ce;
+		spl.expansions.push_back(ce);
 
 		if(allowMirroring) {
 			ce.mirror = true;
-			spl.expansions += ce;
+			spl.probabilityRatioSum += probabilityRatio;
+			spl.expansions.push_back(ce);
 		}
 
 		spl.probabilityRatioSum += probabilityRatio;
@@ -48,5 +54,5 @@ const WGA_Rule::CompiledExpansionList &WGA_Rule::compiledExpansionList() {
 }
 
 void WGA_Rule::addExpansion(WGA_RuleExpansion *expansion) {
-	expansions_ += expansion;
+	expansions_.push_back(expansion);
 }

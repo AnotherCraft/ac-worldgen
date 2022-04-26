@@ -23,7 +23,6 @@
   nodeWorldPos = ctx->mapToWorld(nodeLocalPos); \
   } \
   const BlockWorldPos worldPos = result.worldPos(key.origin, i); \
-  Q_UNUSED(worldPos); \
   result[i] = expr; \
   }
 
@@ -35,7 +34,11 @@ public:
 
 public:
 	static void worldPos(Api api, Key key, DH <VT::Float3> result, V <VT::ComponentNode> node);
+	static void worldPos(Api api, Key key, DH <VT::Float3> result, V<VT::Float3> localPos);
+
 	static void localPos(Api api, Key key, DH <VT::Float3> result);
+	static void localPos(Api api, Key key, DH <VT::Float3> result, V<VT::Float3> worldPos);
+
 	static void localSeed(Api api, Key key, DH <VT::Float> result);
 
 	static void distanceTo(Api api, Key key, DH <VT::Float> result, V <VT::ComponentNode> node);
@@ -43,16 +46,18 @@ public:
 	template<VT t>
 	static void sampleAt(Api api, Key key, DH <t> result, V <t> value, V <VT::ComponentNode> node);
 
+	static void randL(Api api, Key key, DH <VT::Float> result, V <VT::Float> seed);
+
 private:
 	using StructureRec = WGA_StructureOutputDataRecord_CPU;
-	using StructureRecPtr = QSharedPointer<StructureRec>;
+	using StructureRecPtr = std::shared_ptr<StructureRec>;
 
 private:
 	struct SpawnRec {
 		BlockWorldPos origin;
 		WGA_Rule *entryRule;
 	};
-	using SpawnList = QVector<SpawnRec>;
+	using SpawnList = std::vector<SpawnRec>;
 	using SpawnFunc =
 	std::function< void(Api
 	api,

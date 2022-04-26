@@ -1,11 +1,7 @@
 #pragma once
 
-#include <QVector>
-#include <QCache>
-#include <QMutex>
-#include <QReadWriteLock>
-#include <QSharedPointer>
-#include <QWaitCondition>
+#include <unordered_set>
+#include <mutex>
 
 #include "util/enumutils.h"
 #include "worldgen/base/supp/wga_value.h"
@@ -16,7 +12,7 @@
 class WGA_DataCache_CPU {
 
 public:
-	using DataRecordPtr = QSharedPointer<WGA_DataRecord_CPU>;
+	using DataRecordPtr = std::shared_ptr<WGA_DataRecord_CPU>;
 	using Dimensionality = WGA_Value::Dimensionality;
 	using Key = WGA_DataRecord_CPU::Key;
 	using Ctor = WGA_DataRecord_CPU::Ctor;
@@ -53,21 +49,21 @@ private:
 		WGA_DataCacheInstance_CPU cache;
 
 		/// Set of all already genreated keys, even those that aren't in the cache anymore
-		QSet<Key> generatedKeys;
+		std::unordered_set<Key> generatedKeys;
 
 		/// Set of keys that are currently being generated
-		QSet<Key> wipKeys;
+		std::unordered_set<Key> wipKeys;
 
 		//TracyLockable(QMutex, mutex);
-		QMutex mutex;
+		std::mutex mutex;
 
 		/// Condition used for waiting for a record being generated in a different thread
-		QWaitCondition wipKeyCondition;
+		std::condition_variable wipKeyCondition;
 	};
 	CacheData cacheData_[+CacheType::_count][cacheDivisions];
 
 private:
-	QAtomicInt hitCount_[+CacheType::_count], missCount_[+CacheType::_count];
+	std::atomic<size_t> hitCount_[+CacheType::_count], missCount_[+CacheType::_count];
 
 private:
 	struct RecordStats {
@@ -75,8 +71,8 @@ private:
 		int missCount = 0;
 		int genCount = 0;
 	};
-	QHash<Key, RecordStats> recordStats_; ///< Key.origin is set to 0
-	QReadWriteLock recordStatsMutex_;
+	std::unordered_map<Key, RecordStats> recordStats_; ///< Key.origin is set to 0
+	std::mutex recordStatsMutex_;
 
 };
 

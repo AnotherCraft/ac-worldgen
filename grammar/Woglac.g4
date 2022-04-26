@@ -5,7 +5,6 @@ module:
 
 statement:
 	pragmaStatement
-	| includeStatement
 	| paramDefinition
 	| biomeParamDefinition
 	| paramSetStatement
@@ -30,9 +29,6 @@ contentOrSemicolon:
 pragmaStatement:
 	'pragma' id= extendedIdentifier ('=' (valLit= literalExpression | valId= Identifier))? ';';
 
-includeStatement:
-	'include' file= StringLiteral ';';
-
 variableDefinition:
 	exportFlag='export'? type=Type id=extendedIdentifier '=' val=expression ';';
 
@@ -52,7 +48,7 @@ structureConditionStatement:
 	(targetType=('component' | 'rule') target=extendedIdentifier?)? 'condition' cond=expression ';';
 
 ruleExpansionStatement:
-	'rule' target=extendedIdentifier? '->' (component=extendedIdentifier '::' node=Identifier | 'void') ('!' priority=NumericLiteral)? (':' probabilityRatio=NumericLiteral)? content=contentOrSemicolon;
+	'rule' target=extendedIdentifier? '->' (expansionTarget=extendedIdentifier ('::' node=Identifier)? | 'void') ('!' priority=NumericLiteral)? (':' probabilityRatio=NumericLiteral)? content=contentOrSemicolon;
 
 componentNodeStatement:
 	('component' target=extendedIdentifier)? 'node' pos=positionExpression cmn=componentNodeStatementCommonPart;
@@ -67,13 +63,13 @@ componentNodeOrientationExpression:
 	dir=Identifier sign=('+' | '-');
 
 componentAreaStatement:
-	('component' target=extendedIdentifier)? 'area' startPos=positionExpression endPos=positionExpression name=Identifier? ';';
+	('component' target=extendedIdentifier)? 'area' startPos=positionExpression endPos=positionExpression ('(' canOverlap='#'? mustOverlap='!'? isVirtual='?'? ')')? name=Identifier? ';';
 
 componentBlockStatement:
 	('component' target=extendedIdentifier)? 'block' startPos=positionExpression endPos=positionExpression? '=' val=expression ';';
 
 componentIncludeStatement:
-	'component' 'include' file=StringLiteral '{' content+= componentIncludeStatementParam* '}';
+	'component' 'include'  file=StringLiteral '{' content+= componentIncludeStatementParam* '}';
 
 componentIncludeStatementParam:
 	block= componentIncludeStatementBlockParam

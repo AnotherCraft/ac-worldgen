@@ -1,13 +1,14 @@
 #pragma once
 
-#include <QString>
-#include <QVariant>
-#include <QHash>
+#include <variant>
+#include <string>
+#include <unordered_map>
 
 class WGA_Symbol {
 
 public:
-	using PragmaList = QHash<QString, QVariant>;
+	using PragmaValue = std::variant<std::string, float, bool>;
+	using PragmaList = std::unordered_map<std::string, PragmaValue>;
 	enum class SymbolType {
 		Abstract,
 		Value,
@@ -29,21 +30,21 @@ public:
 	virtual bool isContextual() const;
 
 public:
-	QVariant pragma(const QString &name) const;
+	PragmaValue pragma(const std::string &name) const;
 
 	inline const auto &pragmas() const {
 		return pragmas_;
 	}
 
-	void setPragma(const QString &name, const QVariant &value = true);
+	void setPragma(const std::string &name, const PragmaValue &value = true);
 	void setPragmas(const PragmaList &pragmas);
 
 public:
-	inline const QString &description() const {
+	inline const std::string &description() const {
 		return desc_;
 	}
 
-	inline void setDestription(const QString &set) {
+	inline void setDescription(const std::string &set) {
 		desc_ = set;
 	}
 
@@ -51,7 +52,7 @@ protected:
 	PragmaList pragmas_;
 
 private:
-	QString desc_;
+	std::string desc_, name_;
 
 };
 

@@ -9,7 +9,7 @@ class WGA_DataCacheInstance_CPU {
 
 public:
 	using Key = WGA_DataRecord_CPU::Key;
-	using Value = QSharedPointer<WGA_DataRecord_CPU>;
+	using Value = std::shared_ptr<WGA_DataRecord_CPU>;
 
 public:
 	inline size_t memoryCapacity() const {

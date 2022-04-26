@@ -1,7 +1,5 @@
 #include "wga_datacache_cpu.h"
 
-#include <QMetaEnum>
-
 #include "util/tracyutils.h"
 #include "util/bytesizeliterals.h"
 #include "util/forit.h"
@@ -21,9 +19,9 @@ const size_t WGA_DataCache_CPU::cacheSizes[+CacheType::_count] = {
 WGA_DataCache_CPU::WGA_DataCache_CPU() {
 	for(int i = 0; i < +CacheType::_count; i++) {
 		for(int j = 0; j < cacheDivisions; j++)
-			cacheData_[i][j].cache.setMemoryCapacity(qMax<size_t>(1, cacheSizes[i] / cacheDivisions));
+			cacheData_[i][j].cache.setMemoryCapacity(std::max<size_t>(1, cacheSizes[i] / cacheDivisions));
 
-		TracyPlotConfig(TracyUtils::mapName(QStringLiteral("dataCacheHitRate[%1]").arg(i)), tracy::PlotFormatType::Percentage);
+		//TracyPlotConfig(TracyUtils::mapName(std::format("dataCacheHitRate[{}]", i)), tracy::PlotFormatType::Percentage);
 	}
 }
 
@@ -37,7 +35,7 @@ WGA_DataCache_CPU::DataRecordPtr WGA_DataCache_CPU::get(const WGA_DataRecord_CPU
 	DataRecordPtr result;
 
 	const CacheType cacheType = getCacheType(key.symbol, key.subKey);
-	const int divisionIx = qHash(key.symbol, qHash(key.origin.x() / 16, qHash(key.origin.y() / 16))) % cacheDivisions;
+	const int divisionIx = HashUtils::multiHash(key.symbol, key.origin.x() / 16, key.origin.y() / 16) % cacheDivisions;
 	ASSERT(divisionIx >= 0 && divisionIx < cacheDivisions);
 	CacheData &cd = cacheData_[+cacheType][divisionIx];
 
@@ -47,17 +45,17 @@ WGA_DataCache_CPU::DataRecordPtr WGA_DataCache_CPU::get(const WGA_DataRecord_CPU
 	// Try getting the data
 	{
 		//ZoneScopedN("dcCheck");
-		QMutexLocker _ml(&cd.mutex);
+		std::unique_lock _ml(cd.mutex);
 
 		while(cd.wipKeys.contains(key))
-			cd.wipKeyCondition.wait(&cd.mutex);
+			cd.wipKeyCondition.wait(_ml);
 
 		if(auto p = cd.cache.get(key)) {
 			result = p;
 			isHit = true;
 		}
 		else {
-			cd.wipKeys += key;
+			cd.wipKeys.insert(key);
 
 			if(cd.generatedKeys.contains(key))
 				isMiss = true;
@@ -76,11 +74,11 @@ WGA_DataCache_CPU::DataRecordPtr WGA_DataCache_CPU::get(const WGA_DataRecord_CPU
 		{
 			//ZoneScopedN("dcWrite");
 
-			QMutexLocker _ml(&cd.mutex);
+			std::unique_lock _ml(cd.mutex);
 			cd.cache.insert(key, result, result->dataSize());
 			cd.generatedKeys.insert(key);
-			cd.wipKeys.remove(key);
-			cd.wipKeyCondition.wakeAll();
+			cd.wipKeys.erase(key);
+			cd.wipKeyCondition.notify_all();
 		}
 	}
 	else
@@ -91,7 +89,7 @@ WGA_DataCache_CPU::DataRecordPtr WGA_DataCache_CPU::get(const WGA_DataRecord_CPU
 		Key statsKey = key;
 		statsKey.origin = BlockWorldPos();
 
-		QWriteLocker _ml(&recordStatsMutex_);
+		std::unique_lock _ml(recordStatsMutex_);
 		RecordStats *stats = &recordStats_[statsKey];
 
 		if(isHit)
@@ -106,39 +104,6 @@ WGA_DataCache_CPU::DataRecordPtr WGA_DataCache_CPU::get(const WGA_DataRecord_CPU
 }
 
 void WGA_DataCache_CPU::reportHitRate() {
-	if(0) {
-		struct S {
-			Key key;
-			RecordStats value;
-		};
-
-		QMap<int, S> m;
-		{
-			QReadLocker _ml(&recordStatsMutex_);
-			forit(recordStats_) m.insert(-it.value().missCount, S{it.key(), it.value()});
-		}
-
-		for(const S &s: m) {
-			const bool isValue = dynamic_cast<WGA_Value_CPU *>(s.key.symbol);
-			const bool isCrossSampled = isValue ? static_cast<WGA_Value_CPU *>(s.key.symbol)->isCrossSampled(0) : false;
-			qDebug()
-				<< " | MISS " << QString::number(s.value.missCount).rightJustified(6)
-				<< " | HIT " << QString::number(s.value.hitCount).rightJustified(6)
-				<< " | MIR " <<
-				QString::number(static_cast<double>(s.value.missCount) / (s.value.missCount + s.value.hitCount) * 100, 'f',
-				                2).rightJustified(6) + " %"
-				<< " | GEN " << QString::number(s.value.genCount).rightJustified(6)
-				<< " | " << QString(QMetaEnum::fromType<WGA_Value::Dimensionality>().valueToKey(
-				+(isValue ? static_cast<WGA_Value_CPU *>(s.key.symbol)->dimensionality()
-				          : WGA_Value::Dimensionality::Unknown))).leftJustified(6)
-				<< " | " << (s.key.symbol->isContextual() ? "CTX" : "   ")
-				<< " | " << (isCrossSampled ? "CS" : "  ")
-				<< " | " << s.key.symbol->description() << s.key.subKey;
-		}
-
-		qDebug() << "\n\n\n\n";
-	}
-
 	for(int i = 0; i < +CacheType::_count; i++) {
 		const int missCount = missCount_[i], hitCount = hitCount_[i];
 

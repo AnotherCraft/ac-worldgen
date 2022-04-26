@@ -2,6 +2,7 @@
 
 #include "util/vector.h"
 #include "util/chunkworldpos.h"
+#include "util/hashutils.h"
 
 class BlockWorldPos : public Vector3<BlockWorldPos_T> {
 
@@ -66,14 +67,13 @@ public:
 		return z() < chunkZOffset || z() >= chunkZOffset + chunkSize;
 	}
 
-public:
-	/// For QMLSlotInterface purposes
-	QString toColonSeparatedString() const;
-
 };
 
-inline size_t qHash(const BlockWorldPos &v, size_t seed = 0) {
-	return qHash(static_cast<BlockWorldPos::V>(v), seed);
-}
+template<>
+struct std::hash<BlockWorldPos> {
+	size_t operator ()(const BlockWorldPos &v) const {
+		return HashUtils::multiHash(v.x(), v.y(), v.z());
+	}
+};
 
 

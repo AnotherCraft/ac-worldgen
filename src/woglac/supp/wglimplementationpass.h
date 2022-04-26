@@ -1,14 +1,12 @@
 #pragma once
 
-// Must place before everything else because of antlr
 #include "wglinclude.h"
-
-#include <QStack>
 
 #include "worldgen/base/supp/wga_componentnode.h"
 #include "worldgen/util/voxparser.h"
 
 #include "wglpass.h"
+#include "wgldefines.h"
 
 class WGLImplementationPass : public WGLPass {
 
@@ -40,42 +38,34 @@ protected:
 	virtual void enterPragmaStatement(WoglacParser::PragmaStatementContext *ctx) override;
 
 private:
-	using ExpressionFunc = std::function<WGA_Value *(WGLAPIContext &ctx)>;
-	using DependencyList = WGLContext::DependencyList;
+	WGLExpressionResult expression(WoglacParser::ExpressionContext *ctx, WGLDependencyList &deps);
+	WGLExpressionResult expression(WoglacParser::TernaryExpressionContext *ctx, WGLDependencyList &deps);
+	WGLExpressionResult expression(WoglacParser::LogicalExpressionContext *ctx, WGLDependencyList &deps);
+	WGLExpressionResult expression(WoglacParser::AndExpressionContext *ctx, WGLDependencyList &deps);
+	WGLExpressionResult expression(WoglacParser::OrExpressionContext *ctx, WGLDependencyList &deps);
+	WGLExpressionResult expression(WoglacParser::ComparisonExpressionContext *ctx, WGLDependencyList &deps);
+	WGLExpressionResult expression(WoglacParser::AddExpressionContext *ctx, WGLDependencyList &deps);
+	WGLExpressionResult expression(WoglacParser::MultExpressionContext *ctx, WGLDependencyList &deps);
+	WGLExpressionResult expression(WoglacParser::UnaryExpressionContext *ctx, WGLDependencyList &deps);
+	WGLExpressionResult expression(WoglacParser::AtomicExpressionContext *ctx, WGLDependencyList &deps);
+	WGLExpressionResult expression(WoglacParser::FunctionCallExpressionContext *ctx, WGLDependencyList &deps);
+	WGLExpressionResult expression(WoglacParser::LiteralExpressionContext *ctx, WGLDependencyList &deps);
+	WGLExpressionResult expression(WoglacParser::InlineFunctionCallExpressionContext *ctx, WGLDependencyList &deps);
+	WGLExpressionResult expression(WoglacParser::ExtendedIdentifierContext *ctx, WGLDependencyList &deps);
+	WGLExpressionResult expression(WoglacParser::BiomeParamExpressionContext *ctx, WGLDependencyList &deps);
 
-	struct ExpressionResult {
-		ExpressionFunc func;
-		WGA_Value::ValueType type;
-	};
-
-private:
-	ExpressionResult expression(WoglacParser::ExpressionContext *ctx, DependencyList &deps);
-	ExpressionResult expression(WoglacParser::TernaryExpressionContext *ctx, DependencyList &deps);
-	ExpressionResult expression(WoglacParser::LogicalExpressionContext *ctx, DependencyList &deps);
-	ExpressionResult expression(WoglacParser::AndExpressionContext *ctx, DependencyList &deps);
-	ExpressionResult expression(WoglacParser::OrExpressionContext *ctx, DependencyList &deps);
-	ExpressionResult expression(WoglacParser::ComparisonExpressionContext *ctx, DependencyList &deps);
-	ExpressionResult expression(WoglacParser::AddExpressionContext *ctx, DependencyList &deps);
-	ExpressionResult expression(WoglacParser::MultExpressionContext *ctx, DependencyList &deps);
-	ExpressionResult expression(WoglacParser::UnaryExpressionContext *ctx, DependencyList &deps);
-	ExpressionResult expression(WoglacParser::AtomicExpressionContext *ctx, DependencyList &deps);
-	ExpressionResult expression(WoglacParser::FunctionCallExpressionContext *ctx, DependencyList &deps);
-	ExpressionResult expression(WoglacParser::LiteralExpressionContext *ctx, DependencyList &deps);
-	ExpressionResult expression(WoglacParser::InlineFunctionCallExpressionContext *ctx, DependencyList &deps);
-	ExpressionResult expression(WoglacParser::ExtendedIdentifierContext *ctx, DependencyList &deps);
-	ExpressionResult expression(WoglacParser::BiomeParamExpressionContext *ctx, DependencyList &deps);
-
-	ExpressionResult positionExpression(WoglacParser::PositionExpressionContext *ctx, DependencyList &deps);
+	WGLExpressionResult positionExpression(WoglacParser::PositionExpressionContext *ctx, WGLDependencyList &deps);
 
 private:
-	void componentNodeCommonPart(WGLSymbol *sym, WoglacParser::ComponentNodeStatementCommonPartContext *ctx, WGLSymbol *component, DependencyList &deps, const std::function<void(WGLAPIContext &ctx, WGA_ComponentNode::Config &cfg)> &cfgFunc);
+	void componentNodeCommonPart(WGLSymbol *sym, WoglacParser::ComponentNodeStatementCommonPartContext *ctx, WGLSymbol *component, WGLDependencyList &deps, const std::function<void(WGLAPIContext &ctx, WGA_ComponentNode::Config &cfg)> &cfgFunc);
 
 private:
-	ExpressionResult functionCall(const QString &functionName, const QVector <ExpressionResult> &args, antlr4::ParserRuleContext *ctx);
-	ExpressionResult binaryOperation(const QString &op, const ExpressionResult &a, const ExpressionResult &b, antlr4::ParserRuleContext *ctx);
+	WGLExpressionResult functionCall(const std::string &functionName, const std::vector<WGLExpressionResult> &args, antlr4::ParserRuleContext *ctx);
+	WGLExpressionResult binaryOperation(const std::string &op, const WGLExpressionResult &a, const WGLExpressionResult &b, antlr4::ParserRuleContext *ctx);
 
 private:
 	VOXParser voxParser_;
-	QVector <BlockWorldPos> componentIncludePositions_;
+	std::vector<BlockWorldPos> componentIncludePositions_;
+
 };
 

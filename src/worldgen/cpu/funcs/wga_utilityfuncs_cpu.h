@@ -22,8 +22,6 @@ public:
 public:
 	template<VT t>
 	static void lengthExp(Api api, Key key, DH <VT::Float> result, V <t> v, V <VT::Float> exp) {
-		Q_UNUSED(api);
-
 		const auto vh = v.dataHandle(key.origin);
 		const auto exph = exp.dataHandle(key.origin);
 
@@ -43,8 +41,6 @@ public:
 
 template<WGA_Funcs_CPU::VT t>
 void WGA_UtilityFuncs_CPU::select(Api api, Key key, DH <t> result, V <VT::Bool> condv, V <t> thnv, V <t> elsv) {
-	Q_UNUSED(api)
-
 	auto cond = condv.dataHandle(key.origin);
 
 	int ac = 0;
@@ -62,7 +58,9 @@ void WGA_UtilityFuncs_CPU::select(Api api, Key key, DH <t> result, V <VT::Bool> 
 		auto vh = thnv.dataHandle(key.origin);
 		for(int i = 0; i < result.size; i++)
 			result[i] = vh[i];
-	} else {
+	}
+
+	else {
 		auto thnh = thnv.dataHandle(key.origin);
 		auto elsh = elsv.dataHandle(key.origin);
 		for(int i = 0; i < result.size; i++)

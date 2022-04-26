@@ -1,7 +1,8 @@
 #pragma once
 
-#include <QString>
-#include <QVariant>
+#include <vector>
+#include <unordered_map>
+#include <variant>
 
 #include "wga_symbol.h"
 #include "wga_value.h"
@@ -10,11 +11,11 @@ class WGA_GrammarSymbol : public WGA_Symbol {
 
 public:
 	struct ParamSet {
-		QString paramName;
+		std::string paramName;
 		WGA_Value *value = nullptr;
 	};
 	struct ParamDeclare {
-		QString paramName;
+		std::string paramName;
 		WGA_Value::ValueType type = WGA_Value::ValueType::Undefined;
 		WGA_Value *value = nullptr;
 		WGA_Value *defaultValue = nullptr;
@@ -27,7 +28,7 @@ public:
 	WGA_GrammarSymbol();
 
 public:
-	void setParam(const QString &param, WGA_Value *value);
+	void setParam(const std::string &param, WGA_Value *value);
 
 	inline const auto &paramSets() const {
 		return paramSets_;
@@ -47,10 +48,10 @@ public:
 	void addCondition(const Condition &cond);
 
 private:
-	QList<Condition> conditions_;
-	QList<ParamSet> paramSets_;
-	QList<ParamDeclare> paramDeclares_;
-	QHash<QString, QVariant> setPragmas_;
+	std::vector<Condition> conditions_;
+	std::vector<ParamSet> paramSets_;
+	std::vector<ParamDeclare> paramDeclares_;
+	std::unordered_map<std::string, std::variant<float, std::string>> setPragmas_;
 
 };
 

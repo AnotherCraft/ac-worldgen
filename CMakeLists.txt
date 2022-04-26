@@ -55,6 +55,7 @@ ExternalProject_Add(
 ExternalProject_Add(x_ac_worldgen
         SOURCE_DIR "${PROJECT_SOURCE_DIR}/src"
         BUILD_ALWAYS ON
+        INSTALL_COMMAND ""
         STEP_TARGETS build
         CMAKE_ARGS ${EXTERNAL_ARGS}
         )
@@ -65,15 +66,7 @@ add_custom_target(ac_worldgen_deploy ALL DEPENDS antlr tracy x_ac_worldgen)
 # ===========================================
 # Dummy target for intellisense
 # ===========================================
-find_package(Qt6 COMPONENTS Concurrent REQUIRED CONFIG)
-qt_add_executable(x_ac_worldgen_dummy WIN32 EXCLUDE_FROM_ALL)
-get_target_property(qtcore_binlocation Qt6::Core LOCATION)
-get_filename_component(qtcore_location ${qtcore_binlocation} DIRECTORY)
-set(qt_include_location "${qtcore_location}/../include")
-target_include_directories(x_ac_worldgen_dummy PRIVATE
-        "${qt_include_location}/QtConcurrent"
-        )
-
+add_executable(x_ac_worldgen_dummy WIN32 EXCLUDE_FROM_ALL)
 file(
         GLOB_RECURSE ac_client_src CONFIGURE_DEPENDS
         "${PROJECT_BASE_DIR}/src/*.cc"
@@ -82,7 +75,6 @@ file(
 )
 target_compile_definitions(x_ac_worldgen_dummy PRIVATE TRACY_ENABLE)
 target_sources(x_ac_worldgen_dummy PRIVATE ${ac_client_src})
-target_sources(x_ac_worldgen_dummy PRIVATE "${PROJECT_BASE_DIR}/qt6.natvis")
 target_precompile_headers(x_ac_worldgen_dummy PRIVATE "${PROJECT_BASE_DIR}/src/pch.h")
 target_include_directories(x_ac_worldgen_dummy PRIVATE "${PROJECT_BASE_DIR}/src")
 target_include_directories(x_ac_worldgen_dummy SYSTEM PRIVATE

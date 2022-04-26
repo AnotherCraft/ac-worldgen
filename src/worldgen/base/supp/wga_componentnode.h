@@ -11,7 +11,7 @@ class WGA_ComponentNode : public WGA_Symbol {
 
 public:
 	struct Config {
-		QString group;
+		std::string group;
 		WGA_Value *position = nullptr;
 		WGA_Rule *rule = nullptr; ///< Can be null
 		BlockOrientation orientation;

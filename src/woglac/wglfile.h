@@ -1,24 +1,24 @@
 #pragma once
 
-#include <QString>
-#include <QSharedPointer>
+#include <memory>
+#include <string>
 
 class WGLFile {
 
 public:
 	WGLFile();
-	WGLFile(const QString &fileName);
+	WGLFile(const std::string &fileName);
 
 public:
-	inline const QString &fileName() const {
+	inline const std::string &fileName() const {
 		return fileName_;
 	}
 
-	void setFileName(const QString &fileName);
+	void setFileName(const std::string &fileName);
 
 private:
-	QString fileName_;
+	std::string fileName_;
 
 };
 
-using WGLFilePtr = QSharedPointer<WGLFile>;
+using WGLFilePtr = std::shared_ptr<WGLFile>;

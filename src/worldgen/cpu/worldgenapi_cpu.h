@@ -1,6 +1,6 @@
 #pragma once
 
-#include <QVector>
+#include <vector>
 
 #include "worldgen/base/worldgenapi.h"
 
@@ -32,19 +32,21 @@ public:
 public:
 	virtual WGA_Biome *newBiome() override;
 	virtual WGA_Rule *newRule() override;
-	virtual WGA_RuleExpansion *newRuleExpansion(WGA_Rule *rule, WGA_Component *component, const QString &node) override;
+	virtual WGA_RuleExpansion *newRuleExpansion(WGA_Rule *rule) override;
+	virtual WGA_RuleExpansion *newRuleExpansion(WGA_Rule *rule, WGA_Component *component, const std::string &node) override;
+	virtual WGA_RuleExpansion *newRuleExpansion(WGA_Rule *rule, WGA_Rule *targetRule) override;
 	virtual WGA_Component *newComponent() override;
 	virtual WGA_ComponentNode *newComponentNode() override;
 
 public:
 	virtual WGA_Value *function(FunctionID function, const FunctionArgs &args) override;
 	virtual WGA_Value *proxy(WGA_Value *v) override;
-	virtual WGA_Value *grammarSymbolParam(WGA_GrammarSymbol *sym, const QString &name, WGA_Value::ValueType type, WGA_Value *defaultValue) override;
+	virtual WGA_Value *grammarSymbolParam(WGA_GrammarSymbol *sym, const std::string &name, WGA_Value::ValueType type, WGA_Value *defaultValue) override;
 
 public:
 	WGA_DataRecord_CPU::Ptr getDataRecord(const WGA_DataRecord_CPU::Key &key, const WGA_DataRecord_CPU::Ctor &ctor);
 	WGA_Biome &getChunkBiome(const BlockWorldPos &origin);
-	QSharedPointer<WGA_DataRecordT_CPU<WGA_BiomeData_CPU> > getBiomeData(const BlockWorldPos &origin);
+	std::shared_ptr<WGA_DataRecordT_CPU<WGA_BiomeData_CPU> > getBiomeData(const BlockWorldPos &origin);
 
 	/// Creates thread local cache for data (saves some mutex collisions)
 	void createLocalCache();
@@ -61,7 +63,7 @@ public:
 public:
 	template<typename T>
 	inline T *registerSymbol(T *sym) {
-		symbols_ += sym;
+		symbols_.push_back(sym);
 		return sym;
 	}
 
@@ -77,10 +79,10 @@ private:
 	WGA_Symbol chunkBiomeSymbol_, biomeDataSymbol_;
 
 private:
-	QHash<WGA_Symbol *, WGA_SymbolID_CPU> symbolIDMapping_;
-	QHash<WGA_SymbolID_CPU, WGA_Symbol *> idSymbolMapping_;
-	QVector<WGA_Symbol *> symbols_;
-	QVector<WGA_Biome *> biomes_;
+	std::unordered_map<WGA_Symbol *, WGA_SymbolID_CPU> symbolIDMapping_;
+	std::unordered_map<WGA_SymbolID_CPU, WGA_Symbol *> idSymbolMapping_;
+	std::vector<WGA_Symbol *> symbols_;
+	std::vector<WGA_Biome *> biomes_;
 
 private:
 	WGA_DataCache_CPU dataCache_;

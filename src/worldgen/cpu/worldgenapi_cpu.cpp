@@ -14,15 +14,17 @@
 
 #define WGCPUF_ARGS(T) const WGA_DataRecord_CPU::Key &key, WGA_DataHandle_CPU<WGA_Value::ValueType::T> data
 #define DIM_FUNC(D) [] { return WGA_Value::Dimensionality::D; }
-#define WGCPUF_CONST(T, expr) api->registerSymbol(new WGA_Value_CPU(*api, WGA_Value::ValueType::T, false, DIM_FUNC(DConst), wga_fillCtor<WGA_Value::ValueType::T>(DIM_FUNC(DConst), [val = (expr)] (WGCPUF_ARGS(T)) { Q_UNUSED(key) data[0] = val; }, __FUNCTION__)))
+#define WGCPUF_CONST(T, expr) api->registerSymbol(new WGA_Value_CPU(*api, WGA_Value::ValueType::T, false, DIM_FUNC(DConst), wga_fillCtor<WGA_Value::ValueType::T>(DIM_FUNC(DConst), [val = (expr)] (WGCPUF_ARGS(T)) { data[0] = val; }, __FUNCTION__)))
 
-using LocalCache = QHash<WGA_DataRecord_CPU::Key, WGA_DataRecord_CPU::Ptr>;
+using LocalCache = std::unordered_map<WGA_DataRecord_CPU::Key, WGA_DataRecord_CPU::Ptr>;
 
 thread_local WGA_StructureGenerator_CPU *WorldGenAPI_CPU::structureGen = nullptr;
 thread_local LocalCache *localCache = nullptr;
 
 WorldGenAPI_CPU::~WorldGenAPI_CPU() {
-	qDeleteAll(symbols_);
+	for(WGA_Symbol *sym: symbols_)
+		delete sym;
+
 	symbols_.clear();
 }
 
@@ -60,33 +62,48 @@ WGA_Value *WorldGenAPI_CPU::constComponentNode(WGA_ComponentNode *val) {
 
 WGA_Biome *WorldGenAPI_CPU::newBiome() {
 	WGA_Biome *biome = new WGA_Biome();
-	symbols_ += biome;
-	biomes_ += biome;
+	symbols_.push_back(biome);
+	biomes_.push_back(biome);
 	return biome;
 }
 
 WGA_Rule *WorldGenAPI_CPU::newRule() {
 	WGA_Rule *rule = new WGA_Rule();
-	symbols_ += rule;
+	symbols_.push_back(rule);
 	return rule;
 }
 
-WGA_RuleExpansion *WorldGenAPI_CPU::newRuleExpansion(WGA_Rule *rule, WGA_Component *component, const QString &node) {
-	WGA_RuleExpansion *ruleex = new WGA_RuleExpansion(rule, component, node);
+WGA_RuleExpansion *WorldGenAPI_CPU::newRuleExpansion(WGA_Rule *rule) {
+	WGA_RuleExpansion *ruleex = new WGA_RuleExpansion(rule);
 	rule->addExpansion(ruleex);
-	symbols_ += ruleex;
+	symbols_.push_back(ruleex);
 	return ruleex;
 }
 
+WGA_RuleExpansion *WorldGenAPI_CPU::newRuleExpansion(WGA_Rule *rule, WGA_Component *component, const std::string &node) {
+	WGA_RuleExpansion *ruleex = new WGA_RuleExpansion(rule, component, node);
+	rule->addExpansion(ruleex);
+	symbols_.push_back(ruleex);
+	return ruleex;
+}
+
+WGA_RuleExpansion *WorldGenAPI_CPU::newRuleExpansion(WGA_Rule *rule, WGA_Rule *targetRule) {
+	WGA_RuleExpansion *ruleex = new WGA_RuleExpansion(rule, targetRule);
+	rule->addExpansion(ruleex);
+	symbols_.push_back(ruleex);
+	return ruleex;
+}
+
+
 WGA_Component *WorldGenAPI_CPU::newComponent() {
 	WGA_Component *component = new WGA_Component();
-	symbols_ += component;
+	symbols_.push_back(component);
 	return component;
 }
 
 WGA_ComponentNode *WorldGenAPI_CPU::newComponentNode() {
 	WGA_ComponentNode *node = new WGA_ComponentNode();
-	symbols_ += node;
+	symbols_.push_back(node);
 	return node;
 }
 
@@ -128,7 +145,7 @@ WGA_Biome &WorldGenAPI_CPU::getChunkBiome(const BlockWorldPos &origin_) {
 	const BlockWorldPos origin = BlockWorldPos(origin_.x(), origin_.y(), 0);
 
 	const auto ctor = [this](const WGA_DataRecord_CPU::Key &key) {
-		QHash<WGA_Value_CPU *, float> fields;
+		std::unordered_map<WGA_Value_CPU *, float> fields;
 		const auto getField = [&](WGA_Value_CPU *field) {
 			if(fields.contains(field))
 				return fields[field];
@@ -143,7 +160,7 @@ WGA_Biome &WorldGenAPI_CPU::getChunkBiome(const BlockWorldPos &origin_) {
 
 		ASSERT(biomes_.size());
 		for(WGA_Biome *biome: biomes_) {
-			float deviation = biome->conditions().count() * -0.2f; // Give some advantage to biomes with many conditions
+			float deviation = biome->conditions().size() * -0.2f; // Give some advantage to biomes with many conditions
 			for(const WGA_Biome::Condition &c: biome->conditions()) {
 				const float fieldVal = getField(static_cast<WGA_Value_CPU *>(c.param));
 				const float d = abs(c.mean - fieldVal) / c.deviation;
@@ -168,7 +185,7 @@ WGA_Biome &WorldGenAPI_CPU::getChunkBiome(const BlockWorldPos &origin_) {
 	return *r.data;
 }
 
-QSharedPointer<WGA_DataRecordT_CPU<WGA_BiomeData_CPU>> WorldGenAPI_CPU::getBiomeData(const BlockWorldPos &origin_) {
+std::shared_ptr<WGA_DataRecordT_CPU<WGA_BiomeData_CPU>> WorldGenAPI_CPU::getBiomeData(const BlockWorldPos &origin_) {
 	using Rec = WGA_DataRecordT_CPU<WGA_BiomeData_CPU>;
 	const BlockWorldPos origin = BlockWorldPos(origin_.x(), origin_.y(), 0);
 
@@ -181,7 +198,7 @@ QSharedPointer<WGA_DataRecordT_CPU<WGA_BiomeData_CPU>> WorldGenAPI_CPU::getBiome
 	};
 
 	auto rec = getDataRecord(WGA_DataRecord_CPU::Key(&biomeDataSymbol_, origin, 0), ctor);
-	auto r = rec.staticCast<Rec>();
+	auto r = std::static_pointer_cast<Rec>(rec);
 
 	return r;
 }
@@ -190,9 +207,8 @@ void WorldGenAPI_CPU::reportCacheHitRate() {
 	dataCache_.reportHitRate();
 }
 
-WGA_Value *WorldGenAPI_CPU::grammarSymbolParam(WGA_GrammarSymbol *sym, const QString &name, WGA_Value::ValueType type,
-                                               WGA_Value *defaultValue) {
-	QSharedPointer<WGA_Value *> v(new WGA_Value *());
+WGA_Value *WorldGenAPI_CPU::grammarSymbolParam(WGA_GrammarSymbol *sym, const std::string &name, WGA_Value::ValueType type, WGA_Value *defaultValue) {
+	auto v = std::make_shared<WGA_Value *>();
 	const auto dimFunc = [v]() {
 		ASSERT(structureGen);
 

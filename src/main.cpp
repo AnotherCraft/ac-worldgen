@@ -1,12 +1,11 @@
-#include <QtConcurrent>
-#include <QCoreApplication>
-#include <QCommandLineParser>
-#include <QFile>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QThreadPool>
-#include <QTextStream>
-#include <QMutex>
+#include <mutex>
+#include <fstream>
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+#include <format>
+#include <string>
+#include <queue>
 
 #ifdef _WINDOWS
 
@@ -26,41 +25,12 @@
 #include "woglac/wglcompiler.h"
 #include "woglac/wglfile.h"
 
-QMutex stdoutMutex;
-QFile qstdout;
+std::mutex stdoutMutex;
 
-QMutex jobsMutex;
-qsizetype runningJobs = 0;
-bool stdinEnd = false;
-
-void sendMessage(const QJsonObject &json, const QByteArray &payload = {}) {
-	const QByteArray jsonData = QJsonDocument(json).toJson(QJsonDocument::Compact);
-
-	static const QByteArray newline = "\n";
-
-	Q_ASSERT(payload.size() == json["payloadSize"].toInt());
-
-	QMutexLocker _ml(&stdoutMutex);
-	qstdout.write(jsonData);
-	qstdout.write(newline);
-	qstdout.write(payload);
-	qstdout.flush();
-};
-
-void msgHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg) {
-	static const QHash<int, QString> msgs{
-		{+QtMsgType::QtWarningMsg,  "error"},
-		{+QtMsgType::QtCriticalMsg, "error"},
-		{+QtMsgType::QtFatalMsg,    "error"},
-	};
-
-	const QJsonObject json{
-		{"type",     "message"},
-		{"severity", msgs.value(+type, "info")},
-		{"message",  msg},
-	};
-	sendMessage(json);
-};
+std::mutex jobsMutex;
+std::condition_variable jobEndCondition, newJobCondition;
+std::queue<std::function<void()>> jobs;
+size_t runningJobs = 0;
 
 int main(int argc, char *argv[]) {
 #ifdef _WINDOWS
@@ -68,205 +38,270 @@ int main(int argc, char *argv[]) {
 	setmode(fileno(stdout), O_BINARY);
 #endif
 
-	qstdout.open(stdout, QIODevice::WriteOnly);
+	std::vector<std::thread> pool;
 
-	qInstallMessageHandler(msgHandler);
+	try {
+		std::vector<std::string> files, lookupDirs;
+		std::unordered_map<std::string, BlockID> blockMapping;
+		size_t seed = 0;
+		size_t threadCount = std::min<size_t>(std::thread::hardware_concurrency() - 2, 4);
+		bool exportList = false;
+		bool showHelp = argc < 2;
 
-	QCoreApplication app(argc, argv);
+		size_t argi = 1;
+		const auto popArg = [&](const std::string &def = {}) {
+			return (argi >= argc) ? def : std::string(argv[argi++]);
+		};
 
-	QCommandLineParser argp;
-	argp.setApplicationDescription("AnotherCraft worldgen subsystem. After starting, the communication with the app is realized throu stdin and stdout pipes, using single-line JSON-encoded messages (with some asterisk).\nMore info on https://github.com/AnotherCraft/ac-worldgen.");
-	argp.addHelpOption();
+		while(argi < argc) {
+			const std::string arg = popArg();
+			if(arg == "-f" || arg == "--sourceFile")
+				files.push_back(popArg());
 
-	argp.addOption({{"f", "sourceFile"}, "Source file (accepts multiple)", "sourceFile"});
-	argp.addOption({{"d", "lookupDirectory"}, "Lookup directory for resources (for example .vox files for structure generator, accepts multiple)", "lookupDirectory"});
-	argp.addOption({{"s", "seed"}, "Seed for the worldgen (number)", "seed"});
-	argp.addOption({{"m", "blockMapping"}, "Block UID (string) -> ID (uint16_t) mapping in JSON object format.\nBlock UIDs have to be prefixed with 'block.', for example 'block.core.air'.\n\nID 0 is reserved for 'block.air'.\nID 1 is reserved for 'block.undefined'.", "blockMapping"});
-	argp.addOption({{"t", "threadCount"}, "Number of worker threads (default: min(idealThreadCount - 2, 4))", "threadCount"});
-	argp.addOption({"functionList", "Emits a function list in the Markdown format and exists the application", "functionList"});
-	argp.addOption({"exportList", "Compiles the source files and prints out the list of exports."});
+			else if(arg == "-d" || arg == "--lookupDirectory")
+				lookupDirs.push_back(popArg());
 
-	argp.process(app);
+			else if(arg == "-s" || arg == "--seed")
+				seed = std::stoi(popArg());
 
-	// Function list export
-	if(argp.isSet("functionList")) {
-		QFile f(argp.value("functionList"));
-		f.open(QIODevice::WriteOnly | QIODevice::Text);
+			else if(arg == "-m" || arg == "--blockMapping") {
+				const std::string str = popArg();
+				size_t offset = 0;
+				while(true) {
+					const size_t eqsep = str.find('=', offset);
+					if(eqsep == std::string::npos)
+						break;
 
-		QTextStream ts(&f);
-		ts << "# WOGLAC function list\n";
-		ts << "Auto generated from the source code.\n\n";
+					const size_t endsep = str.find(',', eqsep);
 
-		WorldGenAPI::functions().generateDocumentation(ts);
+					const std::string uid = str.substr(offset, eqsep - offset);
+					const BlockID id = (BlockID) std::stoi(str.substr(eqsep + 1, endsep));
 
-		qstdout.write(QStringLiteral("Function list exported to '%1'.\n").arg(f.fileName()).toUtf8());
-		return 0;
-	}
+					blockMapping.insert_or_assign(uid, id);
 
-	QThreadPool pool;
-	{
-		int threadCount = argp.value("threadCount").toInt();
-		if(threadCount <= 0)
-			threadCount = qBound(1, QThread::idealThreadCount() - 2, 4);
+					if(endsep == std::string::npos)
+						break;
 
-		pool.setMaxThreadCount(threadCount);
-	}
-
-	// Setup WorldGenAPI
-	WorldGenAPI_CPU wgapi;
-	{
-		// Seed
-		if(argp.isSet("seed"))
-			wgapi.setSeed(WorldGenSeed(argp.value("seed").toLongLong()));
-
-		// Block mapping
-		auto mapping = iteratorAssoc(QJsonDocument::fromJson(argp.value("blockMapping").toUtf8()).object()).mapx(std::make_pair(x.first, BlockID(x.second.toInt()))).toHash();
-		mapping["block.air"] = blockID_air;
-		mapping["block.undefined"] = blockID_undefined;
-		wgapi.setBlockUIDMapping(mapping);
-	}
-
-	// Compile source files
-	QHash<QString, WGA_Value *> exports;
-	{
-		WGLCompiler wgc;
-
-		wgc.setLookupDirectories(argp.values("lookupDirectory"));
-
-		for(const QString &filename: argp.values("sourceFile"))
-			wgc.addFile(WGLFilePtr(new WGLFile(filename)));
-
-		wgc.compile();
-		exports = wgc.construct(wgapi);
-	}
-
-	if(argp.isSet("exportList")) {
-		for(auto it = exports.keyValueBegin(), e = exports.keyValueEnd(); it != e; it++)
-			qstdout.write(QStringLiteral("%1: %2\n").arg(it->first, WGA_Value::typeNames[it->second->valueType()]).toUtf8());
-
-		return 0;
-	}
-
-	QThread *inputThread;
-	{
-		inputThread = QThread::create([&]() {
-			QFile qstdin;
-			qstdin.open(stdin, QIODevice::ReadOnly);
-
-			while(true) {
-				if(qstdin.atEnd()) {
-					QMutexLocker _ml(&jobsMutex);
-					stdinEnd = true;
-					if(!runningJobs)
-						qApp->quit();
-					break;
+					offset = endsep + 1;
 				}
+			}
 
-				QJsonParseError err;
-				QByteArray msg = qstdin.readLine();
+			else if(arg == "-t" || arg == "--threadCount")
+				threadCount = stoi(popArg());
 
-				// Get rid of unkonwn reasons null you get at the end of the string in some cases
-				if(msg.endsWith(0))
-					msg.chop(1);
+			else if(arg == "--functionList") {
+				std::cout << "# WOGLAC function list\n";
+				std::cout << "Auto generated from the source code.\n\n";
 
-				const QJsonObject json = QJsonDocument::fromJson(msg, &err).object();
+				WorldGenAPI::functions().generateDocumentation();
+				return 0;
+			}
 
-				if(err.error != QJsonParseError::NoError) {
-					qWarning() << "The command is not a valid JSON message" << err.errorString() << msg;
-					continue;
-				}
+			else if(arg == "--exportList")
+				exportList = true;
 
-				const QString type = json["type"].toString();
-				if(type == "getData") {
-					const BlockWorldPos pos = Vector3<double>(json["x"].toDouble(), json["y"].toDouble(), json["z"].toDouble()).to<BlockWorldPos_T>() & ~blockInChunkPosMask;
+			else if(arg == "--help" || arg == "-h")
+				showHelp = true;
 
-					const QString var = json["export"].toString();
-					WGA_Value *val = exports.value(var);
-					if(!val) {
-						qWarning() << "Export does not exist: " << var;
-						continue;
+			else {
+				std::cout << std::format("Unknown parameter '{}'.\n", arg);
+				return 1;
+			}
+		}
+
+		if(showHelp) {
+			std::cout << "AnotherCraft worldgen subsystem. After starting, the communication with the app is realized throu stdin and stdout pipes, using single-line JSON-encoded messages (with some asterisk).\nMore info on https://github.com/AnotherCraft/ac-worldgen.\n";
+			std::cout << "\n\nUsage: ac-worldgen (args)\n\n";
+
+			std::cout << "-f <f> | --sourceFile <f>\nSource file (accepts multiple).\n\n";
+			std::cout << "-d <d> | --lookupDirectory <d>\nLookup directory for resources (for example .vox files for structure generator, accepts multiple).\n\n";
+			std::cout << "-s <s> | --seed <s>\nSeed for the worldgen (number).\n\n";
+			std::cout << "-m <m> | --blockMapping <m>\nBlock UID (string) -> ID (uint16_t) mapping in format 'uid=id,uid2=id2,uid3=id3'.\nBlock UIDs have to be prefixed with 'block.', for example 'block.core.air'.\nID 0 is reserved for 'block.air'.\nID 1 is reserved for 'block.undefined'.\n\n";
+			std::cout << "--functionList\nEmits a function list in the Markdown format.";
+			std::cout << "--exportList\nCompiles the source files and prints out the list of exports.";
+			return 0;
+		}
+
+		// Setup WorldGenAPI
+		WorldGenAPI_CPU wgapi;
+		{
+			wgapi.setSeed(WorldGenSeed(seed));
+
+			// Block mapping
+			blockMapping["block.air"] = blockID_air;
+			blockMapping["block.undefined"] = blockID_undefined;
+			wgapi.setBlockUIDMapping(blockMapping);
+		}
+
+		// Compile source files
+		std::unordered_map<std::string, WGA_Value *> exports;
+		{
+			WGLCompiler wgc;
+
+			wgc.setLookupDirectories(lookupDirs);
+
+			for(const std::string &filename: files)
+				wgc.addFile(std::make_shared<WGLFile>(filename));
+
+			wgc.compile();
+			exports = wgc.construct(wgapi);
+		}
+
+		if(exportList) {
+			for(auto it = exports.begin(), e = exports.end(); it != e; it++)
+				std::cout << std::format("%1: %2\n", it->first, WGA_Value::typeNames.at(it->second->valueType()));
+
+			return 0;
+		}
+
+		for(size_t i = 0; i < threadCount; i++) {
+			pool.push_back(std::thread([] {
+				while(true) {
+					std::function < void() > job;
+
+					{
+						std::unique_lock lock(jobsMutex);
+						while(jobs.empty())
+							newJobCondition.wait(lock);
+
+						job = jobs.front();
+						jobs.pop();
 					}
 
-					if(val->symbolType() != WGA_Value::SymbolType::Value) {
-						qWarning() << "Export symbol is not a variable";
-						continue;
+					try {
+						job();
 					}
-
-					if(WGA_Value::typeNames[val->valueType()] != json["valueType"].toString()) {
-						qWarning() << QStringLiteral("Export '%1' is of type '%2', but '%3' expected").arg(var, WGA_Value::typeNames[val->valueType()], json["valueType"].toString());
-						continue;
-					}
-
-					struct Data {
-						QByteArray data;
-						qsizetype recordCount;
-					};
-					std::function<Data()> f;
-
-					const auto genf = [val, pos]<WGA_Value::ValueType VT>() {
-						return [val, pos] {
-							ZoneScopedN("getData");
-
-							auto h = WGA_ValueWrapper_CPU<VT>(static_cast<WGA_Value_CPU *>(val)).dataHandle(pos);
-							return Data{
-								.data = QByteArray(reinterpret_cast<const char *>(h.data), sizeof(WGA_ValueRec_CPU<VT>::T) * h.size),
-								.recordCount = h.size
-							};
-						};
-					};
-
-					if(val->valueType() == WGA_Value::ValueType::Float)
-						f = genf.operator ()<WGA_Value::ValueType::Float>();
-
-					else if(val->valueType() == WGA_Value::ValueType::Block)
-						f = genf.operator ()<WGA_Value::ValueType::Block>();
-
-					else {
-						qWarning() << "Unsupported export value type:" << WGA_Value::typeNames[val->valueType()];
-						continue;
+					catch(const std::exception &e) {
+						std::cerr << e.what() << "\n";
 					}
 
 					{
-						QMutexLocker _ml(&jobsMutex);
-						runningJobs++;
+						std::unique_lock lock(jobsMutex);
+						runningJobs--;
+						jobEndCondition.notify_all();
 					}
+				}
+			}));
+		}
 
-					(void) QtConcurrent::run(&pool, [f, pos, var] {
-						const Data d = f();
-						const QJsonObject json{
-							{"type",        "data"},
-							{"export",      var},
-							{"x",           pos.x()},
-							{"y",           pos.y()},
-							{"z",           pos.z()},
-							{"payloadSize", d.data.size()},
-							{"recordCount", d.recordCount},
-						};
+		// Main stdin loop
+		while(true) {
+			std::string type;
+			std::cin >> type;
 
-						sendMessage(json, d.data);
+			if(type.empty() && std::cin.eof())
+				break;
 
-						{
-							QMutexLocker _ml(&jobsMutex);
-							runningJobs--;
-							if(runningJobs == 0 && stdinEnd)
-								qApp->quit();
-						}
-					});
+			if(type == "getData") {
+				BlockWorldPos pos;
+				std::cin >> pos.x() >> pos.y() >> pos.z();
+				pos = pos & ~blockInChunkPosMask;
+
+				std::string var;
+				std::cin >> var;
+				const auto valp = exports.find(var);
+				if(valp == exports.end()) {
+					std::unique_lock _l(stdoutMutex);
+					std::cerr << "Export does not exist: " << var << "\n";
+					continue;
+				}
+				WGA_Value *val = valp->second;
+
+				if(val->symbolType() != WGA_Value::SymbolType::Value) {
+					std::unique_lock _l(stdoutMutex);
+					std::cerr << "Export symbol is not a variable\n";
+					continue;
 				}
 
-				else
-					qWarning() << "Unknown message type:" << type;
+				std::string valueType;
+				std::cin >> valueType;
+				if(WGA_Value::typeNames.at(val->valueType()) != valueType) {
+					std::unique_lock _ul(stdoutMutex);
+					std::cerr << std::format("Export '{}' is of type '{}', but '{}' expected.\n", var, WGA_Value::typeNames.at(val->valueType()), valueType);
+					return 1;
+				}
+
+				struct Data {
+					std::vector<char> data;
+					size_t recordCount;
+				};
+				std::function < Data() > f;
+
+				const auto genf = [val, pos]<WGA_Value::ValueType vt>() {
+					return [val, pos] {
+						ZoneScopedN("getData");
+
+						auto h = WGA_ValueWrapper_CPU<vt>(static_cast<WGA_Value_CPU *>(val)).dataHandle(pos);
+						Data r{
+							.recordCount = h.size
+						};
+
+						/*if constexpr(vt == WGA_Value::ValueType::Block) {
+							for(size_t i = 0; i < h.size; i++)
+								if(h.data[i] == blockID_undefined)
+									__debugbreak();
+						}*/
+
+						const size_t bytes = sizeof(WGA_ValueRec_CPU<vt>::T) * h.size;
+						r.data.resize(bytes);
+						memcpy(r.data.data(), reinterpret_cast<const char *>(h.data), bytes);
+						return r;
+					};
+				};
+
+				if(val->valueType() == WGA_Value::ValueType::Float)
+					f = genf.operator ()<WGA_Value::ValueType::Float>();
+
+				else if(val->valueType() == WGA_Value::ValueType::Block)
+					f = genf.operator ()<WGA_Value::ValueType::Block>();
+
+				else {
+					std::unique_lock _l(stdoutMutex);
+					std::cerr << std::format("Unsupported export value type: {}", WGA_Value::typeNames.at(val->valueType()));
+					return 1;
+				}
+
+				const auto job = [f, pos, var] {
+					const Data d = f();
+					std::unique_lock _ul(stdoutMutex);
+
+					std::cout << std::format("data {} {} {} {} {}\n", pos.x(), pos.y(), pos.z(), var, d.data.size());
+					std::cout.write(d.data.data(), d.data.size());
+					std::cout.flush();
+				};
+
+				{
+					std::unique_lock _ml(jobsMutex);
+					runningJobs++;
+					jobs.push(job);
+					newJobCondition.notify_one();
+				}
 			}
-		});
-		inputThread->setObjectName("inputThread");
-		inputThread->start();
+
+			else
+				throw std::exception(std::format("Unknown message type: {}", type).c_str());
+
+		}
+
+
+		{
+			std::unique_lock l(jobsMutex);
+			while(runningJobs)
+				jobEndCondition.wait(l);
+		}
+
+		{
+			for(std::thread &t: pool)
+				t.detach();
+		}
+
 	}
-
-	const int result = app.exec();
-
-	inputThread->quit();
-	inputThread->wait();
-	delete inputThread;
+	catch(const std::exception &e) {
+		std::cerr << e.what() << "\n";
+		for(std::thread &t: pool)
+			t.detach();
+		return 1;
+	}
 
 	return 0;
 }

@@ -22,6 +22,6 @@ public:
 
 public:
 	using Func = std::function<WGA_Value *(WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args)>;
-	static QHash<WorldGenAPI::FunctionID, Func> functions();
+	static std::unordered_map<WorldGenAPI::FunctionID, Func> functions();
 
 };

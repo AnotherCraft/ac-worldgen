@@ -1,7 +1,9 @@
 #pragma once
 
-#include <QHash>
-#include <QStack>
+#include <vector>
+#include <stack>
+#include <list>
+#include <fstream>
 
 #include "util/matrix.h"
 #include "util/blockorientation.h"
@@ -21,16 +23,17 @@ public:
 		int nameID; ///< using areaNameMapping
 		BlockWorldPos startPos, endPos;
 	};
-	struct State {
-		int areaCount, componentExpansionCount, ruleExpansionCount, currentlyExpandedRuleIx;
-	};
+
+	struct DataContext;
+	using DataContextPtr = std::shared_ptr<DataContext>;
+
 	struct DataContext {
 
 	public:
 		~DataContext();
+		static DataContextPtr create(WorldGenAPI_CPU *api, const DataContextPtr &parentContext, WGA_GrammarSymbol *sym, const BlockTransformMatrix &transform = {});
 
 	public:
-		void load(WorldGenAPI_CPU *api, DataContext *parentContext, WGA_GrammarSymbol *sym);
 		void setParams();
 
 		inline WGA_GrammarSymbol *associatedSymbol() {
@@ -38,12 +41,20 @@ public:
 		}
 
 		inline BlockWorldPos constSamplePos() const {
-			return localToWorldMatrix_ * BlockWorldPos(0);
+			return constSamplePos_;
 		}
 
 		inline Seed seed() const {
 			return seed_;
 		}
+
+		/// Hash of the local to world matrix. Only for matrix comparison speedup, do not use for worldgen stuff, is not same between runs!
+		inline size_t matrixHash() const {
+			return matrixHash_;
+		}
+
+		/// Call this when localToWorldMatrix has been changed (to recalculate some stuff)
+		void updateMatrix();
 
 	public:
 		inline BlockWorldPos mapToWorld(const BlockWorldPos &localPos) const {
@@ -63,68 +74,111 @@ public:
 		WGA_Value::Dimensionality getInputParamDimensionality(WGA_Symbol *symbol);
 
 	private:
-		static QString paramKey(const QString &paramName, WGA_Value::ValueType type);
+		DataContext() = default;
+
+		void load(WorldGenAPI_CPU *api, const DataContextPtr &parentContext, WGA_GrammarSymbol *sym, const BlockTransformMatrix &transform);
+
+	private:
+		static std::string paramKey(const std::string &paramName, WGA_Value::ValueType type);
 
 	private:
 		WorldGenAPI_CPU *api_ = nullptr;
 		WGA_GrammarSymbol *sym_ = nullptr;
-		DataContext *parentContext_ = nullptr;
+		DataContextPtr parentContext_;
 
 		BlockTransformMatrix localToWorldMatrix_;
+		BlockWorldPos constSamplePos_;
 
 	private:
-		QHash<WGA_DataRecord_CPU::Key, WGA_DataRecord_CPU::Ptr> dataCache_;
-		QHash<const WGA_Value *, WGA_Value::Dimensionality> dimensionalityCache_;
+		std::unordered_map<WGA_DataRecord_CPU::Key, WGA_DataRecord_CPU::Ptr> dataCache_;
+		std::unordered_map<const WGA_Value *, WGA_Value::Dimensionality> dimensionalityCache_;
 
 		/// List of all passed param inputs and outputs
-		QHash<QString, WGA_Value *> paramInputs_, paramOutputs_;
+		std::unordered_map<std::string, WGA_Value *> paramInputs_, paramOutputs_;
 
 		/// Maps param utility as defined in the WGA_GrammarSymbol paramDeclares to param keys
-		QHash<WGA_Symbol *, QString> paramKeyMapping_;
+		std::unordered_map<WGA_Symbol *, std::string> paramKeyMapping_;
 
 		/// Temporary symbols, are deleted with the context
-		QVector<WGA_Symbol *> temporarySymbols_;
+		std::vector<WGA_Symbol *> temporarySymbols_;
 
-		QHash<WGA_Symbol *, WGA_Value::Dimensionality> inputParamDimensionalityCache_;
+		std::unordered_map<WGA_Symbol *, WGA_Value::Dimensionality> inputParamDimensionalityCache_;
 
 		Seed seed_ = 0;
 
+		size_t matrixHash_;
+
 	};
 	friend struct DataContext;
-	struct RuleExpansionNode {
-		WGA_ComponentNode *node;
-		BlockOrientation orientation;
+
+	struct RuleExpansionContext {
+
+	public:
+		WGA_Rule *const rule = nullptr;
+		const BlockOrientation orientation;
+
+	public:
+		/// List of all expansions the rule can expand to, in the order they should be attempted to be expanded
+		std::vector<WGA_Rule::CompiledExpansion> possibleExpansions;
+
+	public:
+		const DataContextPtr ruleData;
+
 	};
+	using RuleExpansionContextPtr = std::shared_ptr<RuleExpansionContext>;
+
+	struct RuleExpansionSuperState {
+
+	public:
+		const RuleExpansionContextPtr context;
+		const size_t expansionIndex = -1; ///< ix in RuleExpansionContext::possibleExpansions
+
+	public:
+		struct Option {
+			WGA_ComponentNode *node = nullptr;
+			BlockOrientation orientation;
+		};
+
+		/// List of all nodes that should be attempted to be expanded
+		std::vector<Option> possibleOptions;
+
+	public:
+		const DataContextPtr expansionData;
+
+	};
+	using RuleExpansionSuperStatePtr = std::shared_ptr<RuleExpansionSuperState>;
 
 	struct RuleExpansionState {
 
 	public:
-		DataContext ruleData;
-		WGA_Rule *rule = nullptr;
-		BlockOrientation orientation;
+		const RuleExpansionSuperStatePtr superState;
 
 	public:
-		DataContext currentExpansionData;
-		QVector<WGA_Rule::CompiledExpansion> possibleExpansions;
-		QVector<RuleExpansionNode> possibleExpansionNodes;
-		int currentExpansionIndex = -1;
-		int currentExpansionNodeIndex = -1;
+		const size_t optionIndex = -1; ///< ix in RuleExpansionSuperState::possibleOptions
 
 	};
-	using RuleExpansionStatePtr = QSharedPointer<RuleExpansionState>;
+	using RuleExpansionStatePtr = std::shared_ptr<RuleExpansionState>;
+	using RuleExpansionQueue = std::list<RuleExpansionStatePtr>;
 
 	struct ComponentExpansionState {
 
 	public:
-		DataContext data;
-		WGA_Component *component = nullptr;
-		WGA_ComponentNode *entryNode = nullptr;
+		const WGA_Component *component = nullptr;
+		const WGA_ComponentNode *entryNode = nullptr;
 
-		/// Hash incorporates component type and transform matrix
-		uint placementHash = 0;
+	public:
+		const DataContextPtr data;
 
 	};
-	using ComponentExpansionStatePtr = QSharedPointer<ComponentExpansionState>;
+	using ComponentExpansionStatePtr = std::shared_ptr<ComponentExpansionState>;
+
+	struct State {
+		const size_t areaCount, componentExpansionCount, ruleExpansionCount;
+
+		// We straight up copy the rule expansion list to the state so we can safely work with both depth first and breath first expansion (just shrinking the expansion list wouldn't work on depth first expansion)
+		const RuleExpansionQueue queuedRuleExpansions;
+
+	};
 
 public:
 	WGA_StructureGenerator_CPU(WorldGenAPI_CPU &api);
@@ -136,7 +190,7 @@ public:
 
 public:
 	inline DataContext *currentDataContext() {
-		return currentDataContext_;
+		return currentDataContext_.get();
 	}
 
 	/// Used by WorldGenAPI_CPU for obtaining contextual symbols
@@ -151,12 +205,15 @@ private:
 	void unbind();
 
 private:
-	/// Returns false on failBranch
-	bool
-	expandRule(WGA_Rule *rule, const BlockWorldPos &localOrigin, const BlockOrientation &orientation, DataContext *data);
+	/// Returns false when fails, does not call failBranch
+	bool expandRule(WGA_Rule *rule, const BlockWorldPos &localOrigin, const BlockOrientation &orientation, const DataContextPtr &data);
 
 	/// Returns true if the rule was truly expanded
 	bool processExpansion(RuleExpansionState &res);
+
+	/// Generates next expansion variant state. Returns false if you run out of states. null previousState -> generate first expansion
+	/// One rule can be expanded into various expansions, each expansion can construct a component originating in multiple possible nodes
+	RuleExpansionStatePtr nextRuleExpansionOption(const RuleExpansionContextPtr &ctx, const RuleExpansionState *previousState);
 
 private:
 	void addBranch();
@@ -170,20 +227,20 @@ private:
 	static BlockID blockValue(WGA_Value *val, const BlockWorldPos &samplePoint);
 
 private:
-	QStack<State> stateStack_;
-	QVector<Area> areas_;
-	QVector<ComponentExpansionStatePtr> componentExpansions_;
-	QVector<RuleExpansionStatePtr> ruleExpansions_;
-	int currentlyExpandedRuleIx_ = -1; ///< Index to ruleExpansion to the current rule being processed
+	std::stack<State> stateStack_;
+	std::vector<Area> areas_;
+	std::vector<ComponentExpansionStatePtr> componentExpansions_;
+	std::vector<RuleExpansionStatePtr> ruleExpansions_;
+	RuleExpansionQueue queuedRuleExpansions_;
 
 private:
-	int expansionCount_ = 0, maxExpansionCount_ = 16384; ///< Limits how many expansion attempts can be made
-	int maxStackDepth_ = 512;
+	size_t expansionCount_ = 0, maxExpansionCount_ = 16384; ///< Limits how many expansion attempts can be made
+	size_t maxStackDepth_ = 4096;
 	Seed seed_;
-	QHash<QString, int> areaNameMapping_; ///< Mapping are names to int to speed up comparison
+	std::unordered_map<std::string, int> areaNameMapping_; ///< Mapping are names to int to speed up comparison
 
 private:
-	DataContext *currentDataContext_ = nullptr;
+	DataContextPtr currentDataContext_;
 	WorldGenAPI_CPU &api_;
 
 };

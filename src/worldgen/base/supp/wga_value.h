@@ -1,8 +1,5 @@
 #pragma once
 
-#include <QHash>
-#include <QString>
-
 #include "util/enumutils.h"
 #include "defines.h"
 
@@ -15,7 +12,6 @@
   I(A, Rule) I(A, ComponentNode) \
 
 class WGA_Value : public WGA_Symbol {
-Q_GADGET
 
 public:
 	enum class Dimensionality {
@@ -27,8 +23,6 @@ public:
 		_count
 	};
 
-	Q_ENUM(Dimensionality);
-
 	enum class ValueType {
 #define I(A, name) name,
 		WGA_TYPES(I, _)
@@ -37,13 +31,11 @@ public:
 		Undefined
 	};
 
-	Q_ENUM(ValueType);
-
 	static constexpr int dimensionalityValueCount[+WGA_Value::Dimensionality::_count] = {1, 1, chunkSurface, chunkVolume};
 
 public:
-	static const QHash<QString, ValueType> typesByName;
-	static const QHash<ValueType, QString> typeNames;
+	static const std::unordered_map<std::string, ValueType> typesByName;
+	static const std::unordered_map<ValueType, std::string> typeNames;
 
 public:
 	WGA_Value();
@@ -59,8 +51,3 @@ public:
 	virtual Dimensionality dimensionality() const = 0;
 
 };
-
-
-inline size_t qHash(WGA_Value::ValueType t, size_t seed = 0) {
-	return qHash(static_cast<int>(t), seed);
-}

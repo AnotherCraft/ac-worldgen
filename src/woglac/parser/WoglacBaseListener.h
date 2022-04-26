@@ -31,9 +31,6 @@ public:
   virtual void enterPragmaStatement(WoglacParser::PragmaStatementContext * /*ctx*/) override { }
   virtual void exitPragmaStatement(WoglacParser::PragmaStatementContext * /*ctx*/) override { }
 
-  virtual void enterIncludeStatement(WoglacParser::IncludeStatementContext * /*ctx*/) override { }
-  virtual void exitIncludeStatement(WoglacParser::IncludeStatementContext * /*ctx*/) override { }
-
   virtual void enterVariableDefinition(WoglacParser::VariableDefinitionContext * /*ctx*/) override { }
   virtual void exitVariableDefinition(WoglacParser::VariableDefinitionContext * /*ctx*/) override { }
 

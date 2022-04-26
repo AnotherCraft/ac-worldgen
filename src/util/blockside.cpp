@@ -40,12 +40,3 @@ BlockSideFlags relativeSideBlockSides(BlockSide s) {
 	};
 	return r[+s >> 1];
 }
-
-const QString &blockSideName(BlockSide s) {
-	static const QString result[]{
-#define I(A, name, ...) #name,
-		BLOCK_SIDES(I, void)
-#undef I
-	};
-	return result[+s];
-}
