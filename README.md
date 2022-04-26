@@ -38,6 +38,10 @@ This is a repository for a worldgen system for AnotherCraft. The system is compl
 * [Full ANTLR grammar](grammar/Woglac.g4)
 * [Worldgen basics (youtube video)](https://www.youtube.com/watch?v=yqHEID7LIU4)
 
+### Contact/social
+* [AC Worldgen dedicated **subreddit**](https://www.reddit.com/r/acworldgen/)
+* [AnotherCraft **discord** server](https://discord.gg/V3KfcRsF)
+
 ### WOGLAC example code
 See the [examples](examples) folder.
 ```WOGLAC

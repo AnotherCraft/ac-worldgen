@@ -157,7 +157,7 @@ void WGLImplementationPass::enterParamDefinition(WoglacParser::ParamDefinitionCo
 	WGLDependencyList deps{
 		parent
 	};
-	auto defaultValue = ctx->defaultValue ? expression(ctx->defaultValue, deps) : WGLExpressionResult{};
+	auto defaultValue = ctx->defaultValue ? expression(ctx->defaultValue, deps) : WGLExpressionResult{.type = sym->valueType};
 
 	if(defaultValue.type != sym->valueType)
 		throw WGLError(std::format("Structure parameter '{}' is defined as type '{}' but the default value expression is of type '{}'.", sym->fullName(), WGA_Value::typeNames.at(sym->valueType), WGA_Value::typeNames.at(defaultValue.type)), ctx);

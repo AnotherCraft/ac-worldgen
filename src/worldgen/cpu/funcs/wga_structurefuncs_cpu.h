@@ -34,7 +34,11 @@ public:
 
 public:
 	static void worldPos(Api api, Key key, DH <VT::Float3> result, V <VT::ComponentNode> node);
+	static void worldPos(Api api, Key key, DH <VT::Float3> result, V<VT::Float3> localPos);
+
 	static void localPos(Api api, Key key, DH <VT::Float3> result);
+	static void localPos(Api api, Key key, DH <VT::Float3> result, V<VT::Float3> worldPos);
+
 	static void localSeed(Api api, Key key, DH <VT::Float> result);
 
 	static void distanceTo(Api api, Key key, DH <VT::Float> result, V <VT::ComponentNode> node);

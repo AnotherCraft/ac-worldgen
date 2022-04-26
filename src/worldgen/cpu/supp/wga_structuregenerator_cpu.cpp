@@ -376,7 +376,6 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 			return false;
 
 		// Check if there already isn't the same component with the same position (so we can create a loop)
-		// This is basically useless, dropping
 		for(const ComponentExpansionStatePtr &ocex: componentExpansions_) {
 			// If there already is the same component with the same position, return true
 			// This means that this expansion branch joined with a previously build structure
@@ -647,6 +646,7 @@ void WGA_StructureGenerator_CPU::DataContext::load(WorldGenAPI_CPU *api, const D
 			const auto dimFunc = [sourceVal, this] {
 				auto &cdc = WorldGenAPI_CPU::structureGen->currentDataContext_;
 				ASSERT(cdc.get() == this);
+
 
 				ValueGuard _vg(cdc, parentContext_);
 				return parentContext_->getValueDimensionality(sourceVal);

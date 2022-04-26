@@ -68,9 +68,11 @@
   SECTION("Structure functions") \
   FUNC(spawn2D, 5, ((T, entryRule, Rule), (T, maxRadius, Float), (T, seed, Float), (T, spawnZ, Float), (T, spawnCondition, Bool)), (T, result, Block), DIM_C(3D), (EXT, Structure), "Creates a structure procgen pass and returns generated blocks (block.undefined on places where nothing was generated to differentiate from generated block.air). Structures can expand up to `maxRadius` chunks from the entry chunk. For each (x, y, `spawnZ`) point in space, the `entryRule` is expanded if `spawnCondition` is `true`.") \
   \
-  FUNC(worldPos, 1, ((T, node, ComponentNode)), (T, worldPos, Float3), DIM_ARG(1), (EXT_CONTEXTUAL, Structure), "Returns position of the provided component node in global world coordinates.") \
+  FUNC(worldPos, 1, ((T, node, ComponentNode)), (T, worldPos, Float3), DIM_ARG(1), (EXT_CONTEXTUAL, Structure), "Returns position of the provided component node in global world coordinates (only usable in structure generation).")                \
+  FUNC(worldPos, 1, ((T, localPos, Float3)), (T, worldPos, Float3), DIM_ARG(1), (EXT_CONTEXTUAL, Structure), "Transforms world component-local position to world position.") \
   FUNC(localPos, 0, (), (T, localPos, Float3), DIM_C(3D), (EXT_CONTEXTUAL, Structure), "Returns component-local position.") \
-  FUNC(localSeed, 0, (), (T, seed, Float), DIM_C(Const), (EXT_CONTEXTUAL, Structure), "Returns component-local seed.") \
+  FUNC(localPos, 1, ((T, worldPos, Float3)), (T, localPos, Float3), DIM_ARG(1), (EXT_CONTEXTUAL, Structure), "Transforms world position to component-local position.") \
+	FUNC(localSeed, 0, (), (T, seed, Float), DIM_C(Const), (EXT_CONTEXTUAL, Structure), "Returns component-local seed.") \
   \
   FUNC(distanceTo, 1, ((T, node, ComponentNode)), (T, dist, Float), DIM_C(3D), (EXT_CONTEXTUAL, Structure), "Returns distance from the current block to the provided component node.") \
   FUNC(sampleAt, 2, ((ANY, variable), (T, node, ComponentNode)), (ARG, valueAtNodePos, 1), DIM_MIN_ARGS_2, (EXT_CONTEXTUAL, Structure), "Returns value of `variable` sampled on position of the given node.") \

@@ -123,4 +123,86 @@ export Block resultBlock =
  * You can notice that the `tower` component has four nodes that are all named `side` and that all expand to `MaybePart`. These are used as both entry and exit nodes, meaning that the `Part` rule expansion `rule -> tower::side :40` can choose (randomly) either of the `side` nodes to spawn the component from. The remaining nodes will then be used as exit nodes and will expand to `MaybePart`.
 
 ## Creating loops
-Say we want to create a single closed loop with the walls, creating city/castle walls. The structure generation system is tree-based by nature
+Say we want to create a single closed loop with the walls, creating city/castle walls. The structure generation system is tree-based in principle and connecting branches is generally a bit complicated, because they cannot communicate with each other. However there are two ways in how such connection/loop could be made:
+1. We could pass the loop end position as a parameter and allow `rule -> void` only on the given position.
+2. We could utilize the force-overlap area functionality.
+3. The system merges two components that are attempted to be spawned on the exact same position, with the exact same orientation and exact same component type.
+
+Let's try creating a single closed loop of wall using every of the mentioned methods.
+
+### Creating loops by passing the end position as param
+```WOGLAC
+namespace castle {
+	rule Start {
+		param depth = 0;
+		param towerCount = 0;
+		rule -> tower::center;
+	}
+
+	rule Part {
+		param Float distanceFromTower;
+		param distanceFromTower = distanceFromTower + 1;
+
+		param Float depth;
+		param depth = depth + 1;
+		condition depth < 25;
+
+		rule -> tower::entry :50;
+		rule -> wall::entry;
+		rule -> void {
+			param Float3 endPos;
+			condition endPos::distanceTo() < 2;
+		}
+	}
+
+	component tower {
+		param Float distanceFromTower ?= 999;
+		condition distanceFromTower > 1;
+		param distanceFromTower = 0;
+
+		param Float towerCount;
+		param towerCount = towerCount + 1;
+		condition towerCount < 4;
+
+		param Float3 endPos ?= entry::worldPos();
+
+		node (0, 0, 0) center;
+
+		component include "worldgen/castle_tower.vox" {
+			1 -> block block.core.stone;
+			2 -> block block.core.iron;
+		}
+
+		node (9, 6, 0) (x+) -> Part;
+		node (6, 3, 0) (y-) entry;
+
+		area (3, 3, 0) (9, 9, 0);
+	}
+	
+	component wall {
+		node (0, 2, 0) (x-) entry;
+		node (7, 2, 0) (x+) -> Part;
+
+		area (0, 0, 0) (7, 4, 0);
+
+		component include "worldgen/castle_wall.vox" {
+			1 -> block block.core.stone;
+		}
+	}
+}
+
+Float3 pos = worldPos();
+Float terrainZ = 16;
+
+export Block resultBlock =
+	spawn2D(castle.Start, ~16, #151, terrainZ, pos::xy() == float2(0, 0)) ?:
+	pos::z() < terrainZ ? block.core.grass :
+	block.air
+	;
+```
+![](img/walls5.jpg)
+
+The structure generator has a limited number of attempts it will make when trying to expand structures until it fails, so we need to limit the possibilities as much as possible to not make the generator waste time trying combinations that would not work. In the code above, we've done the following:
+* Limit maximum number of components to 25 using hte `depth` param.
+* Make the `tower` component only spawn walls to the right of the `entry` node. This makes the wall generation always only turn right.
+* Don't allow spawning more than `4` towers.

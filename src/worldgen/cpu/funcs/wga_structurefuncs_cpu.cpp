@@ -47,8 +47,21 @@ void WGA_StructureFuncs_CPU::worldPos(Api api, Key key, DH <VT::Float3> result, 
 	WGA_SF_NODE_POS_SHENANIGANS(nodeWorldPos.to<float>())
 }
 
+void WGA_StructureFuncs_CPU::worldPos(WGA_Funcs_CPU::Api api, const WGA_DataRecord_CPU::Key &key, DH <WGA_Value::ValueType::Float3> result, V <WGA_Value::ValueType::Float3> localPos) {
+	if(!api->structureGen)
+		throw std::exception("localPos() called outside structure generation");
+
+	const BlockTransformMatrix m = api->structureGen->currentDataContext()->localToWorldMatrix();
+
+	const auto ph = localPos.dataHandle(key.origin);
+
+	for(size_t i = 0; i < result.size; i++)
+		result[i] = (m * ph[i].to<BlockWorldPos_T>()).to<float>();
+}
+
 void WGA_StructureFuncs_CPU::localPos(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key key, DH <WGA_Value::ValueType::Float3> result) {
-	ASSERT(api->structureGen);
+	if(!api->structureGen)
+		throw std::exception("localPos() called outside structure generation");
 
 	const BlockTransformMatrix m = api->structureGen->currentDataContext()->localToWorldMatrix().nonScalingInverted();
 	const BlockWorldPos base = m * result.worldPos(key.origin, 0);
@@ -66,6 +79,18 @@ void WGA_StructureFuncs_CPU::localPos(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key
 			}
 		}
 	}
+}
+
+void WGA_StructureFuncs_CPU::localPos(WGA_Funcs_CPU::Api api, const WGA_DataRecord_CPU::Key &key, DH <WGA_Value::ValueType::Float3> result, V <WGA_Value::ValueType::Float3> worldPos) {
+	if(!api->structureGen)
+		throw std::exception("localPos() called outside structure generation");
+
+	const BlockTransformMatrix m = api->structureGen->currentDataContext()->localToWorldMatrix().nonScalingInverted();
+
+	const auto ph = worldPos.dataHandle(key.origin);
+
+	for(size_t i = 0; i < result.size; i++)
+		result[i] = (m * ph[i].to<BlockWorldPos_T>()).to<float>();
 }
 
 void WGA_StructureFuncs_CPU::localSeed(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key key, DH <WGA_Value::ValueType::Float> result) {

@@ -14,6 +14,11 @@ Float3 worldPos(ComponentNode node)
 ```
 
 Returns position of the provided component node in global world coordinates.
+```WOGLAC
+Float3 worldPos(Float3 localPos)
+```
+
+Transforms world component-local position to world position.
 ## `select` 
 ```WOGLAC
 Float select(Bool cond, Float thn, Float els)
@@ -242,6 +247,11 @@ Block spawn2D(Rule entryRule, Float maxRadius, Float seed, Float spawnZ, Bool sp
 
 Creates a structure procgen pass and returns generated blocks (block.undefined on places where nothing was generated to differentiate from generated block.air). Structures can expand up to `maxRadius` chunks from the entry chunk. For each (x, y, `spawnZ`) point in space, the `entryRule` is expanded if `spawnCondition` is `true`.
 ## `localPos` 
+```WOGLAC
+Float3 localPos(Float3 worldPos)
+```
+
+Transforms world position to component-local position.
 ```WOGLAC
 Float3 localPos()
 ```

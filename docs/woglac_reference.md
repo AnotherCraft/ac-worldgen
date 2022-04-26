@@ -393,6 +393,9 @@ The structure generation process works like this:
     * If the expansion succeeds, take a rule from the front of the unprocessed rule list and add its first expansion option to the expansion stack.
       * If the unprocessed rule list is empty, the generation was successful.
 
+### Component expansion merging
+There is a special case in the generation algorithm: when the system attempts to generate the same component on the same position with the same orientation multiple times, the expansion succeeds without generating the component second time (effectively following expansion attempts are changed to `rule -> void`). This would normally either not happen because of areas overlapping or would happen without the components merging (if the component does not spawn any area), potentially causing a mess.
+
 ### Spawning the structures
 For structure spawning, `spawn*` function family is used (more on that can be found on the function documentation page). But the basic idea is that the `spawn*` function realises a structure generation pass and returns a field representing blocks of the generated structures.
 
