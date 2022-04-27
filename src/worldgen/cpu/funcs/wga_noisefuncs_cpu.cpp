@@ -1,8 +1,10 @@
 #include "wga_noisefuncs_cpu.h"
 
+#include <cmath>
+
 #include <FastNoise/FastNoise.h>
 
-#include <cmath>
+#include "util/tracyutils.h"
 
 // So that things aren't screwed up when transitioning from negative to positive numbers
 static constexpr auto ofst = std::numeric_limits<int32_t>::max();
@@ -557,13 +559,21 @@ void WGA_NoiseFuncs_CPU::poissonDisc2DBool(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU
 		result[(node.pos - originF).to<BlockWorldPos_T>()] = true;
 }
 
-void WGA_NoiseFuncs_CPU::simplex2D(WGA_Funcs_CPU::Api api, Key key, DH <VT::Float> result, V <VT::Float> octaveSizev, V <VT::Float> seedv) {
+void WGA_NoiseFuncs_CPU::osimplex2D(WGA_Funcs_CPU::Api api, Key key, DH <VT::Float> result, V <VT::Float> octaveSizev, V <VT::Float> seedv) {
 	static const auto node = FastNoise::New<FastNoise::Simplex>();
 
 	const float octaveSize = octaveSizev.constValue();
 	const int seed = api->seed() ^ static_cast<int>(seedv.constValue());
 
 	node->GenUniformGrid2D(reinterpret_cast<float*>(result.data), key.origin.x(), key.origin.y(), chunkSize, chunkSize, 1.0f / (octaveSize * chunkSize), seed);
+}
+void WGA_NoiseFuncs_CPU::osimplex3D(WGA_Funcs_CPU::Api api, Key key, DH <VT::Float> result, V <VT::Float> octaveSizev, V <VT::Float> seedv) {
+	static const auto node = FastNoise::New<FastNoise::Simplex>();
+
+	const float octaveSize = octaveSizev.constValue();
+	const int seed = api->seed() ^ static_cast<int>(seedv.constValue());
+
+	node->GenUniformGrid3D(reinterpret_cast<float*>(result.data), key.origin.x(), key.origin.y(), key.origin.z(), chunkSize, chunkSize, chunkSize, 1.0f / (octaveSize * chunkSize), seed);
 }
 
 void WGA_NoiseFuncs_CPU::rand(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key key, DH <WGA_Value::ValueType::Float> result, V <WGA_Value::ValueType::Float> seedv) {
