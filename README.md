@@ -14,7 +14,7 @@ AnotherCraft project procedural voxel world generation system. The system is com
 * **Open source**.
 
 ### Procgen features
-* 2D & 3D Perlin, Voronoi/Worley-based noise functions.
+* 2D & 3D Perlin, OpenSimplex (using FastNoise2), Voronoi/Worley-based noise functions.
 * Domain warping.
 * Biomes.
 * Grammar-based structure generation that allows generating anything from trees to cities.

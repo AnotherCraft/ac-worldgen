@@ -92,8 +92,8 @@
   /*FUNC(voronoi3D, 4, ((T, octaveSize, Float), (T, seed, Float), (T, resultType, Float), (T, metricExponent, Float)), (T, result, Float), DIM_C(3D), (EXT, Noise), "Returns 3D Voronoi-diagram based value. \n* `resultType=0` -> distance to the edge (2ndDist-1stDist)\n* `resultType=1` -> distance to the nearest point (1stDist)\n* `resultType=2` -> 1stDist / 2ndDist") \
 	FUNC(voronoi3DParam, 5, ((T, octaveSize, Float), (T, seed, Float), (T, resultType, Float), (T, metricExponent, Float), (T, coloring, Float)), (T, result, Float), DIM_C(3D), (EXT, Noise), "Same as voronoi3D, but supports more `resultType` values:\n* `resultType=10` -> nearest `param`\n* `resultType=11` -> interpolated `param` between the two nearest points")*/ \
   FUNC(poissonDisc2DBool, 2, ((T, seed, Float), (T, radius, Float)), (T, isNode, Bool), DIM_C(2D), (EXT, Noise), "Spreads points pseudorandomly on the 2D plane. Each point has a `radius` (2D dimensionality) that can be between 1 and 16. Distance of any two points is not less than sum of their radii. Returns true if there is a point on the current position or false if there isn't.") \
-  FUNC(osimplex2D, 2, ((T, octaveSize, Float), (T, seed, Float)), (T, result, Float), DIM_C(2D), (EXT, Noise), "Returns 2D Open Simples 2 noise value in range [-1,1].") \
-  FUNC(osimplex3D, 2, ((T, octaveSize, Float), (T, seed, Float)), (T, result, Float), DIM_C(3D), (EXT, Noise), "Returns 3D Open Simples 2 noise value in range [-1,1].") \
+  FUNC(osimplex2D, 2, ((T, octaveSize, Float), (T, seed, Float)), (T, result, Float), DIM_C(2D), (EXT, Noise), "Returns 2D OpenSimplex 2 noise value in range [-1,1]. Implemented using FastNoise2 lib.") \
+  FUNC(osimplex3D, 2, ((T, octaveSize, Float), (T, seed, Float)), (T, result, Float), DIM_C(3D), (EXT, Noise), "Returns 3D OpenSimplex 2 noise value in range [-1,1]. Implemented using FastNoise2 lib.") \
   \
   SECTION("Aggregation functions") \
   FUNC(minPC, 1, ((T, val, Float)), (T, minVal, Float), DIM_C(PerChunk), (EXT, Utility), "Returns minimum value of `val` across the entire chunk. Expects `val` to have `2D` dimensionality.") \
