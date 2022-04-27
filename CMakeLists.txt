@@ -50,6 +50,23 @@ ExternalProject_Add(
 )
 
 # ===========================================
+# FastNoise2
+# ===========================================
+ExternalProject_Add(
+        fastNoise2
+        SOURCE_DIR "${PROJECT_SOURCE_DIR}/deps/fastNoise2"
+        EXCLUDE_FROM_ALL ON
+
+        TEST_COMMAND ""
+
+        CMAKE_ARGS ${EXTERNAL_ARGS}
+        -D FASTNOISE2_NOISETOOL=OFF
+        -D FASTNOISE2_TESTS=OFF
+        -D "CMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/install/fastNoise2"
+)
+
+
+# ===========================================
 # Worldgen
 # ===========================================
 ExternalProject_Add(x_ac_worldgen
@@ -61,7 +78,7 @@ ExternalProject_Add(x_ac_worldgen
         )
 
 add_custom_target(ac_worldgen_nodeploy DEPENDS x_ac_worldgen-build)
-add_custom_target(ac_worldgen_deploy ALL DEPENDS antlr tracy x_ac_worldgen)
+add_custom_target(ac_worldgen_deploy ALL DEPENDS antlr tracy fastNoise2 x_ac_worldgen)
 
 # ===========================================
 # Dummy target for intellisense
@@ -81,4 +98,5 @@ target_include_directories(x_ac_worldgen_dummy SYSTEM PRIVATE
         "${PROJECT_BASE_DIR}/include"
         "${PROJECT_BASE_DIR}/deps/tracy"
         "${CMAKE_BASE_DIR}/install/antlr/include"
+        "${CMAKE_BASE_DIR}/install/fastNoise2/include"
         )

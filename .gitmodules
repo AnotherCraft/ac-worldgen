@@ -4,3 +4,6 @@
 [submodule "deps/antlr"]
 	path = deps/antlr
 	url = https://github.com/AnotherCraft/antlr4
+[submodule "deps/fastNoise2"]
+	path = deps/fastNoise2
+	url = https://github.com/Auburn/FastNoise2

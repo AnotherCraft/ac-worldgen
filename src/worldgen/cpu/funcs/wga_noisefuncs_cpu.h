@@ -35,6 +35,9 @@ public:
 
 	static void poissonDisc2DBool(Api api, Key key, DH <VT::Bool> result, V <VT::Float> seed, V <VT::Float> radius);
 
+	static void osimplex2D(Api api, Key key, DH <VT::Float> result, V <VT::Float> octaveSize, V <VT::Float> seed);
+	static void osimplex3D(Api api, Key key, DH <VT::Float> result, V <VT::Float> octaveSize, V <VT::Float> seed);
+
 private:
 	static void rand(Api api, Key key, DH <VT::Float> result, V <VT::Float> seed);
 

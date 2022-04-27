@@ -78,20 +78,22 @@
   FUNC(sampleAt, 2, ((ANY, variable), (T, node, ComponentNode)), (ARG, valueAtNodePos, 1), DIM_MIN_ARGS_2, (EXT_CONTEXTUAL, Structure), "Returns value of `variable` sampled on position of the given node.") \
   \
   SECTION("Noise functions") \
-  FUNC(randC, 1, ((T, seed, Float)), (T, result, Float), DIM_C(Const), (EXT, Noise), "Returns random value [0–1], constant everywhere.")                              \
-  FUNC(randL, 1, ((T, seed, Float)), (T, result, Float), DIM_C(Const), (EXT_CONTEXTUAL, Structure), "Returns random value [0–1], constant everywhere. Incorporates local seed of the currently generated structure (works similarly to `randC(localSeed() + seed)`).") \
-  FUNC(randPC, 1, ((T, seed, Float)), (T, result, Float), DIM_C(PerChunk), (EXT, Noise), "Returns random value [0–1], different for each chunk.") \
-  FUNC(rand2D, 1, ((T, seed, Float)), (T, result, Float), DIM_C(2D), (EXT, Noise), "Returns random value [0–1], different for every column.") \
-  FUNC(rand3D, 1, ((T, seed, Float)), (T, result, Float), DIM_C(3D), (EXT, Noise), "Returns random value [0–1], different for every block.") \
+  FUNC(randC, 1, ((T, seed, Float)), (T, result, Float), DIM_C(Const), (EXT, Noise), "Returns random value in range [0,1], constant everywhere.")                              \
+  FUNC(randL, 1, ((T, seed, Float)), (T, result, Float), DIM_C(Const), (EXT_CONTEXTUAL, Structure), "Returns random value in range [0,1], constant everywhere. Incorporates local seed of the currently generated structure (works similarly to `randC(localSeed() + seed)`).") \
+  FUNC(randPC, 1, ((T, seed, Float)), (T, result, Float), DIM_C(PerChunk), (EXT, Noise), "Returns random value in range [0,1], different for each chunk.") \
+  FUNC(rand2D, 1, ((T, seed, Float)), (T, result, Float), DIM_C(2D), (EXT, Noise), "Returns random value in range [0,1], different for every column.") \
+  FUNC(rand3D, 1, ((T, seed, Float)), (T, result, Float), DIM_C(3D), (EXT, Noise), "Returns random value in range [0,1], different for every block.") \
   FUNC(valueNoisePC, 3, ((T, octaveSize, Float), (T, seed, Float), (T, nodeValue, Float)), (T, result, Float), DIM_C(PerChunk), (EXT, Noise), "Linearly interpolates between values at node points that are determined by `nodeValue`.") \
   FUNC(valueNoise2D, 3, ((T, octaveSize, Float), (T, seed, Float), (T, nodeValue, Float)), (T, result, Float), DIM_C(2D), (EXT, Noise), "Linearly interpolates between values at node points that are determined by `nodeValue`.") \
-  FUNC(perlin2D, 2, ((T, octaveSize, Float), (T, seed, Float)), (T, result, Float), DIM_C(2D), (EXT, Noise), "Returns 2D Perlin noise value [-1–1].") \
-  FUNC(perlin3D, 2, ((T, octaveSize, Float), (T, seed, Float)), (T, result, Float), DIM_C(3D), (EXT, Noise), "Returns 3D Perlin noise value [-1–1].") \
+  FUNC(perlin2D, 2, ((T, octaveSize, Float), (T, seed, Float)), (T, result, Float), DIM_C(2D), (EXT, Noise), "Returns 2D Perlin noise value in range [-1,1].") \
+  FUNC(perlin3D, 2, ((T, octaveSize, Float), (T, seed, Float)), (T, result, Float), DIM_C(3D), (EXT, Noise), "Returns 3D Perlin noise value in range [-1,1].") \
   FUNC(voronoi2D, 4, ((T, octaveSize, Float), (T, seed, Float), (T, resultType, Float), (T, metricExponent, Float)), (T, result, Float), DIM_C(2D), (EXT, Noise), "Returns 2D Voronoi-diagram based value. Use `metricExponent = 2` for standard euclidean metric.\n* `resultType=0` -> distance to the edge (2ndDist-1stDist)\n* `resultType=1` -> distance to the nearest point (1stDist)\n* `resultType=2` -> 1stDist / 2ndDist") \
   FUNC(voronoi2DColored, 5, ((T, octaveSize, Float), (T, seed, Float), (T, resultType, Float), (T, metricExponent, Float), (T, coloring, Float)), (T, result, Float), DIM_C(2D), (EXT, Noise), "Same as voronoi2D, except each node now accepts `coloring`; there are no edges between nodes of the same color. For that to work, there are special `resultType` values:\n* `resultType=10` -> weighted distance from center\n* `resultType=11` -> nearest point coloring\n* `resultType=12` -> weighted distance from border") \
   /*FUNC(voronoi3D, 4, ((T, octaveSize, Float), (T, seed, Float), (T, resultType, Float), (T, metricExponent, Float)), (T, result, Float), DIM_C(3D), (EXT, Noise), "Returns 3D Voronoi-diagram based value. \n* `resultType=0` -> distance to the edge (2ndDist-1stDist)\n* `resultType=1` -> distance to the nearest point (1stDist)\n* `resultType=2` -> 1stDist / 2ndDist") \
 	FUNC(voronoi3DParam, 5, ((T, octaveSize, Float), (T, seed, Float), (T, resultType, Float), (T, metricExponent, Float), (T, coloring, Float)), (T, result, Float), DIM_C(3D), (EXT, Noise), "Same as voronoi3D, but supports more `resultType` values:\n* `resultType=10` -> nearest `param`\n* `resultType=11` -> interpolated `param` between the two nearest points")*/ \
   FUNC(poissonDisc2DBool, 2, ((T, seed, Float), (T, radius, Float)), (T, isNode, Bool), DIM_C(2D), (EXT, Noise), "Spreads points pseudorandomly on the 2D plane. Each point has a `radius` (2D dimensionality) that can be between 1 and 16. Distance of any two points is not less than sum of their radii. Returns true if there is a point on the current position or false if there isn't.") \
+  FUNC(osimplex2D, 2, ((T, octaveSize, Float), (T, seed, Float)), (T, result, Float), DIM_C(2D), (EXT, Noise), "Returns 2D OpenSimplex 2 noise value in range [-1,1]. Implemented using FastNoise2 lib.") \
+  FUNC(osimplex3D, 2, ((T, octaveSize, Float), (T, seed, Float)), (T, result, Float), DIM_C(3D), (EXT, Noise), "Returns 3D OpenSimplex 2 noise value in range [-1,1]. Implemented using FastNoise2 lib.") \
   \
   SECTION("Aggregation functions") \
   FUNC(minPC, 1, ((T, val, Float)), (T, minVal, Float), DIM_C(PerChunk), (EXT, Utility), "Returns minimum value of `val` across the entire chunk. Expects `val` to have `2D` dimensionality.") \

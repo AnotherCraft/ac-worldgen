@@ -14,7 +14,7 @@ AnotherCraft project procedural voxel world generation system. The system is com
 * **Open source**.
 
 ### Procgen features
-* 2D & 3D Perlin, Voronoi/Worley-based noise functions.
+* 2D & 3D Perlin, OpenSimplex (using FastNoise2), Voronoi/Worley-based noise functions.
 * Domain warping.
 * Biomes.
 * Grammar-based structure generation that allows generating anything from trees to cities.
@@ -40,7 +40,7 @@ AnotherCraft project procedural voxel world generation system. The system is com
 
 ### Contact/social
 * [AC Worldgen dedicated **subreddit**](https://www.reddit.com/r/acworldgen/)
-* [AnotherCraft **discord** server](https://discord.gg/V3KfcRsF)
+* [AnotherCraft **discord** server](https://discord.gg/anothercraft)
 
 ### WOGLAC example code
 See the [examples](examples) folder.
@@ -56,6 +56,7 @@ export Block resultBlock = z < terrainZ ? (rand2D(#342) < 0.5 ? block.core.dirt 
 ## Third-party resources
 * Antlr4
 * Tracy
+* FastNoise2
 
 ## License
 AC Worldgen is licensed under LGPL, which means you can incorporate it even into your commercial voxel projects free-of-charge. The system runs as a standalone application, so your code can stay closed source. You however have to make available any changes you've done to the AC Worldgen system itself. It would also be very nice of you to mention us in your credits.
