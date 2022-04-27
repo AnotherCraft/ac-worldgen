@@ -40,7 +40,7 @@ AnotherCraft project procedural voxel world generation system. The system is com
 
 ### Contact/social
 * [AC Worldgen dedicated **subreddit**](https://www.reddit.com/r/acworldgen/)
-* [AnotherCraft **discord** server](https://discord.gg/V3KfcRsF)
+* [AnotherCraft **discord** server](https://discord.gg/anothercraft)
 
 ### WOGLAC example code
 See the [examples](examples) folder.
