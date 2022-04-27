@@ -1,5 +1,7 @@
 #include "wga_noisefuncs_cpu.h"
 
+#include <FastNoise/FastNoise.h>
+
 #include <cmath>
 
 // So that things aren't screwed up when transitioning from negative to positive numbers
@@ -553,6 +555,15 @@ void WGA_NoiseFuncs_CPU::poissonDisc2DBool(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU
 	const Vector2F originF = key.origin.xy().to<float>();
 	for(const Node &node: rec->data.nodes)
 		result[(node.pos - originF).to<BlockWorldPos_T>()] = true;
+}
+
+void WGA_NoiseFuncs_CPU::simplex2D(WGA_Funcs_CPU::Api api, Key key, DH <VT::Float> result, V <VT::Float> octaveSizev, V <VT::Float> seedv) {
+	static const auto node = FastNoise::New<FastNoise::Simplex>();
+
+	const float octaveSize = octaveSizev.constValue();
+	const int seed = api->seed() ^ static_cast<int>(seedv.constValue());
+
+	node->GenUniformGrid2D(reinterpret_cast<float*>(result.data), key.origin.x(), key.origin.y(), chunkSize, chunkSize, 1.0f / (octaveSize * chunkSize), seed);
 }
 
 void WGA_NoiseFuncs_CPU::rand(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key key, DH <WGA_Value::ValueType::Float> result, V <WGA_Value::ValueType::Float> seedv) {

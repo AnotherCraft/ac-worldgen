@@ -56,6 +56,7 @@ export Block resultBlock = z < terrainZ ? (rand2D(#342) < 0.5 ? block.core.dirt 
 ## Third-party resources
 * Antlr4
 * Tracy
+* FastNoise2
 
 ## License
 AC Worldgen is licensed under LGPL, which means you can incorporate it even into your commercial voxel projects free-of-charge. The system runs as a standalone application, so your code can stay closed source. You however have to make available any changes you've done to the AC Worldgen system itself. It would also be very nice of you to mention us in your credits.
