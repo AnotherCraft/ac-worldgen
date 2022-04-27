@@ -13,7 +13,7 @@ Returns world position of the currently calculated block.
 Float3 worldPos(ComponentNode node)
 ```
 
-Returns position of the provided component node in global world coordinates.
+Returns position of the provided component node in global world coordinates (only usable in structure generation).
 ```WOGLAC
 Float3 worldPos(Float3 localPos)
 ```
@@ -270,31 +270,31 @@ Returns component-local seed.
 Float randC(Float seed)
 ```
 
-Returns random value [0–1], constant everywhere.
+Returns random value in range [0,1], constant everywhere.
 ## `randL` 
 ```WOGLAC
 Float randL(Float seed)
 ```
 
-Returns random value [0–1], constant everywhere. Incorporates local seed of the currently generated structure (works similarly to `randC(localSeed() + seed)`).
+Returns random value in range [0,1], constant everywhere. Incorporates local seed of the currently generated structure (works similarly to `randC(localSeed() + seed)`).
 ## `randPC` 
 ```WOGLAC
 Float randPC(Float seed)
 ```
 
-Returns random value [0–1], different for each chunk.
+Returns random value in range [0,1], different for each chunk.
 ## `rand2D` 
 ```WOGLAC
 Float rand2D(Float seed)
 ```
 
-Returns random value [0–1], different for every column.
+Returns random value in range [0,1], different for every column.
 ## `rand3D` 
 ```WOGLAC
 Float rand3D(Float seed)
 ```
 
-Returns random value [0–1], different for every block.
+Returns random value in range [0,1], different for every block.
 ## `valueNoisePC` 
 ```WOGLAC
 Float valueNoisePC(Float octaveSize, Float seed, Float nodeValue)
@@ -312,13 +312,13 @@ Linearly interpolates between values at node points that are determined by `node
 Float perlin2D(Float octaveSize, Float seed)
 ```
 
-Returns 2D Perlin noise value [-1–1].
+Returns 2D Perlin noise value in range [-1,1].
 ## `perlin3D` 
 ```WOGLAC
 Float perlin3D(Float octaveSize, Float seed)
 ```
 
-Returns 3D Perlin noise value [-1–1].
+Returns 3D Perlin noise value in range [-1,1].
 ## `voronoi2D` 
 ```WOGLAC
 Float voronoi2D(Float octaveSize, Float seed, Float resultType, Float metricExponent)
@@ -343,6 +343,18 @@ Bool poissonDisc2DBool(Float seed, Float radius)
 ```
 
 Spreads points pseudorandomly on the 2D plane. Each point has a `radius` (2D dimensionality) that can be between 1 and 16. Distance of any two points is not less than sum of their radii. Returns true if there is a point on the current position or false if there isn't.
+## `osimplex2D` 
+```WOGLAC
+Float osimplex2D(Float octaveSize, Float seed)
+```
+
+Returns 2D OpenSimplex 2 noise value in range [-1,1]. Implemented using FastNoise2 lib.
+## `osimplex3D` 
+```WOGLAC
+Float osimplex3D(Float octaveSize, Float seed)
+```
+
+Returns 3D OpenSimplex 2 noise value in range [-1,1]. Implemented using FastNoise2 lib.
 # Aggregation functions
 
 ## `minPC` 
