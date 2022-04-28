@@ -56,7 +56,7 @@ void WGA_NoiseFuncs_CPU::valueNoise2D(WGA_Funcs_CPU::Api api, Key key, DH <VT::F
 
 void WGA_NoiseFuncs_CPU::perlin2D(WGA_Funcs_CPU::Api api, Key key, DH <VT::Float> result, V <VT::Float> octaveSizev, V <VT::Float> seedv) {
 	const uint32_t octaveSize = static_cast<uint32_t>(octaveSizev.constValue());
-	const Seed seed = api->seed() ^ static_cast<Seed>(seedv.constValue());
+	const Seed seed = WorldGen_CPU_Utils::hash(static_cast<Seed>(seedv.constValue()), api->seed());
 
 	const Vector2U32 chunkPos = adjustOrigin(key.origin, seed).chunkPosition().to<uint32_t>() + ofst;
 	const Vector2U32 nodeOrigin = chunkPos / octaveSize;
@@ -122,7 +122,7 @@ void WGA_NoiseFuncs_CPU::perlin2D(WGA_Funcs_CPU::Api api, Key key, DH <VT::Float
 
 void WGA_NoiseFuncs_CPU::perlin3D(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key key, DH <WGA_Value::ValueType::Float> result, V <WGA_Value::ValueType::Float> octaveSizev, V <WGA_Value::ValueType::Float> seedv) {
 	const uint32_t octaveSize = static_cast<uint32_t>(octaveSizev.constValue());
-	const Seed seed = api->seed() ^ static_cast<Seed>(seedv.constValue());
+	const Seed seed = WorldGen_CPU_Utils::hash(static_cast<Seed>(seedv.constValue()), api->seed());
 
 	const Vector3U32 chunkPos = (adjustOrigin(key.origin, seed) / chunkSize).to<uint32_t>() + ofst;
 	const Vector3U32 nodeOrigin = chunkPos / octaveSize;
@@ -216,7 +216,7 @@ void WGA_NoiseFuncs_CPU::voronoi2D(WGA_Funcs_CPU::Api api, Key key, DH <VT::Floa
 
 void WGA_NoiseFuncs_CPU::voronoi2DColored(WGA_Funcs_CPU::Api api, Key key, DH <VT::Float> result, V <VT::Float> octaveSizev, V <VT::Float> seedv, V <VT::Float> resultTypev, V <VT::Float> metricExponentv, V <VT::Float> coloring) {
 	const uint32_t octaveSize = static_cast<uint32_t>(octaveSizev.constValue());
-	const Seed seed = api->seed() ^ static_cast<Seed>(seedv.constValue());
+	const Seed seed = WorldGen_CPU_Utils::hash(static_cast<Seed>(seedv.constValue()), api->seed());
 	const int resultType = static_cast<int>(resultTypev.constValue());
 	DH <VT::Float> metricExponentHandle = metricExponentv.dataHandle(key.origin, 0);
 
@@ -342,7 +342,7 @@ WGA_NoiseFuncs_CPU::voronoi3D(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key key, DH
 
 void WGA_NoiseFuncs_CPU::voronoi3DParam(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key key, DH <WGA_Value::ValueType::Float> result, V <WGA_Value::ValueType::Float> octaveSizev, V <WGA_Value::ValueType::Float> seedv, V <WGA_Value::ValueType::Float> resultTypev, V <WGA_Value::ValueType::Float> metricExponentv, V <WGA_Value::ValueType::Float> paramv) {  /// WIP, SLOW, NOT WORKING
 	const uint32_t octaveSize = static_cast<uint32_t>(octaveSizev.constValue()) * chunkSize;
-	const Seed seed = api->seed() ^ static_cast<Seed>(seedv.constValue());
+	const Seed seed = WorldGen_CPU_Utils::hash(static_cast<Seed>(seedv.constValue()), api->seed());
 	const int resultType = static_cast<int>(resultTypev.constValue());
 	DH <VT::Float> metricExponentHandle = metricExponentv.dataHandle(key.origin, 0);
 
@@ -445,7 +445,7 @@ void WGA_NoiseFuncs_CPU::voronoi3DParam(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::K
 }
 
 void WGA_NoiseFuncs_CPU::poissonDisc2DBool(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key key, DH <WGA_Value::ValueType::Bool> result, V <WGA_Value::ValueType::Float> seedv, V <WGA_Value::ValueType::Float> radius) {
-	const Seed baseSeed = api->seed() ^ static_cast<Seed>(seedv.constValue());
+	const Seed baseSeed = WorldGen_CPU_Utils::hash(static_cast<Seed>(seedv.constValue()), api->seed());
 
 	struct Node {
 		Vector2F pos;
@@ -516,9 +516,9 @@ void WGA_NoiseFuncs_CPU::poissonDisc2DBool(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU
 		for(int i = 0; i < 512; i++) {
 			Node node;
 			node.pos = originF;
-			seed = WorldGen_CPU_Utils::hash(seed);
+			seed = WorldGen_CPU_Utils::scramble(seed);
 			node.pos.x() += static_cast<float>(seed % 2048) / 2048 * chunkSize;
-			seed = WorldGen_CPU_Utils::hash(seed);
+			seed = WorldGen_CPU_Utils::scramble(seed);
 			node.pos.y() += static_cast<float>(seed % 2048) / 2048 * chunkSize;
 
 			const BlockWorldPos blockPos(node.pos.x(), node.pos.y(), key.origin.z());

@@ -109,7 +109,7 @@ void WGA_StructureFuncs_CPU::randL(WGA_Funcs_CPU::Api api, const WGA_DataRecord_
 	if(!api->structureGen)
 		throw std::exception("localSeed() called outside structure generation");
 
-	const Seed seedv = WorldGen_CPU_Utils::hash(api->structureGen->currentDataContext()->seed(), static_cast<Seed>(seed.constValue()));
+	const Seed seedv = WorldGen_CPU_Utils::hash(static_cast<Seed>(seed.constValue()), api->structureGen->currentDataContext()->seed());
 	result[0] = static_cast<float>(seedv & 65535) / 65535.0f;
 }
 
