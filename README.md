@@ -28,7 +28,8 @@ AnotherCraft project procedural voxel world generation system. The system is com
   
 
 ## Documentation & resources
-* **[Application usage](docs/app_interface.md)**
+* **[Application usage/communication with the client/API](docs/app_interface.md)**
+  * [Example client implementation](docs/client_example.d)
 * **[WOGLAC tutorial](docs/tutorial/README.md)**
 * **[WOGLAC language reference](docs/woglac_reference.md)**
 * **[Function list](docs/function_list.md)**
