@@ -258,7 +258,7 @@ bool WGA_StructureGenerator_CPU::expandRule(WGA_Rule *rule, const BlockWorldPos 
 		float unprocessedProbabilityRatioSum = ci.second.probabilityRatioSum;
 
 		while(!unprocessedExpansions.empty()) {
-			seed = WorldGen_CPU_Utils::hash(seed);
+			seed = WorldGen_CPU_Utils::scramble(seed);
 			const float randomPos = (static_cast<float>(seed & 0xffff) / 0xffff) * unprocessedProbabilityRatioSum;
 
 			float sum = 0;
