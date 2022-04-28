@@ -565,22 +565,23 @@ void WGA_NoiseFuncs_CPU::osimplex2D(WGA_Funcs_CPU::Api api, Key key, DH <VT::Flo
 	const float octaveSize = octaveSizev.constValue();
 	const int seed = api->seed() ^ static_cast<int>(seedv.constValue());
 
-	node->GenUniformGrid2D(reinterpret_cast<float*>(result.data), key.origin.x(), key.origin.y(), chunkSize, chunkSize, 1.0f / (octaveSize * chunkSize), seed);
+	node->GenUniformGrid2D(reinterpret_cast<float *>(result.data), key.origin.x(), key.origin.y(), chunkSize, chunkSize, 1.0f / (octaveSize * chunkSize), seed);
 }
+
 void WGA_NoiseFuncs_CPU::osimplex3D(WGA_Funcs_CPU::Api api, Key key, DH <VT::Float> result, V <VT::Float> octaveSizev, V <VT::Float> seedv) {
 	static const auto node = FastNoise::New<FastNoise::Simplex>();
 
 	const float octaveSize = octaveSizev.constValue();
 	const int seed = api->seed() ^ static_cast<int>(seedv.constValue());
 
-	node->GenUniformGrid3D(reinterpret_cast<float*>(result.data), key.origin.x(), key.origin.y(), key.origin.z(), chunkSize, chunkSize, chunkSize, 1.0f / (octaveSize * chunkSize), seed);
+	node->GenUniformGrid3D(reinterpret_cast<float *>(result.data), key.origin.x(), key.origin.y(), key.origin.z(), chunkSize, chunkSize, chunkSize, 1.0f / (octaveSize * chunkSize), seed);
 }
 
 void WGA_NoiseFuncs_CPU::rand(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key key, DH <WGA_Value::ValueType::Float> result, V <WGA_Value::ValueType::Float> seedv) {
-	const Seed localSeed = WorldGen_CPU_Utils::hash(key.origin.to<uint32_t>(), WorldGen_CPU_Utils::hash(api->seed(), static_cast<Seed>(seedv.constValue())));
+	const Seed localSeed = WorldGen_CPU_Utils::hashMulti(api->seed(), static_cast<Seed>(seedv.constValue()), key.origin.to<uint32_t>());
 
 	for(int i = 0; i < result.size; i++)
-		result[i] = static_cast<float>(WorldGen_CPU_Utils::hash(localSeed ^ i) & 65535) / 65535.0f;
+		result[i] = static_cast<float>(WorldGen_CPU_Utils::hash(i, localSeed) & 65535) / 65535.0f;
 }
 
 BlockWorldPos WGA_NoiseFuncs_CPU::adjustOrigin(const BlockWorldPos &o, WGA_Funcs_CPU::Seed seed) {

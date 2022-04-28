@@ -35,6 +35,8 @@ data 0 0 0 resultBlock 8192\n
 [8192 bytes of binary raw data]
 ```
 
+**We've created a sample client code on how to communicate with the worldgen process, you can see it [here](client_example.d)."
+
 ## Program options
 
 ```
