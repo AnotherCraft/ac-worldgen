@@ -23,7 +23,7 @@
 #include "worldgen/cpu/worldgenapi_cpu.h"
 #include "worldgen/cpu/supp/wga_valuewrapper_cpu.h"
 #include "woglac/wglcompiler.h"
-#include "woglac/wglfile.h"
+#include "woglac/source/wglsourcefile.h"
 
 std::mutex stdoutMutex;
 
@@ -141,7 +141,7 @@ int main(int argc, char *argv[]) {
 			wgc.setLookupDirectories(lookupDirs);
 
 			for(const std::string &filename: files)
-				wgc.addFile(std::make_shared<WGLFile>(filename));
+				wgc.addSource(std::make_shared<WGLSourceFile>(filename));
 
 			wgc.compile();
 			exports = wgc.construct(wgapi);

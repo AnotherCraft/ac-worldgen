@@ -31,8 +31,8 @@ void WGLCompiler::clear() {
 	context_->clear();
 }
 
-void WGLCompiler::addFile(const WGLFilePtr &file) {
-	files_.push_back(file);
+void WGLCompiler::addSource(const WGLSourcePtr &file) {
+	sources_.push_back(file);
 }
 
 std::string WGLCompiler::lookupFile(const std::string &filename, antlr4::ParserRuleContext *ctx) {
@@ -51,14 +51,10 @@ void WGLCompiler::compile() {
 	try {
 
 		// Parse files
-		for(const WGLFilePtr &f: files_) {
+		for(const WGLSourcePtr &s: sources_) {
 			try {
 				auto m = std::make_shared<WGLModule>();
-
-				m->stream.reset(new std::ifstream());
-				m->stream->open(f->fileName(), std::ifstream::in);
-				if(!m->stream->is_open())
-					throw WGLError(std::format("Error opening file '{}'", f->fileName()), nullptr);
+				m->stream = s->openStream();
 
 				m->input.reset(new antlr4::ANTLRInputStream(*m->stream));
 				m->lexer.reset(new WoglacLexer(m->input.get()));
@@ -76,7 +72,7 @@ void WGLCompiler::compile() {
 				modules_.push_back(m);
 			}
 			catch(const WGLError &e) {
-				throw std::exception(std::format("Error when compiling WOGLAC file '{}': {}", f->fileName(), e.message()).c_str());
+				throw std::exception(std::format("Error when compiling WOGLAC source '{}': {}", s->sourceName(), e.message()).c_str());
 			}
 		}
 

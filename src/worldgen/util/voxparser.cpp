@@ -37,7 +37,7 @@ void VOXParser::parseData(std::basic_istream<char> &stream) {
 		throw std::exception("Provided file is not of the VOX file format");
 
 	const auto fileVersion = readPrimitive<uint32_t>(stream);
-	if(fileVersion != 150)
+	if(fileVersion != 150 && fileVersion != 200)
 		throw std::exception(std::format("Unsupported vox file format version ({})", fileVersion).c_str());
 
 	// Process main chunk

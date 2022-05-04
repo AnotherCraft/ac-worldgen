@@ -7,7 +7,7 @@
 class WGLModule {
 
 public:
-	std::unique_ptr<std::ifstream> stream;
+	std::unique_ptr<std::istream> stream;
 	std::unique_ptr<antlr4::ANTLRInputStream> input;
 	std::unique_ptr<WoglacLexer> lexer;
 	std::unique_ptr<antlr4::CommonTokenStream> tokens;
