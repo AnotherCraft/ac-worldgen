@@ -9,9 +9,11 @@ It works like this:
 * The client then communicates with the worldgen system through the `stdin` and `stdout` pipes of the worldgen process using line-based messages. Errors and messages are printed to `stderr`.
 * The communication is very straighforward:
     * The client sends a message asking for data for a certain area (usually generated block IDs for a given chunk, but you can actually request **any** variable marked as `export` is the source code).
-    * The worldgen system then **asynchronously** returns the data requested.
+    * The worldgen system then **asynchronously** returns the data requested. The order of the result does not have to be the same as the order the requests came in.
 
 That is all. The communication runs **asynchronously** and the worldgen engine can run on **multiple threads**, so it is recommended to keep the worldgen busy and always a number of data requests pending. The worldgen always works with 16×16×16 voxel chunks.
+
+**You don't want to have the worldgen process running in multiple instances. The worldgen uses a huge cache so you might run out of memory. The application itself generates on multiple threads and the communication can be done asynchronously.**
 
 ## Usage example
 A simple example how the worldgen application is to be used. First, we start the application, passing the source files and block UID mapping:

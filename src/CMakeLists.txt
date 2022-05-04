@@ -34,7 +34,7 @@ target_link_libraries(${target} PRIVATE "${tracy_lib}")
 # FastNoise2
 # ===========================================
 target_include_directories(${target} SYSTEM PRIVATE "${CMAKE_BASE_DIR}/install/fastNoise2/include")
-find_library(fastNoise2_lib NAMES FastNoise PATHS "${CMAKE_BASE_DIR}/install/fastNoise2/lib" REQUIRED)
+find_library(fastNoise2_lib NAMES FastNoise FastNoiseD PATHS "${CMAKE_BASE_DIR}/install/fastNoise2/lib" REQUIRED)
 target_link_libraries(${target} PRIVATE "${fastNoise2_lib}")
 
 # ===========================================
