@@ -5,7 +5,7 @@
 
 #include "pch.h"
 
-#include "wglfile.h"
+#include "woglac/source/wglsourcefile.h"
 
 // Woglac language parser and compiler, outputs a
 class WGLCompiler {
@@ -20,7 +20,7 @@ public:
 	}
 
 public:
-	void addFile(const WGLFilePtr &file);
+	void addSource(const WGLSourcePtr &file);
 
 	// Tries to locate a specified file, throws if failed
 	std::string lookupFile(const std::string &filename, antlr4::ParserRuleContext *ctx);
@@ -33,7 +33,7 @@ public:
 	std::unordered_map<std::string, WGA_Value*> construct(WorldGenAPI &api);
 
 private:
-	std::vector<WGLFilePtr> files_;
+	std::vector<WGLSourcePtr> sources_;
 	std::shared_ptr<WGLContext> context_;
 	std::vector<std::string> lookupDirectories_;
 
