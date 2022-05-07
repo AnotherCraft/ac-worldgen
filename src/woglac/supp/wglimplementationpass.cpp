@@ -233,9 +233,7 @@ void WGLImplementationPass::enterComponentIncludeStatement(WoglacParser::Compone
 
 	ASSERT(voxParser_.isEmpty());
 
-	ctx_->compiler->getFileStream(WGLUtils::stringLiteral(ctx->file), ctx, [this](std::basic_istream<char>& stream) -> void {
-		voxParser_.parseData(stream);
-	});
+	voxParser_.parseData(ctx_->compiler->getFileStream(WGLUtils::stringLiteral(ctx->file), ctx));
 
 	currentScope_.push(sym);
 }

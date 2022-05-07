@@ -15,26 +15,26 @@ T readPrimitive(std::basic_istream<char> &stream) {
 	return result;
 }
 
-void VOXParser::parseData(std::basic_istream<char> &stream) {
+void VOXParser::parseData(std::unique_ptr<std::istream> stream) {
 	clear();
 
 	std::string prefix;
 	prefix.resize(4);
-	stream.read(prefix.data(), prefix.size());
+	stream->read(prefix.data(), prefix.size());
 	if(prefix != "VOX ")
 		throw std::exception("Provided file is not of the VOX file format");
 
-	const auto fileVersion = readPrimitive<uint32_t>(stream);
+	const auto fileVersion = readPrimitive<uint32_t>(*stream);
 	if(fileVersion != 150 && fileVersion != 200)
 		throw std::exception(std::format("Unsupported vox file format version ({})", fileVersion).c_str());
 
 	// Process main chunk
 	{
-		const Chunk mainChunk = readChunk(stream);
+		const Chunk mainChunk = readChunk(*stream);
 		if(mainChunk.name != "MAIN")
 			throw std::exception("MAIN chunk expected");
 
-		if(stream.peek() != EOF)
+		if(stream->peek() != EOF)
 			throw std::exception("There should be nothing left after the main chunk");
 
 		if(!mainChunk.data.empty())
