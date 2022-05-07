@@ -45,6 +45,24 @@ std::string WGLCompiler::lookupFile(const std::string &filename, antlr4::ParserR
 	throw WGLError(std::format("Failed to lookup file '{}' in directories:\n{}", filename, iterator(lookupDirectories_).join('\n')), ctx);
 }
 
+void WGLCompiler::getFileStream(const std::string &filename, antlr4::ParserRuleContext *ctx, const std::function<void(std::basic_istream<char>&)>& streamFnc) {
+	if (openSteamFunction_) {
+		auto stream = openSteamFunction_(filename);
+		streamFnc(*stream);
+		return;
+	}
+
+	std::string file = lookupFile(filename, ctx);
+
+	std::ifstream f;
+	f.open(file, std::ios::in | std::ios::binary);
+
+	if(!f.good())
+		throw std::exception(std::format("Could not open VOX file '{}' for reading.", file).c_str());
+
+	streamFnc(f);
+}
+
 void WGLCompiler::compile() {
 	clear();
 

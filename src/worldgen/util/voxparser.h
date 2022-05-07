@@ -14,7 +14,6 @@ public:
 	};
 
 public:
-	void parseFile(const std::string &filePath);
 	void parseData(std::basic_istream<char> &stream);
 
 public:

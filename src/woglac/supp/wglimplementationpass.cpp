@@ -232,7 +232,10 @@ void WGLImplementationPass::enterComponentIncludeStatement(WoglacParser::Compone
 	WGLSymbol *sym = ctx_->astSymbolMapping[ctx];
 
 	ASSERT(voxParser_.isEmpty());
-	voxParser_.parseFile(ctx_->compiler->lookupFile(WGLUtils::stringLiteral(ctx->file), ctx));
+
+	ctx_->compiler->getFileStream(WGLUtils::stringLiteral(ctx->file), ctx, [this](std::basic_istream<char>& stream) -> void {
+		voxParser_.parseData(stream);
+	});
 
 	currentScope_.push(sym);
 }

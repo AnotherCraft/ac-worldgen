@@ -15,18 +15,6 @@ T readPrimitive(std::basic_istream<char> &stream) {
 	return result;
 }
 
-void VOXParser::parseFile(const std::string &file) {
-	std::ifstream f;
-	f.open(file, std::ios::in | std::ios::binary);
-
-	if(!f.good())
-		throw std::exception(std::format("Could not open VOX file '{}' for reading.", file).c_str());
-
-	fileName_ = file;
-
-	parseData(f);
-}
-
 void VOXParser::parseData(std::basic_istream<char> &stream) {
 	clear();
 
