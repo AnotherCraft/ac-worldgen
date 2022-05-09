@@ -233,7 +233,8 @@ void WGLImplementationPass::enterComponentIncludeStatement(WoglacParser::Compone
 
 	ASSERT(voxParser_.isEmpty());
 
-	voxParser_.parseData(ctx_->compiler->getFileStream(WGLUtils::stringLiteral(ctx->file), ctx));
+	voxParserFileName_ = WGLUtils::stringLiteral(ctx->file);
+	voxParser_.parseData(ctx_->compiler->getFileStream(voxParserFileName_, ctx));
 
 	currentScope_.push(sym);
 }
@@ -250,7 +251,7 @@ void WGLImplementationPass::enterComponentIncludeStatementBlockParam(WoglacParse
 
 	const int id = WGLUtils::numericLiteral(ctx->id);
 	if(!voxParser_.voxels().contains(id)) {
-		std::cerr << std::format("Vox file '{}' does not contain voxels of ID {}", voxParser_.fileName(), id);
+		std::cerr << std::format("Vox file '{}' does not contain voxels of ID {}", voxParserFileName_, id);
 		return;
 	}
 

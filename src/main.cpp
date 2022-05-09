@@ -137,10 +137,30 @@ int main(int argc, char *argv[]) {
 		{
 			WGLCompiler wgc;
 
-			wgc.setLookupDirectories(lookupDirs);
+			const auto lookupFile = [&](const std::string &filename) {
+				for(const std::string &dirn: lookupDirs) {
+					const std::string filePath = dirn + "/" + filename;
+					if(std::ifstream f(filePath); f.good())
+						return filePath;
+				}
+
+				throw std::exception(std::format("Failed to lookup file '{}'.", filename).c_str());
+			};
+
+			wgc.setStreamFunction([&](const std::string &filename) {
+				std::string file = lookupFile(filename);
+
+				auto f = std::make_unique<std::ifstream>();
+				f->open(file, std::ios::in | std::ios::binary);
+
+				if(!f->good())
+					throw std::exception(std::format("Could not open VOX file '{}' for reading.", file).c_str());
+
+				return f;
+			});
 
 			for(const std::string &filename: files)
-				wgc.addFile(filename);
+				wgc.addSourceFile(filename);
 
 			wgc.compile();
 			exports = wgc.construct(wgapi);
@@ -156,7 +176,7 @@ int main(int argc, char *argv[]) {
 		for(size_t i = 0; i < threadCount; i++) {
 			pool.push_back(std::thread([] {
 				while(true) {
-					std::function < void() > job;
+					std::function<void()> job;
 
 					{
 						std::unique_lock lock(jobsMutex);
@@ -224,7 +244,7 @@ int main(int argc, char *argv[]) {
 					std::vector<char> data;
 					size_t recordCount;
 				};
-				std::function < Data() > f;
+				std::function<Data()> f;
 
 				const auto genf = [val, pos]<WGA_Value::ValueType vt>() {
 					return [val, pos] {

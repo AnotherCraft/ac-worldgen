@@ -24,18 +24,6 @@ class ANTLRErrorHandler : public antlr4::BaseErrorListener {
 WGLCompiler::WGLCompiler() {
 	context_ = std::make_unique<WGLContext>();
 	context_->compiler = this;
-
-	openSteamFunction_ = [this](const std::string &filename, antlr4::ParserRuleContext *ctx) -> std::unique_ptr<std::istream> {
-		std::string file = lookupFile(filename, ctx);
-
-		auto f = std::make_unique<std::ifstream>();
-		f->open(file, std::ios::in | std::ios::binary);
-
-		if(!f->good())
-			throw std::exception(std::format("Could not open VOX file '{}' for reading.", file).c_str());
-
-		return f;
-	};
 }
 
 void WGLCompiler::clear() {
@@ -43,25 +31,23 @@ void WGLCompiler::clear() {
 	context_->clear();
 }
 
-void WGLCompiler::addFile(const std::string &file) {
-	files_.push_back(file);
-}
-
-std::string WGLCompiler::lookupFile(const std::string &filename, antlr4::ParserRuleContext *ctx) {
-	for(const std::string &dirn: lookupDirectories_) {
-		const std::string filePath = dirn + "/" + filename;
-		if(std::ifstream f(filePath); f.good())
-			return filePath;
-	}
-
-	throw WGLError(std::format("Failed to lookup file '{}' in directories:\n{}", filename, iterator(lookupDirectories_).join('\n')), ctx);
+void WGLCompiler::addSourceFile(const std::string &file) {
+	sourceFiles_.push_back(file);
 }
 
 std::unique_ptr<std::istream> WGLCompiler::getFileStream(const std::string &filename, antlr4::ParserRuleContext *ctx) {
-	if (openSteamFunction_ == nullptr)
+	if(!streamFunction_)
 		throw std::exception("Stream function not set !");
 
-	return openSteamFunction_(filename, ctx);
+	try {
+		streamFunction_(filename);
+	}
+	catch(const std::exception &e) {
+		if(ctx)
+			throw WGLError(e.what(), ctx);
+		else
+			throw e;
+	}
 }
 
 void WGLCompiler::compile() {
@@ -70,7 +56,7 @@ void WGLCompiler::compile() {
 	try {
 
 		// Parse files
-		for(const std::string &s: files_) {
+		for(const std::string &s: sourceFiles_) {
 			try {
 				auto m = std::make_shared<WGLModule>();
 				m->stream = getFileStream(s, nullptr);
