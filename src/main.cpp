@@ -6,6 +6,7 @@
 #include <format>
 #include <string>
 #include <queue>
+#include <filesystem>
 
 #ifdef _WINDOWS
 
@@ -109,15 +110,28 @@ int main(int argc, char *argv[]) {
 		}
 
 		if(showHelp) {
-			std::cout << "AnotherCraft worldgen subsystem. After starting, the communication with the app is realized throu stdin and stdout pipes, using single-line JSON-encoded messages (with some asterisk).\nMore info on https://github.com/AnotherCraft/ac-worldgen.\n";
-			std::cout << "\n\nUsage: ac-worldgen (args)\n\n";
+			std::cout << R"#(AnotherCraft worldgen subsystem. After starting, the communication with the app is realized throu stdin and stdout pipes, using single-line JSON-encoded messages (with some asterisk).\nMore info on https://github.com/AnotherCraft/ac-worldgen.
+Usage: ac-worldgen (args)
 
-			std::cout << "-f <f> | --sourceFile <f>\nSource file (accepts multiple).\n\n";
-			std::cout << "-d <d> | --lookupDirectory <d>\nLookup directory for resources (for example .vox files for structure generator, accepts multiple).\n\n";
-			std::cout << "-s <s> | --seed <s>\nSeed for the worldgen (number).\n\n";
-			std::cout << "-m <m> | --blockMapping <m>\nBlock UID (string) -> ID (uint16_t) mapping in format 'uid=id,uid2=id2,uid3=id3'.\nBlock UIDs have to be prefixed with 'block.', for example 'block.core.air'.\nID 0 is reserved for 'block.air'.\nID 1 is reserved for 'block.undefined'.\n\n";
-			std::cout << "--functionList\nEmits a function list in the Markdown format.";
-			std::cout << "--exportList\nCompiles the source files and prints out the list of exports.";
+-f <f> | --sourceFile <f>
+Source file (accepts multiple). If relative path is provided, it is looked for in lookup directories.
+
+-d <d> | --lookupDirectory <d>
+Lookup directory for resources (for .vox, .woglac files).
+
+-s <s> | --seed <s>
+Seed for the worldgen (number).
+
+-m <m> | --blockMapping <m>
+Block UID (string) -> ID (uint16_t) mapping in format 'uid=id,uid2=id2,uid3=id3'.
+Block UIDs have to be prefixed with 'block.', for example 'block.core.air'.
+ID 0 is reserved for 'block.air'.
+ID 1 is reserved for 'block.undefined'.
+
+--functionList
+Emits a function list in the Markdown format.--exportList
+Compiles the source files and prints out the list of exports.
+			)#";
 			return 0;
 		}
 
@@ -132,20 +146,24 @@ int main(int argc, char *argv[]) {
 			wgapi.setBlockUIDMapping(blockMapping);
 		}
 
+		const auto lookupFile = [&](const std::string &filename) {
+			// Absolute filepath -> no need to lookup
+			if(std::filesystem::path(filename).is_absolute())
+				return filename;
+
+			for(const std::string &dirn: lookupDirs) {
+				const std::string filePath = dirn + "/" + filename;
+				if(std::ifstream f(filePath); f.good())
+					return filePath;
+			}
+
+			throw std::exception(std::format("Failed to lookup file '{}'.", filename).c_str());
+		};
+
 		// Compile source files
 		std::unordered_map<std::string, WGA_Value *> exports;
 		{
 			WGLCompiler wgc;
-
-			const auto lookupFile = [&](const std::string &filename) {
-				for(const std::string &dirn: lookupDirs) {
-					const std::string filePath = dirn + "/" + filename;
-					if(std::ifstream f(filePath); f.good())
-						return filePath;
-				}
-
-				throw std::exception(std::format("Failed to lookup file '{}'.", filename).c_str());
-			};
 
 			wgc.setStreamFunction([&](const std::string &filename) {
 				std::string file = lookupFile(filename);

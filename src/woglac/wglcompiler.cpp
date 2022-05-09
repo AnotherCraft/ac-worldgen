@@ -40,7 +40,7 @@ std::unique_ptr<std::istream> WGLCompiler::getFileStream(const std::string &file
 		throw std::exception("Stream function not set !");
 
 	try {
-		streamFunction_(filename);
+		return streamFunction_(filename);
 	}
 	catch(const std::exception &e) {
 		if(ctx)
