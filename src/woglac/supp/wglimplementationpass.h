@@ -65,6 +65,7 @@ private:
 
 private:
 	VOXParser voxParser_;
+	std::string voxParserFileName_;
 	std::vector<BlockWorldPos> componentIncludePositions_;
 
 };

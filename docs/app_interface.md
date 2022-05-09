@@ -45,10 +45,10 @@ data 0 0 0 resultBlock 8192\n
 Usage: ac-worldgen (args)
 
 -f <f> | --sourceFile <f>
-Source file (accepts multiple).
+Source file (accepts multiple). If relative path is provided, it is looked for in lookup directories.
 
 -d <d> | --lookupDirectory <d>
-Lookup directory for resources (for example .vox files for structure generator, accepts multiple).
+Lookup directory for resources (for .vox, .woglac files).
 
 -s <s> | --seed <s>
 Seed for the worldgen (number).

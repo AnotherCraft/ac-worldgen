@@ -2,40 +2,43 @@
 
 #include <vector>
 #include <string>
+#include <functional>
 
 #include "pch.h"
 
-#include "woglac/source/wglsourcefile.h"
-
 // Woglac language parser and compiler, outputs a
 class WGLCompiler {
+
+public:
+	using StreamFunction = std::function<std::unique_ptr<std::istream>(const std::string &filename)>;
 
 public:
 	WGLCompiler();
 
 	void clear();
 
-	inline void setLookupDirectories(const std::vector<std::string> &set) {
-		lookupDirectories_ = set;
-	}
-
 public:
-	void addSource(const WGLSourcePtr &file);
+	void addSourceFile(const std::string &file);
 
-	// Tries to locate a specified file, throws if failed
-	std::string lookupFile(const std::string &filename, antlr4::ParserRuleContext *ctx);
+	/// Takes filename (either for source file or for vox file) and returns input stream for that file or throws std::exception.
+	std::unique_ptr<std::istream> getFileStream(const std::string &filename, antlr4::ParserRuleContext *ctx);
+
+	/// Sets the function used for creating a file stream for a given filename
+	inline void setStreamFunction(const StreamFunction &function) {
+		streamFunction_ = function;
+	}
 
 public:
 	void compile();
 
 public:
 	// Calls appropriate WorldGenAPI functions to construct the worldgen pipeline, returns exports
-	std::unordered_map<std::string, WGA_Value*> construct(WorldGenAPI &api);
+	std::unordered_map<std::string, WGA_Value *> construct(WorldGenAPI &api);
 
 private:
-	std::vector<WGLSourcePtr> sources_;
+	std::vector<std::string> sourceFiles_;
 	std::shared_ptr<WGLContext> context_;
-	std::vector<std::string> lookupDirectories_;
+	StreamFunction streamFunction_;
 
 private:
 	std::vector<std::shared_ptr<WGLModule>> modules_;

@@ -14,8 +14,7 @@ public:
 	};
 
 public:
-	void parseFile(const std::string &filePath);
-	void parseData(std::basic_istream<char> &stream);
+	void parseData(std::unique_ptr<std::istream> stream);
 
 public:
 	inline const auto &voxels() const {
@@ -24,10 +23,6 @@ public:
 
 	inline bool isEmpty() const {
 		return voxels_.empty();
-	}
-
-	inline const std::string &fileName() const {
-		return fileName_;
 	}
 
 	void clear();
@@ -43,7 +38,6 @@ private:
 	Chunk readChunk(std::basic_istream<char> &b);
 
 private:
-	std::string fileName_;
 	std::unordered_map<uint8_t, std::vector<VoxelPos>> voxels_;
 
 };

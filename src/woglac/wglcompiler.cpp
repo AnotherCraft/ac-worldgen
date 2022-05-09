@@ -31,18 +31,23 @@ void WGLCompiler::clear() {
 	context_->clear();
 }
 
-void WGLCompiler::addSource(const WGLSourcePtr &file) {
-	sources_.push_back(file);
+void WGLCompiler::addSourceFile(const std::string &file) {
+	sourceFiles_.push_back(file);
 }
 
-std::string WGLCompiler::lookupFile(const std::string &filename, antlr4::ParserRuleContext *ctx) {
-	for(const std::string &dirn: lookupDirectories_) {
-		const std::string filePath = dirn + "/" + filename;
-		if(std::ifstream f(filePath); f.good())
-			return filePath;
-	}
+std::unique_ptr<std::istream> WGLCompiler::getFileStream(const std::string &filename, antlr4::ParserRuleContext *ctx) {
+	if(!streamFunction_)
+		throw std::exception("Stream function not set !");
 
-	throw WGLError(std::format("Failed to lookup file '{}' in directories:\n{}", filename, iterator(lookupDirectories_).join('\n')), ctx);
+	try {
+		return streamFunction_(filename);
+	}
+	catch(const std::exception &e) {
+		if(ctx)
+			throw WGLError(e.what(), ctx);
+		else
+			throw e;
+	}
 }
 
 void WGLCompiler::compile() {
@@ -51,10 +56,10 @@ void WGLCompiler::compile() {
 	try {
 
 		// Parse files
-		for(const WGLSourcePtr &s: sources_) {
+		for(const std::string &s: sourceFiles_) {
 			try {
 				auto m = std::make_shared<WGLModule>();
-				m->stream = s->openStream();
+				m->stream = getFileStream(s, nullptr);
 
 				m->input.reset(new antlr4::ANTLRInputStream(*m->stream));
 				m->lexer.reset(new WoglacLexer(m->input.get()));
@@ -72,7 +77,7 @@ void WGLCompiler::compile() {
 				modules_.push_back(m);
 			}
 			catch(const WGLError &e) {
-				throw std::exception(std::format("Error when compiling WOGLAC source '{}': {}", s->sourceName(), e.message()).c_str());
+				throw std::exception(std::format("Error when compiling WOGLAC source '{}': {}", s, e.message()).c_str());
 			}
 		}
 
