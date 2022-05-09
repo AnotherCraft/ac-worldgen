@@ -14,8 +14,7 @@ public:
 	};
 
 public:
-	void parseFile(const std::string &filePath);
-	void parseData(std::basic_istream<char> &stream);
+	void parseData(std::unique_ptr<std::istream> stream);
 
 public:
 	inline const auto &voxels() const {

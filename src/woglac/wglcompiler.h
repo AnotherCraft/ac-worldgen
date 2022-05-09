@@ -2,14 +2,12 @@
 
 #include <vector>
 #include <string>
+#include <functional>
 
 #include "pch.h"
 
-#include "woglac/source/wglsourcefile.h"
-
 // Woglac language parser and compiler, outputs a
 class WGLCompiler {
-
 public:
 	WGLCompiler();
 
@@ -20,11 +18,14 @@ public:
 	}
 
 public:
-	void addSource(const WGLSourcePtr &file);
+	void addFile(const std::string &file);
 
 	// Tries to locate a specified file, throws if failed
 	std::string lookupFile(const std::string &filename, antlr4::ParserRuleContext *ctx);
 
+	std::unique_ptr<std::istream> getFileStream(const std::string &filename, antlr4::ParserRuleContext *ctx);
+
+	inline void setStreamFunction(const std::function<std::unique_ptr<std::istream>(const std::string &filename, antlr4::ParserRuleContext *ctx)>& function) { openSteamFunction_ = function; }
 public:
 	void compile();
 
@@ -33,9 +34,10 @@ public:
 	std::unordered_map<std::string, WGA_Value*> construct(WorldGenAPI &api);
 
 private:
-	std::vector<WGLSourcePtr> sources_;
+	std::vector<std::string> files_;
 	std::shared_ptr<WGLContext> context_;
 	std::vector<std::string> lookupDirectories_;
+	std::function<std::unique_ptr<std::istream>(const std::string &filename, antlr4::ParserRuleContext *ctx)> openSteamFunction_;
 
 private:
 	std::vector<std::shared_ptr<WGLModule>> modules_;

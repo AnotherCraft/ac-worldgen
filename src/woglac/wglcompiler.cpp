@@ -24,6 +24,18 @@ class ANTLRErrorHandler : public antlr4::BaseErrorListener {
 WGLCompiler::WGLCompiler() {
 	context_ = std::make_unique<WGLContext>();
 	context_->compiler = this;
+
+	openSteamFunction_ = [this](const std::string &filename, antlr4::ParserRuleContext *ctx) -> std::unique_ptr<std::istream> {
+		std::string file = lookupFile(filename, ctx);
+
+		auto f = std::make_unique<std::ifstream>();
+		f->open(file, std::ios::in | std::ios::binary);
+
+		if(!f->good())
+			throw std::exception(std::format("Could not open VOX file '{}' for reading.", file).c_str());
+
+		return f;
+	};
 }
 
 void WGLCompiler::clear() {
@@ -31,8 +43,8 @@ void WGLCompiler::clear() {
 	context_->clear();
 }
 
-void WGLCompiler::addSource(const WGLSourcePtr &file) {
-	sources_.push_back(file);
+void WGLCompiler::addFile(const std::string &file) {
+	files_.push_back(file);
 }
 
 std::string WGLCompiler::lookupFile(const std::string &filename, antlr4::ParserRuleContext *ctx) {
@@ -45,16 +57,23 @@ std::string WGLCompiler::lookupFile(const std::string &filename, antlr4::ParserR
 	throw WGLError(std::format("Failed to lookup file '{}' in directories:\n{}", filename, iterator(lookupDirectories_).join('\n')), ctx);
 }
 
+std::unique_ptr<std::istream> WGLCompiler::getFileStream(const std::string &filename, antlr4::ParserRuleContext *ctx) {
+	if (openSteamFunction_ == nullptr)
+		throw std::exception("Stream function not set !");
+
+	return openSteamFunction_(filename, ctx);
+}
+
 void WGLCompiler::compile() {
 	clear();
 
 	try {
 
 		// Parse files
-		for(const WGLSourcePtr &s: sources_) {
+		for(const std::string &s: files_) {
 			try {
 				auto m = std::make_shared<WGLModule>();
-				m->stream = s->openStream();
+				m->stream = getFileStream(s, nullptr);
 
 				m->input.reset(new antlr4::ANTLRInputStream(*m->stream));
 				m->lexer.reset(new WoglacLexer(m->input.get()));
@@ -72,7 +91,7 @@ void WGLCompiler::compile() {
 				modules_.push_back(m);
 			}
 			catch(const WGLError &e) {
-				throw std::exception(std::format("Error when compiling WOGLAC source '{}': {}", s->sourceName(), e.message()).c_str());
+				throw std::exception(std::format("Error when compiling WOGLAC source '{}': {}", s, e.message()).c_str());
 			}
 		}
 
