@@ -13,3 +13,6 @@ src/ac-client.pro.user
 .idea/
 dist/
 third_party/
+*.selections.json
+supp/autogen/ac-worldgen-autogen.lib
+supp/autogen/ac-worldgen-autogen.exe

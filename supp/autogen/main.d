@@ -1,22 +1,31 @@
 import std.file;
-import std.stdio;
 import std.string;
+import std.algorithm;
 import std.array;
 import std.format;
-import std.contianer.rbtree;
+import std.range;
+import std.regex;
+import std.conv;
+import std.stdio;
 
 import dyaml;
 
-static const auto baseTypes = redBlackTree(
+static const auto baseTypes = [
 	"Float", "Float2", "Float3",
 	"Bool",
 	"Block",
 	"Rule", "ComponentNode"
-	);
+	];
+
+static const auto baseDims = [
+	"2D", "3D", "Const", "PerChunk"
+	];
 
 void main() {
 	string apiCode;
 	string implCode;
+
+	size_t fid = 0;
 
 	Node rootn = Loader.fromFile("functions.yaml").load();
 	foreach(Node sectionn; rootn) {
@@ -26,45 +35,122 @@ void main() {
 			string functionName = funcn["function"].as!string;
 			apiCode ~= "f.name = \"%s\";\n".format(functionName);
 
-			auto resultd = funcn["result"].as!string.split(" ").array;
+			auto resultd = funcn["result"].as!string.split(' ').array;
 			string resultName = resultd[1];
 			string resultType;
 			apiCode ~= "f.returnValue.name = \"%s\";\n".format(resultName);
 
-			auto argd = funcn["args"].as!string[].map!(x => x.split(" ")).array;
+			string[][] argd;
+			if("args" in funcn)
+				argd = funcn["args"].as!(Node[]).map!(x => x.as!string.split(' ')).array;
+
 			string[] argNames = argd.map!(x => x[1]).array;
 			string[] argt = argd.map!(x => x[0]).array;
-			apiCode ~= "f.arguments.resize(%s);\n".format(args.length);
+			apiCode ~= "f.arguments.resize(%s);\n".format(argt.length);
 			foreach(size_t i, string argn; argNames)
-				apiCode ~= "f.arguments[%s].name = QStringLiteral(\"%s\");\n".format(o, argn);
+				apiCode ~= "f.arguments[%s].name = \"%s\";\n".format(i, argn);
+
+			bool isContextual;
+			if("contextual" in funcn)
+				isContextual = funcn["contextual"].as!bool;
 
 			string[] argTypes;
-			argTypes.resize(args.length);
-
+			argTypes.length = argd.length;
 			void procf(string t, int i, void delegate(string pt, int i) callback) {
-				if(t in baseTypes)
-					callback(pt, i);
+				if(baseTypes.canFind(t))
+					callback(t, i);
+				else if(t == "Any") {
+					foreach(string bt; baseTypes[])
+						callback(bt, i);
+				}
+				else if(auto m = t.matchFirst(ctRegex!"^Arg([0-9]+)$"))
+					callback(argTypes[m[1].to!int-1], i);
 				else
-					throw "Unknown template %s.".arg(t);
+					throw new Exception("Unknown template %s.".format(t));
 			}
-			if(args.length) {
-				void callback(string pt, int i) {
+
+			void procEnd() {
+				procf(resultd[0], 0, (string pt, int i) {
+						resultType = pt;
+
+						apiCode ~= "f.returnValue.type = WGA_Value::ValueType::%s;\n".format(resultType);
+						apiCode ~= "f.id = %s;\n".format(fid);
+						apiCode ~= "finalize();\n\n";
+
+						string dimCode;
+						string dim = funcn["dim"].as!string;
+						if(baseDims.canFind(dim))
+							dimCode = "WGA_Value::Dimensionality::D%s".format(dim);
+						else if(dim == "max")
+							dimCode = "std::max({%s})".format(iota(argt.length).map!(i => "args[%s]->dimensionality()".format(i)).join(", "));
+						else if(dim == "min")
+							dimCode = "std::min({%s})".format(iota(argt.length).map!(i => "args[%s]->dimensionality()".format(i)).join(", "));
+						else
+							throw new Exception("Unknown dimensionality: %s".format(dim));
+
+						string fillCode = iota(argt.length).map!(i => "Arg%s argv%s = Arg%s(args[%s]);\n".format(i+1, i+1, i+1, i)).join;
+
+						string impl = funcn["impl"].as!string;
+						if(impl.startsWith(":"))
+							fillCode ~= `return WGA_%sFuncs_CPU::%s(api, key, data %s);`.format(impl[1..$], functionName, iota(argt.length).map!(i => ", argv%s".format(i+1)).join);
+						else
+							fillCode ~=
+`
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  %s
+  data[i] = (%s);
+ }
+ return data;`.format(
+ 	iota(argt.length).map!(i => `const Arg%s::T arg%s = argh%s[i];\n`.format(i+1, i+1, i+1)).join,
+ 	impl
+ 	);
+
+ 						string argDecls = iota(argt.length).map!(i => "using Arg%s = WGA_ValueWrapper_CPU<WGA_Value::ValueType::%s>;\n".format(i+1, argTypes[i])).join;
+						implCode ~=
+`result[%s] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = %s || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::%s>;
+	%s
+
+	const auto dimFunc = [=] {
+		auto result = %s;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	%s
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "%s")));
+};
+
+`.format(fid, isContextual, resultType, argDecls, dimCode, fillCode, functionName);
+
+						fid ++;
+				});
+			}
+
+			if(argt.length) {
+				void delegate(string pt, int i) callback;
+				callback = (string pt, int i) {
 					apiCode ~= "f.arguments[%s].type = WGA_Value::ValueType::%s;\n".format(i, pt);
 					argTypes[i] = pt;
 					i++;
 
-					if(i < args.length)
+					if(i < argt.length)
 						procf(argt[i], i, callback);
 
 					else
-						procf(resultd[0], 0, (string pt, int i) {
-							resultType = pt;
-							apiCode ~= "f.returnValue.type = WGA_Value::ValueType::%s;\n".format(resultType);
-							apiCode ~= "finalize();\n";
-						});
-				}
+						procEnd();
+				};
 				procf(argt[0], 0, callback);
 			}
+			else
+				procEnd();
 		}
 	}
 
@@ -72,7 +158,7 @@ void main() {
 	string apiTemplate =
 `// This file was automatically generated by /supp/autogen.
 
-#include "worldgenapi.h"
+#include "../worldgenapi.h"
 
 const WorldGenAPI::Functions &WorldGenAPI::functions() {
 	static const Functions fs = [] {
@@ -81,7 +167,6 @@ const WorldGenAPI::Functions &WorldGenAPI::functions() {
 
 		const auto finalize = [&]() {
 			f.prototype = Function::composePrototype(f.name, iterator(f.arguments).mapx(x.type).toList());
-			f.id = fs.list.size();
 			fs.list.push_back(f);
 			fs.prototypeMapping[f.prototype] = f.id;
 			if(!fs.nameSet.contains(f.name))
@@ -95,15 +180,35 @@ const WorldGenAPI::Functions &WorldGenAPI::functions() {
 	return fs;
 }
 `;
-	write("../../src/worldgen/base/autogen/functions.cpp", apiTemplate.replace("$IMPL$", apiCode));
+	std.file.write("../../src/worldgen/base/autogen/wga_funcs.cpp", apiTemplate.replace("$IMPL$", apiCode));
 
 	string implTemplate =
 `
 // This file was automatically generated by /supp/autogen.
 
-#include "worldgenapi.h"
+#include "../funcs/wga_funcs_cpu.h"
 
-$IMPL$
+#include "util/iterators.h"
+#include "util/macroutils.h"
+
+#include "../supp/wga_fillfunc_cpu.h"
+
+#include "../funcs/wga_biomefuncs_cpu.h"
+#include "../funcs/wga_utilityfuncs_cpu.h"
+#include "../funcs/wga_noisefuncs_cpu.h"
+#include "../funcs/wga_structurefuncs_cpu.h"
+#include "../funcs/wga_samplingfuncs_cpu.h"
+
+std::unordered_map<WorldGenAPI::FunctionID, WGA_Funcs_CPU::Func> WGA_Funcs_CPU::functions() {
+	static const auto result = [] {
+		std::unordered_map<WorldGenAPI::FunctionID, Func> result;
+
+		$IMPL$
+
+		return result;
+	}();
+	return result;
+}
 `;
-	write("../../src/worldgen/cpu/autogen/functions.cpp", implTemplate.replace("$IMPL$", implCode));
+	std.file.write("../../src/worldgen/cpu/autogen/wga_funcs_cpu.cpp", implTemplate.replace("$IMPL$", implCode));
 }

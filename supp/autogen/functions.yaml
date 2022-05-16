@@ -1,7 +1,17 @@
 - section: Utility functions
   functions:
     - function: worldPos
-      result: Float3 pos
       desc: Returns world position of the currently calculated block.
+      result: Float3 pos
       dim: 3D
-      inline: data.worldPos(key.origin, i).to<float>()
+      impl: data.worldPos(key.origin, i).to<float>()
+
+    - function: select
+      desc: If `cond` is `true`, returns `thn`, else returns `els`
+      result: Arg2 result
+      args:
+        - Bool cond
+        - Any thn
+        - Arg2 els
+      dim: max
+      impl: :Utility
