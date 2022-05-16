@@ -18,213 +18,11042 @@ std::unordered_map<WorldGenAPI::FunctionID, WGA_Funcs_CPU::Func> WGA_Funcs_CPU::
 	static const auto result = [] {
 		std::unordered_map<WorldGenAPI::FunctionID, Func> result;
 
-		result[0] = [](WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
-			const bool isContextual = false || iterator(args).anyx(x->isContextual());
+		result[0] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
 
-			// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
-			if(isContextual) for(WGA_Value *v: args) static_cast<WGA_Value_CPU *>(v)->markAsCrossSampled(0);
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
 
-			using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	
 
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::D3D;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  
+  data[i] = (data.worldPos(key.origin, i).to<float>());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "worldPos")));
+};
 
-			const auto dimFunc = [=] {
-				auto result = WGA_Value::Dimensionality::D3D;
-				ASSERT(result != WGA_Value::Dimensionality::_count);
-				return result;
-			};
-			const auto fillFunc = [=](const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+result[1] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
 
-				const int sz = data.size;
-				for(int i = 0; i < sz; i++) {
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
 
-					data[i] = (data.worldPos(key.origin, i).to<float>());
-				}
-				return data;
-			};
-			return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "worldPos")));
-		};
-
-		result[1] = [](WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
-			const bool isContextual = false || iterator(args).anyx(x->isContextual());
-
-			// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
-			if(isContextual) for(WGA_Value *v: args) static_cast<WGA_Value_CPU *>(v)->markAsCrossSampled(0);
-
-			using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
-			using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
-			using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
-			using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
-
-
-			const auto dimFunc = [=] {
-				auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
-				ASSERT(result != WGA_Value::Dimensionality::_count);
-				return result;
-			};
-			const auto fillFunc = [=](const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
-				Arg1 argv1 = Arg1(args[0]);
-				Arg2 argv2 = Arg2(args[1]);
-				Arg3 argv3 = Arg3(args[2]);
-				return WGA_UtilityFuncs_CPU::select(api, key, data, argv1, argv2, argv3);
-			};
-			return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "select")));
-		};
-
-		result[2] = [](WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
-			const bool isContextual = false || iterator(args).anyx(x->isContextual());
-
-			// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
-			if(isContextual) for(WGA_Value *v: args) static_cast<WGA_Value_CPU *>(v)->markAsCrossSampled(0);
-
-			using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
-			using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
-			using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
-			using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
 
 
-			const auto dimFunc = [=] {
-				auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
-				ASSERT(result != WGA_Value::Dimensionality::_count);
-				return result;
-			};
-			const auto fillFunc = [=](const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
-				Arg1 argv1 = Arg1(args[0]);
-				Arg2 argv2 = Arg2(args[1]);
-				Arg3 argv3 = Arg3(args[2]);
-				return WGA_UtilityFuncs_CPU::select(api, key, data, argv1, argv2, argv3);
-			};
-			return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "select")));
-		};
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+return WGA_UtilityFuncs_CPU::select(api, key, data , argv1, argv2, argv3);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "select")));
+};
 
-		result[3] = [](WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
-			const bool isContextual = false || iterator(args).anyx(x->isContextual());
+result[2] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
 
-			// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
-			if(isContextual) for(WGA_Value *v: args) static_cast<WGA_Value_CPU *>(v)->markAsCrossSampled(0);
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
 
-			using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
-			using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
-			using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
-			using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
-
-
-			const auto dimFunc = [=] {
-				auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
-				ASSERT(result != WGA_Value::Dimensionality::_count);
-				return result;
-			};
-			const auto fillFunc = [=](const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
-				Arg1 argv1 = Arg1(args[0]);
-				Arg2 argv2 = Arg2(args[1]);
-				Arg3 argv3 = Arg3(args[2]);
-				return WGA_UtilityFuncs_CPU::select(api, key, data, argv1, argv2, argv3);
-			};
-			return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "select")));
-		};
-
-		result[4] = [](WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
-			const bool isContextual = false || iterator(args).anyx(x->isContextual());
-
-			// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
-			if(isContextual) for(WGA_Value *v: args) static_cast<WGA_Value_CPU *>(v)->markAsCrossSampled(0);
-
-			using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
-			using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
-			using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
-			using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
 
 
-			const auto dimFunc = [=] {
-				auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
-				ASSERT(result != WGA_Value::Dimensionality::_count);
-				return result;
-			};
-			const auto fillFunc = [=](const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
-				Arg1 argv1 = Arg1(args[0]);
-				Arg2 argv2 = Arg2(args[1]);
-				Arg3 argv3 = Arg3(args[2]);
-				return WGA_UtilityFuncs_CPU::select(api, key, data, argv1, argv2, argv3);
-			};
-			return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "select")));
-		};
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+return WGA_UtilityFuncs_CPU::select(api, key, data , argv1, argv2, argv3);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "select")));
+};
 
-		result[5] = [](WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
-			const bool isContextual = false || iterator(args).anyx(x->isContextual());
+result[3] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
 
-			// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
-			if(isContextual) for(WGA_Value *v: args) static_cast<WGA_Value_CPU *>(v)->markAsCrossSampled(0);
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
 
-			using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
-			using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
-			using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
-			using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
-
-
-			const auto dimFunc = [=] {
-				auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
-				ASSERT(result != WGA_Value::Dimensionality::_count);
-				return result;
-			};
-			const auto fillFunc = [=](const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
-				Arg1 argv1 = Arg1(args[0]);
-				Arg2 argv2 = Arg2(args[1]);
-				Arg3 argv3 = Arg3(args[2]);
-				return WGA_UtilityFuncs_CPU::select(api, key, data, argv1, argv2, argv3);
-			};
-			return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "select")));
-		};
-
-		result[6] = [](WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
-			const bool isContextual = false || iterator(args).anyx(x->isContextual());
-
-			// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
-			if(isContextual) for(WGA_Value *v: args) static_cast<WGA_Value_CPU *>(v)->markAsCrossSampled(0);
-
-			using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
-			using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
-			using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
-			using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
 
 
-			const auto dimFunc = [=] {
-				auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
-				ASSERT(result != WGA_Value::Dimensionality::_count);
-				return result;
-			};
-			const auto fillFunc = [=](const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
-				Arg1 argv1 = Arg1(args[0]);
-				Arg2 argv2 = Arg2(args[1]);
-				Arg3 argv3 = Arg3(args[2]);
-				return WGA_UtilityFuncs_CPU::select(api, key, data, argv1, argv2, argv3);
-			};
-			return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "select")));
-		};
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+return WGA_UtilityFuncs_CPU::select(api, key, data , argv1, argv2, argv3);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "select")));
+};
 
-		result[7] = [](WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
-			const bool isContextual = false || iterator(args).anyx(x->isContextual());
+result[4] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
 
-			// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
-			if(isContextual) for(WGA_Value *v: args) static_cast<WGA_Value_CPU *>(v)->markAsCrossSampled(0);
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
 
-			using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
-			using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
-			using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
-			using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
 
 
-			const auto dimFunc = [=] {
-				auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
-				ASSERT(result != WGA_Value::Dimensionality::_count);
-				return result;
-			};
-			const auto fillFunc = [=](const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
-				Arg1 argv1 = Arg1(args[0]);
-				Arg2 argv2 = Arg2(args[1]);
-				Arg3 argv3 = Arg3(args[2]);
-				return WGA_UtilityFuncs_CPU::select(api, key, data, argv1, argv2, argv3);
-			};
-			return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "select")));
-		};
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+return WGA_UtilityFuncs_CPU::select(api, key, data , argv1, argv2, argv3);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "select")));
+};
+
+result[5] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+return WGA_UtilityFuncs_CPU::select(api, key, data , argv1, argv2, argv3);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "select")));
+};
+
+result[6] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+return WGA_UtilityFuncs_CPU::select(api, key, data , argv1, argv2, argv3);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "select")));
+};
+
+result[7] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+return WGA_UtilityFuncs_CPU::select(api, key, data , argv1, argv2, argv3);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "select")));
+};
+
+result[8] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (Vector2F(arg1, arg2));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "float2")));
+};
+
+result[9] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (Vector2F(arg1));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "float2")));
+};
+
+result[10] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\nconst Arg3::T arg3 = argh3[i];\n
+  data[i] = (Vector3F(arg1, arg2, arg3));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "float3")));
+};
+
+result[11] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (Vector3F(arg1, arg2));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "float3")));
+};
+
+result[12] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (Vector3F(arg1));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "float3")));
+};
+
+result[13] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.x());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "x")));
+};
+
+result[14] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.x());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "x")));
+};
+
+result[15] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.y());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "y")));
+};
+
+result[16] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.y());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "y")));
+};
+
+result[17] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.z());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "z")));
+};
+
+result[18] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.xy());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "xy")));
+};
+
+result[19] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.normalized());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "normalize")));
+};
+
+result[20] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.normalized());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "normalize")));
+};
+
+result[21] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.length());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "length")));
+};
+
+result[22] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.length());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "length")));
+};
+
+result[23] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_UtilityFuncs_CPU::lengthExp(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "lengthExp")));
+};
+
+result[24] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_UtilityFuncs_CPU::lengthExp(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "lengthExp")));
+};
+
+result[25] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.manhattanLength());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "manhattanLength")));
+};
+
+result[26] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.manhattanLength());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "manhattanLength")));
+};
+
+result[27] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = ((arg1 - arg2).length());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "distance")));
+};
+
+result[28] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = ((arg1 - arg2).length());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "distance")));
+};
+
+result[29] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = ((arg1 - arg2).manhattanLength());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "manhattanDistance")));
+};
+
+result[30] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = ((arg1 - arg2).manhattanLength());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "manhattanDistance")));
+};
+
+result[31] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::D3D;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = ((data.worldPos(key.origin, i).to<float>() - arg1).length());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "distanceTo")));
+};
+
+result[32] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::D2D;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = ((data.worldPosXY(key.origin, i).to<float>() - arg1).length());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "distanceTo")));
+};
+
+result[33] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::D2D;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = ((data.worldPosXY(key.origin, i).to<float>() - arg1.xy()).length());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "distanceTo2D")));
+};
+
+result[34] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+return WGA_UtilityFuncs_CPU::distanceToLine(api, key, data , argv1, argv2, argv3);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "distanceToLine")));
+};
+
+result[35] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleOffset(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleOffset")));
+};
+
+result[36] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleOffset(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleOffset")));
+};
+
+result[37] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleOffset(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleOffset")));
+};
+
+result[38] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleOffset(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleOffset")));
+};
+
+result[39] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleOffset(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleOffset")));
+};
+
+result[40] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleOffset(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleOffset")));
+};
+
+result[41] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleOffset(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleOffset")));
+};
+
+result[42] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[1]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[43] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[1]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[44] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[1]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[45] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[1]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[46] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[1]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[47] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[1]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[48] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[1]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[49] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[1]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[50] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[1]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[51] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[1]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[52] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[1]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[53] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[1]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[54] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[1]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[55] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[1]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[56] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleGradient2D(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleGradient2D")));
+};
+
+result[57] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleAvg2D(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAvg2D")));
+};
+
+result[58] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleAvg2D(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAvg2D")));
+};
+
+result[59] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleAvg2D(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAvg2D")));
+};
+
+result[60] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_BiomeFuncs_CPU::biomeParam_nearest(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "biomeParam_nearest")));
+};
+
+result[61] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_BiomeFuncs_CPU::biomeParam_nearest(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "biomeParam_nearest")));
+};
+
+result[62] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_BiomeFuncs_CPU::biomeParam_nearest(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "biomeParam_nearest")));
+};
+
+result[63] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_BiomeFuncs_CPU::biomeParam_nearest(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "biomeParam_nearest")));
+};
+
+result[64] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_BiomeFuncs_CPU::biomeParam_nearest(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "biomeParam_nearest")));
+};
+
+result[65] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_BiomeFuncs_CPU::biomeParam_nearest(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "biomeParam_nearest")));
+};
+
+result[66] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_BiomeFuncs_CPU::biomeParam_nearest(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "biomeParam_nearest")));
+};
+
+result[67] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_BiomeFuncs_CPU::biomeParam_nearestSet(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "biomeParam_nearestSet")));
+};
+
+result[68] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_BiomeFuncs_CPU::biomeParam_nearestSet(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "biomeParam_nearestSet")));
+};
+
+result[69] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_BiomeFuncs_CPU::biomeParam_nearestSet(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "biomeParam_nearestSet")));
+};
+
+result[70] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_BiomeFuncs_CPU::biomeParam_nearestSet(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "biomeParam_nearestSet")));
+};
+
+result[71] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_BiomeFuncs_CPU::biomeParam_nearestSet(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "biomeParam_nearestSet")));
+};
+
+result[72] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_BiomeFuncs_CPU::biomeParam_nearestSet(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "biomeParam_nearestSet")));
+};
+
+result[73] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_BiomeFuncs_CPU::biomeParam_nearestSet(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "biomeParam_nearestSet")));
+};
+
+result[74] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_BiomeFuncs_CPU::biomeParam_weighted(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "biomeParam_weighted")));
+};
+
+result[75] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_BiomeFuncs_CPU::biomeParam_weighted(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "biomeParam_weighted")));
+};
+
+result[76] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_BiomeFuncs_CPU::biomeParam_weighted(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "biomeParam_weighted")));
+};
+
+result[77] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg4 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg5 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::D3D;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+Arg4 argv4 = Arg4(args[3]);
+Arg5 argv5 = Arg5(args[4]);
+return WGA_StructureFuncs_CPU::spawn2D(api, key, data , argv1, argv2, argv3, argv4, argv5);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "spawn2D")));
+};
+
+result[78] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = true || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_StructureFuncs_CPU::worldPos(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "worldPos")));
+};
+
+result[79] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = true || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_StructureFuncs_CPU::worldPos(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "worldPos")));
+};
+
+result[80] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = true || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::D3D;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	return WGA_StructureFuncs_CPU::localPos(api, key, data );
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "localPos")));
+};
+
+result[81] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = true || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_StructureFuncs_CPU::localPos(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "localPos")));
+};
+
+result[82] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = true || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::DConst;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	return WGA_StructureFuncs_CPU::localSeed(api, key, data );
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "localSeed")));
+};
+
+result[83] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = true || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::D3D;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_StructureFuncs_CPU::distanceTo(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "distanceTo")));
+};
+
+result[84] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = true || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::min({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_StructureFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[85] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = true || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::min({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_StructureFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[86] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = true || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::min({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_StructureFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[87] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = true || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::min({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_StructureFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[88] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = true || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::min({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_StructureFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[89] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = true || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::min({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_StructureFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[90] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = true || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::min({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_StructureFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[91] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::DConst;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_NoiseFuncs_CPU::randC(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "randC")));
+};
+
+result[92] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = true || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::DConst;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_StructureFuncs_CPU::randL(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "randL")));
+};
+
+result[93] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::DPerChunk;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_NoiseFuncs_CPU::randPC(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "randPC")));
+};
+
+result[94] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::D2D;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_NoiseFuncs_CPU::rand2D(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "rand2D")));
+};
+
+result[95] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::D3D;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_NoiseFuncs_CPU::rand3D(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "rand3D")));
+};
+
+result[96] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::DPerChunk;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+return WGA_NoiseFuncs_CPU::valueNoisePC(api, key, data , argv1, argv2, argv3);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "valueNoisePC")));
+};
+
+result[97] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::D2D;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+return WGA_NoiseFuncs_CPU::valueNoise2D(api, key, data , argv1, argv2, argv3);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "valueNoise2D")));
+};
+
+result[98] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::D2D;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_NoiseFuncs_CPU::perlin2D(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "perlin2D")));
+};
+
+result[99] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::D3D;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_NoiseFuncs_CPU::perlin3D(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "perlin3D")));
+};
+
+result[100] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg4 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::D2D;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+Arg4 argv4 = Arg4(args[3]);
+return WGA_NoiseFuncs_CPU::voronoi2D(api, key, data , argv1, argv2, argv3, argv4);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "voronoi2D")));
+};
+
+result[101] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg4 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg5 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::D2D;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+Arg4 argv4 = Arg4(args[3]);
+Arg5 argv5 = Arg5(args[4]);
+return WGA_NoiseFuncs_CPU::voronoi2DColored(api, key, data , argv1, argv2, argv3, argv4, argv5);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "voronoi2DColored")));
+};
+
+result[102] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::D2D;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_NoiseFuncs_CPU::poissonDisc2DBool(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "poissonDisc2DBool")));
+};
+
+result[103] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::D2D;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_NoiseFuncs_CPU::osimplex2D(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "osimplex2D")));
+};
+
+result[104] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::D3D;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_NoiseFuncs_CPU::osimplex3D(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "osimplex3D")));
+};
+
+result[105] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::DPerChunk;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_UtilityFuncs_CPU::minPC(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "minPC")));
+};
+
+result[106] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::DPerChunk;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_UtilityFuncs_CPU::maxPC(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "maxPC")));
+};
+
+result[107] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1.min(arg2));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "min")));
+};
+
+result[108] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1.min(arg2));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "min")));
+};
+
+result[109] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1.min(arg2));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "min")));
+};
+
+result[110] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1.max(arg2));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "max")));
+};
+
+result[111] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1.max(arg2));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "max")));
+};
+
+result[112] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1.max(arg2));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "max")));
+};
+
+result[113] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+return WGA_UtilityFuncs_CPU::smoothMin(api, key, data , argv1, argv2, argv3);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "smoothMin")));
+};
+
+result[114] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+return WGA_UtilityFuncs_CPU::smoothMax(api, key, data , argv1, argv2, argv3);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "smoothMax")));
+};
+
+result[115] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\nconst Arg3::T arg3 = argh3[i];\n
+  data[i] = (arg1.clamp(arg2, arg3));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "clamp")));
+};
+
+result[116] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\nconst Arg3::T arg3 = argh3[i];\n
+  data[i] = (arg1.clamp(arg2, arg3));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "clamp")));
+};
+
+result[117] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\nconst Arg3::T arg3 = argh3[i];\n
+  data[i] = (arg1.clamp(arg2, arg3));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "clamp")));
+};
+
+result[118] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.clamp(0, 1));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "clamp01")));
+};
+
+result[119] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.clamp(0, 1));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "clamp01")));
+};
+
+result[120] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.clamp(0, 1));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "clamp01")));
+};
+
+result[121] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\nconst Arg3::T arg3 = argh3[i];\n
+  data[i] = (arg1 * (Arg1::T(1.0f) - arg3) + arg2 * arg3);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "mix")));
+};
+
+result[122] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\nconst Arg3::T arg3 = argh3[i];\n
+  data[i] = (arg1 * (Arg1::T(1.0f) - arg3) + arg2 * arg3);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "mix")));
+};
+
+result[123] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\nconst Arg3::T arg3 = argh3[i];\n
+  data[i] = (arg1 * (Arg1::T(1.0f) - arg3) + arg2 * arg3);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "mix")));
+};
+
+result[124] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.abs());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "abs")));
+};
+
+result[125] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.abs());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "abs")));
+};
+
+result[126] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.abs());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "abs")));
+};
+
+result[127] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.floor());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "floor")));
+};
+
+result[128] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.floor());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "floor")));
+};
+
+result[129] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.floor());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "floor")));
+};
+
+result[130] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.ceil());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "ceil")));
+};
+
+result[131] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.ceil());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "ceil")));
+};
+
+result[132] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.ceil());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "ceil")));
+};
+
+result[133] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.round());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "round")));
+};
+
+result[134] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.round());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "round")));
+};
+
+result[135] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.round());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "round")));
+};
+
+result[136] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.componentUnary([] (float f) { return f - trunc(f); }));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "fract")));
+};
+
+result[137] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.componentUnary([] (float f) { return f - trunc(f); }));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "fract")));
+};
+
+result[138] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.componentUnary([] (float f) { return f - trunc(f); }));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "fract")));
+};
+
+result[139] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.componentUnary([] (float f) { return f - floor(f); }));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "ffract")));
+};
+
+result[140] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.componentUnary([] (float f) { return f - floor(f); }));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "ffract")));
+};
+
+result[141] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.componentUnary([] (float f) { return f - floor(f); }));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "ffract")));
+};
+
+result[142] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (pow(arg1, arg2));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "pow")));
+};
+
+result[143] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (sin(arg1));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sin")));
+};
+
+result[144] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (cos(arg1));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "cos")));
+};
+
+result[145] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (-arg1);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "inverse")));
+};
+
+result[146] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (-arg1);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "inverse")));
+};
+
+result[147] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (-arg1);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "inverse")));
+};
+
+result[148] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 + arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "add")));
+};
+
+result[149] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 + arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "add")));
+};
+
+result[150] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 + arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "add")));
+};
+
+result[151] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 + arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "add")));
+};
+
+result[152] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 + arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "add")));
+};
+
+result[153] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 + arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "add")));
+};
+
+result[154] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 - arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sub")));
+};
+
+result[155] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 - arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sub")));
+};
+
+result[156] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 - arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sub")));
+};
+
+result[157] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 - arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sub")));
+};
+
+result[158] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 - arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sub")));
+};
+
+result[159] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 - arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sub")));
+};
+
+result[160] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 * arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "mult")));
+};
+
+result[161] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 * arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "mult")));
+};
+
+result[162] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 * arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "mult")));
+};
+
+result[163] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 * arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "mult")));
+};
+
+result[164] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 * arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "mult")));
+};
+
+result[165] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 * arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "mult")));
+};
+
+result[166] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 / arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "div")));
+};
+
+result[167] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 / arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "div")));
+};
+
+result[168] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 / arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "div")));
+};
+
+result[169] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 / arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "div")));
+};
+
+result[170] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 / arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "div")));
+};
+
+result[171] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 / arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "div")));
+};
+
+result[172] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1.componentBinary(arg2, [] (float a, float b) { return fmod(a, b); }));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "mod")));
+};
+
+result[173] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1.componentBinary(arg2, [] (float a, float b) { return fmod(a, b); }));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "mod")));
+};
+
+result[174] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1.componentBinary(arg2, [] (float a, float b) { return fmod(a, b); }));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "mod")));
+};
+
+result[175] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1.componentBinary(arg2, [] (float a, float b) { return fmod(a, b); }));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "mod")));
+};
+
+result[176] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1.componentBinary(arg2, [] (float a, float b) { return fmod(a, b); }));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "mod")));
+};
+
+result[177] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1.componentBinary(arg2, [] (float a, float b) { return fmod(a, b); }));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "mod")));
+};
+
+result[178] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 || arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "logOr")));
+};
+
+result[179] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 && arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "logAnd")));
+};
+
+result[180] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = ();
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "logNot")));
+};
+
+result[181] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1 != blockID_undefined);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "bool")));
+};
+
+result[182] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 == arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compEq")));
+};
+
+result[183] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 == arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compEq")));
+};
+
+result[184] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 == arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compEq")));
+};
+
+result[185] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 == arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compEq")));
+};
+
+result[186] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 == arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compEq")));
+};
+
+result[187] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 == arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compEq")));
+};
+
+result[188] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 == arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compEq")));
+};
+
+result[189] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 == arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compEq")));
+};
+
+result[190] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 == arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compEq")));
+};
+
+result[191] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 != arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compNeq")));
+};
+
+result[192] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 != arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compNeq")));
+};
+
+result[193] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 != arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compNeq")));
+};
+
+result[194] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 != arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compNeq")));
+};
+
+result[195] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 != arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compNeq")));
+};
+
+result[196] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 != arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compNeq")));
+};
+
+result[197] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 != arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compNeq")));
+};
+
+result[198] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 != arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compNeq")));
+};
+
+result[199] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 != arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compNeq")));
+};
+
+result[200] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 < arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compLt")));
+};
+
+result[201] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 > arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compGt")));
+};
+
+result[202] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 <= arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compLeq")));
+};
+
+result[203] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 >= arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compGeq")));
+};
+
+result[204] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::D3D;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  
+  data[i] = (data.worldPos(key.origin, i).to<float>());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "worldPos")));
+};
+
+result[205] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+return WGA_UtilityFuncs_CPU::select(api, key, data , argv1, argv2, argv3);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "select")));
+};
+
+result[206] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+return WGA_UtilityFuncs_CPU::select(api, key, data , argv1, argv2, argv3);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "select")));
+};
+
+result[207] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+return WGA_UtilityFuncs_CPU::select(api, key, data , argv1, argv2, argv3);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "select")));
+};
+
+result[208] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+return WGA_UtilityFuncs_CPU::select(api, key, data , argv1, argv2, argv3);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "select")));
+};
+
+result[209] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+return WGA_UtilityFuncs_CPU::select(api, key, data , argv1, argv2, argv3);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "select")));
+};
+
+result[210] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+return WGA_UtilityFuncs_CPU::select(api, key, data , argv1, argv2, argv3);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "select")));
+};
+
+result[211] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+return WGA_UtilityFuncs_CPU::select(api, key, data , argv1, argv2, argv3);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "select")));
+};
+
+result[212] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (Vector2F(arg1, arg2));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "float2")));
+};
+
+result[213] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (Vector2F(arg1));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "float2")));
+};
+
+result[214] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\nconst Arg3::T arg3 = argh3[i];\n
+  data[i] = (Vector3F(arg1, arg2, arg3));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "float3")));
+};
+
+result[215] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (Vector3F(arg1, arg2));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "float3")));
+};
+
+result[216] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (Vector3F(arg1));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "float3")));
+};
+
+result[217] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.x());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "x")));
+};
+
+result[218] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.x());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "x")));
+};
+
+result[219] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.y());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "y")));
+};
+
+result[220] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.y());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "y")));
+};
+
+result[221] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.z());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "z")));
+};
+
+result[222] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.xy());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "xy")));
+};
+
+result[223] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.normalized());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "normalize")));
+};
+
+result[224] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.normalized());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "normalize")));
+};
+
+result[225] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.length());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "length")));
+};
+
+result[226] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.length());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "length")));
+};
+
+result[227] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_UtilityFuncs_CPU::lengthExp(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "lengthExp")));
+};
+
+result[228] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_UtilityFuncs_CPU::lengthExp(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "lengthExp")));
+};
+
+result[229] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.manhattanLength());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "manhattanLength")));
+};
+
+result[230] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.manhattanLength());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "manhattanLength")));
+};
+
+result[231] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = ((arg1 - arg2).length());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "distance")));
+};
+
+result[232] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = ((arg1 - arg2).length());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "distance")));
+};
+
+result[233] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = ((arg1 - arg2).manhattanLength());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "manhattanDistance")));
+};
+
+result[234] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = ((arg1 - arg2).manhattanLength());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "manhattanDistance")));
+};
+
+result[235] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::D3D;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = ((data.worldPos(key.origin, i).to<float>() - arg1).length());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "distanceTo")));
+};
+
+result[236] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::D2D;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = ((data.worldPosXY(key.origin, i).to<float>() - arg1).length());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "distanceTo")));
+};
+
+result[237] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::D2D;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = ((data.worldPosXY(key.origin, i).to<float>() - arg1.xy()).length());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "distanceTo2D")));
+};
+
+result[238] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+return WGA_UtilityFuncs_CPU::distanceToLine(api, key, data , argv1, argv2, argv3);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "distanceToLine")));
+};
+
+result[239] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleOffset(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleOffset")));
+};
+
+result[240] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleOffset(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleOffset")));
+};
+
+result[241] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleOffset(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleOffset")));
+};
+
+result[242] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleOffset(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleOffset")));
+};
+
+result[243] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleOffset(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleOffset")));
+};
+
+result[244] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleOffset(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleOffset")));
+};
+
+result[245] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleOffset(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleOffset")));
+};
+
+result[246] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[1]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[247] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[1]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[248] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[1]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[249] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[1]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[250] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[1]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[251] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[1]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[252] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[1]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[253] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[1]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[254] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[1]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[255] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[1]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[256] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[1]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[257] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[1]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[258] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[1]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[259] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[1]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[260] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleGradient2D(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleGradient2D")));
+};
+
+result[261] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleAvg2D(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAvg2D")));
+};
+
+result[262] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleAvg2D(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAvg2D")));
+};
+
+result[263] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_SamplingFuncs_CPU::sampleAvg2D(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAvg2D")));
+};
+
+result[264] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_BiomeFuncs_CPU::biomeParam_nearest(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "biomeParam_nearest")));
+};
+
+result[265] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_BiomeFuncs_CPU::biomeParam_nearest(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "biomeParam_nearest")));
+};
+
+result[266] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_BiomeFuncs_CPU::biomeParam_nearest(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "biomeParam_nearest")));
+};
+
+result[267] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_BiomeFuncs_CPU::biomeParam_nearest(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "biomeParam_nearest")));
+};
+
+result[268] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_BiomeFuncs_CPU::biomeParam_nearest(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "biomeParam_nearest")));
+};
+
+result[269] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_BiomeFuncs_CPU::biomeParam_nearest(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "biomeParam_nearest")));
+};
+
+result[270] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_BiomeFuncs_CPU::biomeParam_nearest(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "biomeParam_nearest")));
+};
+
+result[271] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_BiomeFuncs_CPU::biomeParam_nearestSet(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "biomeParam_nearestSet")));
+};
+
+result[272] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_BiomeFuncs_CPU::biomeParam_nearestSet(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "biomeParam_nearestSet")));
+};
+
+result[273] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_BiomeFuncs_CPU::biomeParam_nearestSet(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "biomeParam_nearestSet")));
+};
+
+result[274] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_BiomeFuncs_CPU::biomeParam_nearestSet(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "biomeParam_nearestSet")));
+};
+
+result[275] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_BiomeFuncs_CPU::biomeParam_nearestSet(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "biomeParam_nearestSet")));
+};
+
+result[276] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_BiomeFuncs_CPU::biomeParam_nearestSet(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "biomeParam_nearestSet")));
+};
+
+result[277] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_BiomeFuncs_CPU::biomeParam_nearestSet(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "biomeParam_nearestSet")));
+};
+
+result[278] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_BiomeFuncs_CPU::biomeParam_weighted(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "biomeParam_weighted")));
+};
+
+result[279] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_BiomeFuncs_CPU::biomeParam_weighted(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "biomeParam_weighted")));
+};
+
+result[280] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max(WGA_Value::Dimensionality::D2D, args[0]->dimensionality());
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_BiomeFuncs_CPU::biomeParam_weighted(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "biomeParam_weighted")));
+};
+
+result[281] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg4 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg5 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::D3D;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+Arg4 argv4 = Arg4(args[3]);
+Arg5 argv5 = Arg5(args[4]);
+return WGA_StructureFuncs_CPU::spawn2D(api, key, data , argv1, argv2, argv3, argv4, argv5);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "spawn2D")));
+};
+
+result[282] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = true || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_StructureFuncs_CPU::worldPos(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "worldPos")));
+};
+
+result[283] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = true || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_StructureFuncs_CPU::worldPos(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "worldPos")));
+};
+
+result[284] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = true || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::D3D;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	return WGA_StructureFuncs_CPU::localPos(api, key, data );
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "localPos")));
+};
+
+result[285] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = true || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_StructureFuncs_CPU::localPos(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "localPos")));
+};
+
+result[286] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = true || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::DConst;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	return WGA_StructureFuncs_CPU::localSeed(api, key, data );
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "localSeed")));
+};
+
+result[287] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = true || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::D3D;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_StructureFuncs_CPU::distanceTo(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "distanceTo")));
+};
+
+result[288] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = true || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::min({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_StructureFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[289] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = true || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::min({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_StructureFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[290] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = true || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::min({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_StructureFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[291] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = true || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::min({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_StructureFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[292] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = true || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::min({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_StructureFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[293] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = true || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::min({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_StructureFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[294] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = true || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::min({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_StructureFuncs_CPU::sampleAt(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sampleAt")));
+};
+
+result[295] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::DConst;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_NoiseFuncs_CPU::randC(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "randC")));
+};
+
+result[296] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = true || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::DConst;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_StructureFuncs_CPU::randL(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "randL")));
+};
+
+result[297] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::DPerChunk;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_NoiseFuncs_CPU::randPC(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "randPC")));
+};
+
+result[298] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::D2D;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_NoiseFuncs_CPU::rand2D(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "rand2D")));
+};
+
+result[299] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::D3D;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_NoiseFuncs_CPU::rand3D(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "rand3D")));
+};
+
+result[300] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::DPerChunk;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+return WGA_NoiseFuncs_CPU::valueNoisePC(api, key, data , argv1, argv2, argv3);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "valueNoisePC")));
+};
+
+result[301] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::D2D;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+return WGA_NoiseFuncs_CPU::valueNoise2D(api, key, data , argv1, argv2, argv3);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "valueNoise2D")));
+};
+
+result[302] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::D2D;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_NoiseFuncs_CPU::perlin2D(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "perlin2D")));
+};
+
+result[303] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::D3D;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_NoiseFuncs_CPU::perlin3D(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "perlin3D")));
+};
+
+result[304] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg4 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::D2D;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+Arg4 argv4 = Arg4(args[3]);
+return WGA_NoiseFuncs_CPU::voronoi2D(api, key, data , argv1, argv2, argv3, argv4);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "voronoi2D")));
+};
+
+result[305] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg4 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg5 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::D2D;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+Arg4 argv4 = Arg4(args[3]);
+Arg5 argv5 = Arg5(args[4]);
+return WGA_NoiseFuncs_CPU::voronoi2DColored(api, key, data , argv1, argv2, argv3, argv4, argv5);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "voronoi2DColored")));
+};
+
+result[306] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::D2D;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_NoiseFuncs_CPU::poissonDisc2DBool(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "poissonDisc2DBool")));
+};
+
+result[307] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::D2D;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_NoiseFuncs_CPU::osimplex2D(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "osimplex2D")));
+};
+
+result[308] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::D3D;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+return WGA_NoiseFuncs_CPU::osimplex3D(api, key, data , argv1, argv2);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "osimplex3D")));
+};
+
+result[309] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::DPerChunk;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_UtilityFuncs_CPU::minPC(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "minPC")));
+};
+
+result[310] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = WGA_Value::Dimensionality::DPerChunk;
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+return WGA_UtilityFuncs_CPU::maxPC(api, key, data , argv1);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "maxPC")));
+};
+
+result[311] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1.min(arg2));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "min")));
+};
+
+result[312] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1.min(arg2));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "min")));
+};
+
+result[313] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1.min(arg2));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "min")));
+};
+
+result[314] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1.max(arg2));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "max")));
+};
+
+result[315] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1.max(arg2));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "max")));
+};
+
+result[316] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1.max(arg2));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "max")));
+};
+
+result[317] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+return WGA_UtilityFuncs_CPU::smoothMin(api, key, data , argv1, argv2, argv3);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "smoothMin")));
+};
+
+result[318] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+return WGA_UtilityFuncs_CPU::smoothMax(api, key, data , argv1, argv2, argv3);
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "smoothMax")));
+};
+
+result[319] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\nconst Arg3::T arg3 = argh3[i];\n
+  data[i] = (arg1.clamp(arg2, arg3));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "clamp")));
+};
+
+result[320] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\nconst Arg3::T arg3 = argh3[i];\n
+  data[i] = (arg1.clamp(arg2, arg3));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "clamp")));
+};
+
+result[321] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\nconst Arg3::T arg3 = argh3[i];\n
+  data[i] = (arg1.clamp(arg2, arg3));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "clamp")));
+};
+
+result[322] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.clamp(0, 1));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "clamp01")));
+};
+
+result[323] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.clamp(0, 1));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "clamp01")));
+};
+
+result[324] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.clamp(0, 1));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "clamp01")));
+};
+
+result[325] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\nconst Arg3::T arg3 = argh3[i];\n
+  data[i] = (arg1 * (Arg1::T(1.0f) - arg3) + arg2 * arg3);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "mix")));
+};
+
+result[326] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\nconst Arg3::T arg3 = argh3[i];\n
+  data[i] = (arg1 * (Arg1::T(1.0f) - arg3) + arg2 * arg3);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "mix")));
+};
+
+result[327] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality(), args[2]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+Arg3 argv3 = Arg3(args[2]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\nconst Arg3::T arg3 = argh3[i];\n
+  data[i] = (arg1 * (Arg1::T(1.0f) - arg3) + arg2 * arg3);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "mix")));
+};
+
+result[328] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.abs());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "abs")));
+};
+
+result[329] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.abs());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "abs")));
+};
+
+result[330] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.abs());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "abs")));
+};
+
+result[331] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.floor());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "floor")));
+};
+
+result[332] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.floor());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "floor")));
+};
+
+result[333] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.floor());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "floor")));
+};
+
+result[334] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.ceil());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "ceil")));
+};
+
+result[335] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.ceil());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "ceil")));
+};
+
+result[336] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.ceil());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "ceil")));
+};
+
+result[337] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.round());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "round")));
+};
+
+result[338] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.round());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "round")));
+};
+
+result[339] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.round());
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "round")));
+};
+
+result[340] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.componentUnary([] (float f) { return f - trunc(f); }));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "fract")));
+};
+
+result[341] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.componentUnary([] (float f) { return f - trunc(f); }));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "fract")));
+};
+
+result[342] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.componentUnary([] (float f) { return f - trunc(f); }));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "fract")));
+};
+
+result[343] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.componentUnary([] (float f) { return f - floor(f); }));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "ffract")));
+};
+
+result[344] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.componentUnary([] (float f) { return f - floor(f); }));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "ffract")));
+};
+
+result[345] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1.componentUnary([] (float f) { return f - floor(f); }));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "ffract")));
+};
+
+result[346] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (pow(arg1, arg2));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "pow")));
+};
+
+result[347] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (sin(arg1));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sin")));
+};
+
+result[348] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (cos(arg1));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "cos")));
+};
+
+result[349] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (-arg1);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "inverse")));
+};
+
+result[350] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (-arg1);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "inverse")));
+};
+
+result[351] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (-arg1);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "inverse")));
+};
+
+result[352] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 + arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "add")));
+};
+
+result[353] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 + arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "add")));
+};
+
+result[354] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 + arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "add")));
+};
+
+result[355] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 + arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "add")));
+};
+
+result[356] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 + arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "add")));
+};
+
+result[357] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 + arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "add")));
+};
+
+result[358] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 - arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sub")));
+};
+
+result[359] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 - arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sub")));
+};
+
+result[360] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 - arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sub")));
+};
+
+result[361] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 - arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sub")));
+};
+
+result[362] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 - arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sub")));
+};
+
+result[363] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 - arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "sub")));
+};
+
+result[364] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 * arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "mult")));
+};
+
+result[365] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 * arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "mult")));
+};
+
+result[366] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 * arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "mult")));
+};
+
+result[367] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 * arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "mult")));
+};
+
+result[368] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 * arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "mult")));
+};
+
+result[369] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 * arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "mult")));
+};
+
+result[370] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 / arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "div")));
+};
+
+result[371] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 / arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "div")));
+};
+
+result[372] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 / arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "div")));
+};
+
+result[373] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 / arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "div")));
+};
+
+result[374] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 / arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "div")));
+};
+
+result[375] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 / arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "div")));
+};
+
+result[376] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1.componentBinary(arg2, [] (float a, float b) { return fmod(a, b); }));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "mod")));
+};
+
+result[377] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1.componentBinary(arg2, [] (float a, float b) { return fmod(a, b); }));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "mod")));
+};
+
+result[378] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1.componentBinary(arg2, [] (float a, float b) { return fmod(a, b); }));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "mod")));
+};
+
+result[379] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1.componentBinary(arg2, [] (float a, float b) { return fmod(a, b); }));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "mod")));
+};
+
+result[380] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1.componentBinary(arg2, [] (float a, float b) { return fmod(a, b); }));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "mod")));
+};
+
+result[381] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1.componentBinary(arg2, [] (float a, float b) { return fmod(a, b); }));
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "mod")));
+};
+
+result[382] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 || arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "logOr")));
+};
+
+result[383] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 && arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "logAnd")));
+};
+
+result[384] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+
+
+	const auto dimFunc = [=] {
+		auto result = args[0]->dimensionality();
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = ();
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "logNot")));
+};
+
+result[385] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\n
+  data[i] = (arg1 != blockID_undefined);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "bool")));
+};
+
+result[386] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 == arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compEq")));
+};
+
+result[387] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 == arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compEq")));
+};
+
+result[388] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 == arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compEq")));
+};
+
+result[389] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 == arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compEq")));
+};
+
+result[390] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 == arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compEq")));
+};
+
+result[391] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 == arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compEq")));
+};
+
+result[392] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 == arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compEq")));
+};
+
+result[393] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 == arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compEq")));
+};
+
+result[394] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 == arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compEq")));
+};
+
+result[395] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 != arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compNeq")));
+};
+
+result[396] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 != arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compNeq")));
+};
+
+result[397] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 != arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compNeq")));
+};
+
+result[398] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 != arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compNeq")));
+};
+
+result[399] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 != arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compNeq")));
+};
+
+result[400] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 != arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compNeq")));
+};
+
+result[401] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 != arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compNeq")));
+};
+
+result[402] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 != arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compNeq")));
+};
+
+result[403] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 != arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compNeq")));
+};
+
+result[404] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 < arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compLt")));
+};
+
+result[405] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 > arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compGt")));
+};
+
+result[406] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 <= arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compLeq")));
+};
+
+result[407] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
+	const bool isContextual = false || iterator(args).anyx(x->isContextual());
+
+	// If the function call uses any contextual value, mark tall used arguments as cross sampled to keep them better in the cache
+	if(isContextual) for(WGA_Value *v : args) static_cast<WGA_Value_CPU*>(v)->markAsCrossSampled(0);
+
+	using Result = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
+	using Arg1 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
+
+
+	const auto dimFunc = [=] {
+		auto result = std::max({args[0]->dimensionality(), args[1]->dimensionality()});
+		ASSERT(result != WGA_Value::Dimensionality::_count);
+		return result;
+	};
+  const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
+  	Arg1 argv1 = Arg1(args[0]);
+Arg2 argv2 = Arg2(args[1]);
+
+const int sz = data.size;
+for(int i = 0; i < sz; i++) {
+  const Arg1::T arg1 = argh1[i];\nconst Arg2::T arg2 = argh2[i];\n
+  data[i] = (arg1 >= arg2);
+ }
+ return data;
+  };
+  return api->registerSymbol(new WGA_Value_CPU(*api, Result::valueType, isContextual, dimFunc, wga_fillCtor<Result::valueType>(dimFunc, fillFunc, "compGeq")));
+};
+
 
 
 		return result;

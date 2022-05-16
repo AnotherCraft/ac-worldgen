@@ -7,6 +7,7 @@ import std.range;
 import std.regex;
 import std.conv;
 import std.stdio;
+import std.exception;
 
 import dyaml;
 
@@ -63,8 +64,22 @@ void main() {
 					foreach(string bt; baseTypes[])
 						callback(bt, i);
 				}
+				else if(t == "Num") {
+					callback("Float", i);	
+					callback("Float2", i);	
+					callback("Float3", i);	
+				}
+				else if(t == "Float2+") {
+					callback("Float2", i);	
+					callback("Float3", i);	
+				}
 				else if(auto m = t.matchFirst(ctRegex!"^Arg([0-9]+)$"))
 					callback(argTypes[m[1].to!int-1], i);
+				else if(auto m = t.matchFirst(ctRegex!"^Arg([0-9]+)Or([a-zA-Z]+)$")) {
+					enforce(baseTypes.canFind(m[2]));
+					callback(argTypes[m[1].to!int-1], i);
+					callback(m[2], i);
+				}
 				else
 					throw new Exception("Unknown template %s.".format(t));
 			}
@@ -78,13 +93,20 @@ void main() {
 						apiCode ~= "finalize();\n\n";
 
 						string dimCode;
-						string dim = funcn["dim"].as!string;
+						string dim = "dim" in funcn ? funcn["dim"].as!string : null;
 						if(baseDims.canFind(dim))
 							dimCode = "WGA_Value::Dimensionality::D%s".format(dim);
-						else if(dim == "max")
+						else if(auto m = dim.matchFirst(ctRegex!"^arg([0-9]+)$"))
+							dimCode = "args[%s]->dimensionality()".format(m[1].to!int - 1);
+						else if(dim == "max" || dim == null)
 							dimCode = "std::max({%s})".format(iota(argt.length).map!(i => "args[%s]->dimensionality()".format(i)).join(", "));
 						else if(dim == "min")
 							dimCode = "std::min({%s})".format(iota(argt.length).map!(i => "args[%s]->dimensionality()".format(i)).join(", "));
+						else if(dim.startsWith(":"))
+							dimCode =
+								dim[1..$]
+									.replaceAll!(m => "args[%s]->dimensionality()".format(m[1].to!int - 1))(ctRegex!r"\barg([0-9]+)\b")
+									;
 						else
 							throw new Exception("Unknown dimensionality: %s".format(dim));
 

@@ -18,63 +18,3154 @@ const WorldGenAPI::Functions &WorldGenAPI::functions() {
 		};
 
 		f.section = "Utility functions";
-		f.name = "worldPos";
-		f.returnValue.name = "pos";
-		f.arguments.resize(0);
-		f.returnValue.type = WGA_Value::ValueType::Float3;
-		f.id = 0;
-		finalize();
+f.name = "worldPos";
+f.returnValue.name = "pos";
+f.arguments.resize(0);
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 0;
+finalize();
 
-		f.name = "select";
-		f.returnValue.name = "result";
-		f.arguments.resize(3);
-		f.arguments[0].name = QStringLiteral("cond");
-		f.arguments[1].name = QStringLiteral("thn");
-		f.arguments[2].name = QStringLiteral("els");
-		f.arguments[0].type = WGA_Value::ValueType::Bool;
-		f.arguments[1].type = WGA_Value::ValueType::Float;
-		f.arguments[2].type = WGA_Value::ValueType::Float;
-		f.returnValue.type = WGA_Value::ValueType::Float;
-		f.id = 1;
-		finalize();
+f.name = "select";
+f.returnValue.name = "result";
+f.arguments.resize(3);
+f.arguments[0].name = "cond";
+f.arguments[1].name = "thn";
+f.arguments[2].name = "els";
+f.arguments[0].type = WGA_Value::ValueType::Bool;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.arguments[2].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 1;
+finalize();
 
-		f.arguments[1].type = WGA_Value::ValueType::Float2;
-		f.arguments[2].type = WGA_Value::ValueType::Float2;
-		f.returnValue.type = WGA_Value::ValueType::Float2;
-		f.id = 2;
-		finalize();
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.arguments[2].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 2;
+finalize();
 
-		f.arguments[1].type = WGA_Value::ValueType::Float3;
-		f.arguments[2].type = WGA_Value::ValueType::Float3;
-		f.returnValue.type = WGA_Value::ValueType::Float3;
-		f.id = 3;
-		finalize();
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.arguments[2].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 3;
+finalize();
 
-		f.arguments[1].type = WGA_Value::ValueType::Bool;
-		f.arguments[2].type = WGA_Value::ValueType::Bool;
-		f.returnValue.type = WGA_Value::ValueType::Bool;
-		f.id = 4;
-		finalize();
+f.arguments[1].type = WGA_Value::ValueType::Bool;
+f.arguments[2].type = WGA_Value::ValueType::Bool;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 4;
+finalize();
 
-		f.arguments[1].type = WGA_Value::ValueType::Block;
-		f.arguments[2].type = WGA_Value::ValueType::Block;
-		f.returnValue.type = WGA_Value::ValueType::Block;
-		f.id = 5;
-		finalize();
+f.arguments[1].type = WGA_Value::ValueType::Block;
+f.arguments[2].type = WGA_Value::ValueType::Block;
+f.returnValue.type = WGA_Value::ValueType::Block;
+f.id = 5;
+finalize();
 
-		f.arguments[1].type = WGA_Value::ValueType::Rule;
-		f.arguments[2].type = WGA_Value::ValueType::Rule;
-		f.returnValue.type = WGA_Value::ValueType::Rule;
-		f.id = 6;
-		finalize();
+f.arguments[1].type = WGA_Value::ValueType::Rule;
+f.arguments[2].type = WGA_Value::ValueType::Rule;
+f.returnValue.type = WGA_Value::ValueType::Rule;
+f.id = 6;
+finalize();
 
-		f.arguments[1].type = WGA_Value::ValueType::ComponentNode;
-		f.arguments[2].type = WGA_Value::ValueType::ComponentNode;
-		f.returnValue.type = WGA_Value::ValueType::ComponentNode;
-		f.id = 7;
-		finalize();
+f.arguments[1].type = WGA_Value::ValueType::ComponentNode;
+f.arguments[2].type = WGA_Value::ValueType::ComponentNode;
+f.returnValue.type = WGA_Value::ValueType::ComponentNode;
+f.id = 7;
+finalize();
+
+f.section = "Vector functions";
+f.name = "float2";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "x";
+f.arguments[1].name = "y";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 8;
+finalize();
+
+f.name = "float2";
+f.returnValue.name = "r";
+f.arguments.resize(1);
+f.arguments[0].name = "v";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 9;
+finalize();
+
+f.name = "float3";
+f.returnValue.name = "r";
+f.arguments.resize(3);
+f.arguments[0].name = "x";
+f.arguments[1].name = "y";
+f.arguments[2].name = "z";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.arguments[2].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 10;
+finalize();
+
+f.name = "float3";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "xy";
+f.arguments[1].name = "z";
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 11;
+finalize();
+
+f.name = "float3";
+f.returnValue.name = "r";
+f.arguments.resize(1);
+f.arguments[0].name = "v";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 12;
+finalize();
+
+f.name = "x";
+f.returnValue.name = "x";
+f.arguments.resize(1);
+f.arguments[0].name = "vec";
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 13;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 14;
+finalize();
+
+f.name = "y";
+f.returnValue.name = "y";
+f.arguments.resize(1);
+f.arguments[0].name = "vec";
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 15;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 16;
+finalize();
+
+f.name = "z";
+f.returnValue.name = "x";
+f.arguments.resize(1);
+f.arguments[0].name = "vec";
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 17;
+finalize();
+
+f.name = "xy";
+f.returnValue.name = "xy";
+f.arguments.resize(1);
+f.arguments[0].name = "vec";
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 18;
+finalize();
+
+f.name = "normalize";
+f.returnValue.name = "r";
+f.arguments.resize(1);
+f.arguments[0].name = "v";
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 19;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 20;
+finalize();
+
+f.name = "length";
+f.returnValue.name = "len";
+f.arguments.resize(1);
+f.arguments[0].name = "v";
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 21;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 22;
+finalize();
+
+f.name = "lengthExp";
+f.returnValue.name = "len";
+f.arguments.resize(2);
+f.arguments[0].name = "v";
+f.arguments[1].name = "exp";
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 23;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 24;
+finalize();
+
+f.name = "manhattanLength";
+f.returnValue.name = "dist";
+f.arguments.resize(1);
+f.arguments[0].name = "v";
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 25;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 26;
+finalize();
+
+f.name = "distance";
+f.returnValue.name = "dist";
+f.arguments.resize(2);
+f.arguments[0].name = "vec1";
+f.arguments[1].name = "vec2";
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 27;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 28;
+finalize();
+
+f.name = "manhattanDistance";
+f.returnValue.name = "dist";
+f.arguments.resize(2);
+f.arguments[0].name = "vec1";
+f.arguments[1].name = "vec2";
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 29;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 30;
+finalize();
+
+f.name = "distanceTo";
+f.returnValue.name = "dist";
+f.arguments.resize(1);
+f.arguments[0].name = "targetWorldPos";
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 31;
+finalize();
+
+f.name = "distanceTo";
+f.returnValue.name = "dist";
+f.arguments.resize(1);
+f.arguments[0].name = "targetWorldPos";
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 32;
+finalize();
+
+f.name = "distanceTo2D";
+f.returnValue.name = "dist";
+f.arguments.resize(1);
+f.arguments[0].name = "targetWorldPos";
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 33;
+finalize();
+
+f.name = "distanceToLine";
+f.returnValue.name = "dist";
+f.arguments.resize(3);
+f.arguments[0].name = "p";
+f.arguments[1].name = "a";
+f.arguments[2].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.arguments[2].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 34;
+finalize();
+
+f.section = "Sampling functions";
+f.name = "sampleOffset";
+f.returnValue.name = "valueAtOffset";
+f.arguments.resize(2);
+f.arguments[0].name = "variable";
+f.arguments[1].name = "offset";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 35;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 36;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 37;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Bool;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 38;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Block;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Block;
+f.id = 39;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Rule;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Rule;
+f.id = 40;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::ComponentNode;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::ComponentNode;
+f.id = 41;
+finalize();
+
+f.name = "sampleAt";
+f.returnValue.name = "valueAtPos";
+f.arguments.resize(2);
+f.arguments[0].name = "variable";
+f.arguments[1].name = "worldPos";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 42;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 43;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 44;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Bool;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 45;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Block;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Block;
+f.id = 46;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Rule;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Rule;
+f.id = 47;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::ComponentNode;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::ComponentNode;
+f.id = 48;
+finalize();
+
+f.name = "sampleAt";
+f.returnValue.name = "valueAtPos";
+f.arguments.resize(2);
+f.arguments[0].name = "variable";
+f.arguments[1].name = "worldPos";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 49;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 50;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 51;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Bool;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 52;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Block;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Block;
+f.id = 53;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Rule;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Rule;
+f.id = 54;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::ComponentNode;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::ComponentNode;
+f.id = 55;
+finalize();
+
+f.name = "sampleGradient2D";
+f.returnValue.name = "gradient";
+f.arguments.resize(2);
+f.arguments[0].name = "value";
+f.arguments[1].name = "dist";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 56;
+finalize();
+
+f.name = "sampleAvg2D";
+f.returnValue.name = "avg";
+f.arguments.resize(2);
+f.arguments[0].name = "value";
+f.arguments[1].name = "dist";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 57;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 58;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 59;
+finalize();
+
+f.section = "Biome functions";
+f.name = "biomeParam_nearest";
+f.returnValue.name = "var";
+f.arguments.resize(1);
+f.arguments[0].name = "var";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 60;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 61;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 62;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Bool;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 63;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Block;
+f.returnValue.type = WGA_Value::ValueType::Block;
+f.id = 64;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Rule;
+f.returnValue.type = WGA_Value::ValueType::Rule;
+f.id = 65;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::ComponentNode;
+f.returnValue.type = WGA_Value::ValueType::ComponentNode;
+f.id = 66;
+finalize();
+
+f.name = "biomeParam_nearestSet";
+f.returnValue.name = "var";
+f.arguments.resize(1);
+f.arguments[0].name = "var";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 67;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 68;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 69;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Bool;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 70;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Block;
+f.returnValue.type = WGA_Value::ValueType::Block;
+f.id = 71;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Rule;
+f.returnValue.type = WGA_Value::ValueType::Rule;
+f.id = 72;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::ComponentNode;
+f.returnValue.type = WGA_Value::ValueType::ComponentNode;
+f.id = 73;
+finalize();
+
+f.name = "biomeParam_weighted";
+f.returnValue.name = "var";
+f.arguments.resize(2);
+f.arguments[0].name = "var";
+f.arguments[1].name = "exp";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 74;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 75;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 76;
+finalize();
+
+f.section = "Structure functions";
+f.name = "spawn2D";
+f.returnValue.name = "result";
+f.arguments.resize(5);
+f.arguments[0].name = "entryRule";
+f.arguments[1].name = "maxRadius";
+f.arguments[2].name = "seed";
+f.arguments[3].name = "spawnZ";
+f.arguments[4].name = "spawnCondition";
+f.arguments[0].type = WGA_Value::ValueType::Rule;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.arguments[2].type = WGA_Value::ValueType::Float;
+f.arguments[3].type = WGA_Value::ValueType::Float;
+f.arguments[4].type = WGA_Value::ValueType::Bool;
+f.returnValue.type = WGA_Value::ValueType::Block;
+f.id = 77;
+finalize();
+
+f.name = "worldPos";
+f.returnValue.name = "worldPos";
+f.arguments.resize(1);
+f.arguments[0].name = "node";
+f.arguments[0].type = WGA_Value::ValueType::ComponentNode;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 78;
+finalize();
+
+f.name = "worldPos";
+f.returnValue.name = "worldPos";
+f.arguments.resize(1);
+f.arguments[0].name = "localPos";
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 79;
+finalize();
+
+f.name = "localPos";
+f.returnValue.name = "localPos";
+f.arguments.resize(0);
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 80;
+finalize();
+
+f.name = "localPos";
+f.returnValue.name = "localPos";
+f.arguments.resize(1);
+f.arguments[0].name = "worldPos";
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 81;
+finalize();
+
+f.name = "localSeed";
+f.returnValue.name = "seed";
+f.arguments.resize(0);
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 82;
+finalize();
+
+f.name = "distanceTo";
+f.returnValue.name = "dist";
+f.arguments.resize(1);
+f.arguments[0].name = "node";
+f.arguments[0].type = WGA_Value::ValueType::ComponentNode;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 83;
+finalize();
+
+f.name = "sampleAt";
+f.returnValue.name = "valueAtNodePos";
+f.arguments.resize(2);
+f.arguments[0].name = "variable";
+f.arguments[1].name = "node";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::ComponentNode;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 84;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::ComponentNode;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 85;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::ComponentNode;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 86;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Bool;
+f.arguments[1].type = WGA_Value::ValueType::ComponentNode;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 87;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Block;
+f.arguments[1].type = WGA_Value::ValueType::ComponentNode;
+f.returnValue.type = WGA_Value::ValueType::Block;
+f.id = 88;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Rule;
+f.arguments[1].type = WGA_Value::ValueType::ComponentNode;
+f.returnValue.type = WGA_Value::ValueType::Rule;
+f.id = 89;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::ComponentNode;
+f.arguments[1].type = WGA_Value::ValueType::ComponentNode;
+f.returnValue.type = WGA_Value::ValueType::ComponentNode;
+f.id = 90;
+finalize();
+
+f.section = "Noise functions";
+f.name = "randC";
+f.returnValue.name = "result";
+f.arguments.resize(1);
+f.arguments[0].name = "seed";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 91;
+finalize();
+
+f.name = "randL";
+f.returnValue.name = "result";
+f.arguments.resize(1);
+f.arguments[0].name = "seed";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 92;
+finalize();
+
+f.name = "randPC";
+f.returnValue.name = "result";
+f.arguments.resize(1);
+f.arguments[0].name = "seed";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 93;
+finalize();
+
+f.name = "rand2D";
+f.returnValue.name = "result";
+f.arguments.resize(1);
+f.arguments[0].name = "seed";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 94;
+finalize();
+
+f.name = "rand3D";
+f.returnValue.name = "result";
+f.arguments.resize(1);
+f.arguments[0].name = "seed";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 95;
+finalize();
+
+f.name = "valueNoisePC";
+f.returnValue.name = "result";
+f.arguments.resize(3);
+f.arguments[0].name = "octaveSize";
+f.arguments[1].name = "seed";
+f.arguments[2].name = "nodeValue";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.arguments[2].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 96;
+finalize();
+
+f.name = "valueNoise2D";
+f.returnValue.name = "result";
+f.arguments.resize(3);
+f.arguments[0].name = "octaveSize";
+f.arguments[1].name = "seed";
+f.arguments[2].name = "nodeValue";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.arguments[2].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 97;
+finalize();
+
+f.name = "perlin2D";
+f.returnValue.name = "result";
+f.arguments.resize(2);
+f.arguments[0].name = "octaveSize";
+f.arguments[1].name = "seed";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 98;
+finalize();
+
+f.name = "perlin3D";
+f.returnValue.name = "result";
+f.arguments.resize(2);
+f.arguments[0].name = "octaveSize";
+f.arguments[1].name = "seed";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 99;
+finalize();
+
+f.name = "voronoi2D";
+f.returnValue.name = "result";
+f.arguments.resize(4);
+f.arguments[0].name = "octaveSize";
+f.arguments[1].name = "seed";
+f.arguments[2].name = "resultType";
+f.arguments[3].name = "metricExponent";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.arguments[2].type = WGA_Value::ValueType::Float;
+f.arguments[3].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 100;
+finalize();
+
+f.name = "voronoi2DColored";
+f.returnValue.name = "result";
+f.arguments.resize(5);
+f.arguments[0].name = "octaveSize";
+f.arguments[1].name = "seed";
+f.arguments[2].name = "resultType";
+f.arguments[3].name = "metricExponent";
+f.arguments[4].name = "coloring";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.arguments[2].type = WGA_Value::ValueType::Float;
+f.arguments[3].type = WGA_Value::ValueType::Float;
+f.arguments[4].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 101;
+finalize();
+
+f.name = "poissonDisc2DBool";
+f.returnValue.name = "isNode";
+f.arguments.resize(2);
+f.arguments[0].name = "seed";
+f.arguments[1].name = "radius";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 102;
+finalize();
+
+f.name = "osimplex2D";
+f.returnValue.name = "result";
+f.arguments.resize(2);
+f.arguments[0].name = "octaveSize";
+f.arguments[1].name = "seed";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 103;
+finalize();
+
+f.name = "osimplex3D";
+f.returnValue.name = "result";
+f.arguments.resize(2);
+f.arguments[0].name = "octaveSize";
+f.arguments[1].name = "seed";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 104;
+finalize();
+
+f.section = "Aggregation functions";
+f.name = "minPC";
+f.returnValue.name = "minVal";
+f.arguments.resize(1);
+f.arguments[0].name = "val";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 105;
+finalize();
+
+f.name = "maxPC";
+f.returnValue.name = "maxVal";
+f.arguments.resize(1);
+f.arguments[0].name = "val";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 106;
+finalize();
+
+f.section = "Math functions";
+f.name = "min";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 107;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 108;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 109;
+finalize();
+
+f.name = "max";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 110;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 111;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 112;
+finalize();
+
+f.name = "smoothMin";
+f.returnValue.name = "r";
+f.arguments.resize(3);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[2].name = "k";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.arguments[2].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 113;
+finalize();
+
+f.name = "smoothMax";
+f.returnValue.name = "r";
+f.arguments.resize(3);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[2].name = "k";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.arguments[2].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 114;
+finalize();
+
+f.name = "clamp";
+f.returnValue.name = "r";
+f.arguments.resize(3);
+f.arguments[0].name = "v";
+f.arguments[1].name = "min";
+f.arguments[2].name = "max";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.arguments[2].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 115;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.arguments[2].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 116;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.arguments[2].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 117;
+finalize();
+
+f.name = "clamp01";
+f.returnValue.name = "r";
+f.arguments.resize(1);
+f.arguments[0].name = "v";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 118;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 119;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 120;
+finalize();
+
+f.name = "mix";
+f.returnValue.name = "r";
+f.arguments.resize(3);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[2].name = "p";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.arguments[2].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 121;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.arguments[2].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 122;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.arguments[2].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 123;
+finalize();
+
+f.name = "abs";
+f.returnValue.name = "r";
+f.arguments.resize(1);
+f.arguments[0].name = "v";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 124;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 125;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 126;
+finalize();
+
+f.name = "floor";
+f.returnValue.name = "r";
+f.arguments.resize(1);
+f.arguments[0].name = "v";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 127;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 128;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 129;
+finalize();
+
+f.name = "ceil";
+f.returnValue.name = "r";
+f.arguments.resize(1);
+f.arguments[0].name = "v";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 130;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 131;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 132;
+finalize();
+
+f.name = "round";
+f.returnValue.name = "r";
+f.arguments.resize(1);
+f.arguments[0].name = "v";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 133;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 134;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 135;
+finalize();
+
+f.name = "fract";
+f.returnValue.name = "r";
+f.arguments.resize(1);
+f.arguments[0].name = "v";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 136;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 137;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 138;
+finalize();
+
+f.name = "ffract";
+f.returnValue.name = "r";
+f.arguments.resize(1);
+f.arguments[0].name = "v";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 139;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 140;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 141;
+finalize();
+
+f.name = "pow";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "v";
+f.arguments[1].name = "e";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 142;
+finalize();
+
+f.name = "sin";
+f.returnValue.name = "r";
+f.arguments.resize(1);
+f.arguments[0].name = "x";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 143;
+finalize();
+
+f.name = "cos";
+f.returnValue.name = "r";
+f.arguments.resize(1);
+f.arguments[0].name = "x";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 144;
+finalize();
+
+f.section = "Basic math functions";
+f.name = "inverse";
+f.returnValue.name = "r";
+f.arguments.resize(1);
+f.arguments[0].name = "a";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 145;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 146;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 147;
+finalize();
+
+f.name = "add";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 148;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 149;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 150;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 151;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 152;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 153;
+finalize();
+
+f.name = "sub";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 154;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 155;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 156;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 157;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 158;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 159;
+finalize();
+
+f.name = "mult";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 160;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 161;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 162;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 163;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 164;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 165;
+finalize();
+
+f.name = "div";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 166;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 167;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 168;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 169;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 170;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 171;
+finalize();
+
+f.name = "mod";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 172;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 173;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 174;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 175;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 176;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 177;
+finalize();
+
+f.section = "Basic logic functions";
+f.name = "logOr";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Bool;
+f.arguments[1].type = WGA_Value::ValueType::Bool;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 178;
+finalize();
+
+f.name = "logAnd";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Bool;
+f.arguments[1].type = WGA_Value::ValueType::Bool;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 179;
+finalize();
+
+f.name = "logNot";
+f.returnValue.name = "r";
+f.arguments.resize(1);
+f.arguments[0].name = "a";
+f.arguments[0].type = WGA_Value::ValueType::Bool;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 180;
+finalize();
+
+f.name = "bool";
+f.returnValue.name = "b";
+f.arguments.resize(1);
+f.arguments[0].name = "a";
+f.arguments[0].type = WGA_Value::ValueType::Block;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 181;
+finalize();
+
+f.section = "Comparison functions";
+f.name = "compEq";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 182;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 183;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 184;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Bool;
+f.arguments[1].type = WGA_Value::ValueType::Bool;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 185;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Block;
+f.arguments[1].type = WGA_Value::ValueType::Block;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 186;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Rule;
+f.arguments[1].type = WGA_Value::ValueType::Rule;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 187;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::ComponentNode;
+f.arguments[1].type = WGA_Value::ValueType::ComponentNode;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 188;
+finalize();
+
+f.name = "compEq";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 189;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 190;
+finalize();
+
+f.name = "compNeq";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 191;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 192;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 193;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Bool;
+f.arguments[1].type = WGA_Value::ValueType::Bool;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 194;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Block;
+f.arguments[1].type = WGA_Value::ValueType::Block;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 195;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Rule;
+f.arguments[1].type = WGA_Value::ValueType::Rule;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 196;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::ComponentNode;
+f.arguments[1].type = WGA_Value::ValueType::ComponentNode;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 197;
+finalize();
+
+f.name = "compNeq";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 198;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 199;
+finalize();
+
+f.name = "compLt";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 200;
+finalize();
+
+f.name = "compGt";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 201;
+finalize();
+
+f.name = "compLeq";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 202;
+finalize();
+
+f.name = "compGeq";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 203;
+finalize();
+
+f.section = "Utility functions";
+f.name = "worldPos";
+f.returnValue.name = "pos";
+f.arguments.resize(0);
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 204;
+finalize();
+
+f.name = "select";
+f.returnValue.name = "result";
+f.arguments.resize(3);
+f.arguments[0].name = "cond";
+f.arguments[1].name = "thn";
+f.arguments[2].name = "els";
+f.arguments[0].type = WGA_Value::ValueType::Bool;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.arguments[2].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 205;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.arguments[2].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 206;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.arguments[2].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 207;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::Bool;
+f.arguments[2].type = WGA_Value::ValueType::Bool;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 208;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::Block;
+f.arguments[2].type = WGA_Value::ValueType::Block;
+f.returnValue.type = WGA_Value::ValueType::Block;
+f.id = 209;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::Rule;
+f.arguments[2].type = WGA_Value::ValueType::Rule;
+f.returnValue.type = WGA_Value::ValueType::Rule;
+f.id = 210;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::ComponentNode;
+f.arguments[2].type = WGA_Value::ValueType::ComponentNode;
+f.returnValue.type = WGA_Value::ValueType::ComponentNode;
+f.id = 211;
+finalize();
+
+f.section = "Vector functions";
+f.name = "float2";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "x";
+f.arguments[1].name = "y";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 212;
+finalize();
+
+f.name = "float2";
+f.returnValue.name = "r";
+f.arguments.resize(1);
+f.arguments[0].name = "v";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 213;
+finalize();
+
+f.name = "float3";
+f.returnValue.name = "r";
+f.arguments.resize(3);
+f.arguments[0].name = "x";
+f.arguments[1].name = "y";
+f.arguments[2].name = "z";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.arguments[2].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 214;
+finalize();
+
+f.name = "float3";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "xy";
+f.arguments[1].name = "z";
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 215;
+finalize();
+
+f.name = "float3";
+f.returnValue.name = "r";
+f.arguments.resize(1);
+f.arguments[0].name = "v";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 216;
+finalize();
+
+f.name = "x";
+f.returnValue.name = "x";
+f.arguments.resize(1);
+f.arguments[0].name = "vec";
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 217;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 218;
+finalize();
+
+f.name = "y";
+f.returnValue.name = "y";
+f.arguments.resize(1);
+f.arguments[0].name = "vec";
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 219;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 220;
+finalize();
+
+f.name = "z";
+f.returnValue.name = "x";
+f.arguments.resize(1);
+f.arguments[0].name = "vec";
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 221;
+finalize();
+
+f.name = "xy";
+f.returnValue.name = "xy";
+f.arguments.resize(1);
+f.arguments[0].name = "vec";
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 222;
+finalize();
+
+f.name = "normalize";
+f.returnValue.name = "r";
+f.arguments.resize(1);
+f.arguments[0].name = "v";
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 223;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 224;
+finalize();
+
+f.name = "length";
+f.returnValue.name = "len";
+f.arguments.resize(1);
+f.arguments[0].name = "v";
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 225;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 226;
+finalize();
+
+f.name = "lengthExp";
+f.returnValue.name = "len";
+f.arguments.resize(2);
+f.arguments[0].name = "v";
+f.arguments[1].name = "exp";
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 227;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 228;
+finalize();
+
+f.name = "manhattanLength";
+f.returnValue.name = "dist";
+f.arguments.resize(1);
+f.arguments[0].name = "v";
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 229;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 230;
+finalize();
+
+f.name = "distance";
+f.returnValue.name = "dist";
+f.arguments.resize(2);
+f.arguments[0].name = "vec1";
+f.arguments[1].name = "vec2";
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 231;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 232;
+finalize();
+
+f.name = "manhattanDistance";
+f.returnValue.name = "dist";
+f.arguments.resize(2);
+f.arguments[0].name = "vec1";
+f.arguments[1].name = "vec2";
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 233;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 234;
+finalize();
+
+f.name = "distanceTo";
+f.returnValue.name = "dist";
+f.arguments.resize(1);
+f.arguments[0].name = "targetWorldPos";
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 235;
+finalize();
+
+f.name = "distanceTo";
+f.returnValue.name = "dist";
+f.arguments.resize(1);
+f.arguments[0].name = "targetWorldPos";
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 236;
+finalize();
+
+f.name = "distanceTo2D";
+f.returnValue.name = "dist";
+f.arguments.resize(1);
+f.arguments[0].name = "targetWorldPos";
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 237;
+finalize();
+
+f.name = "distanceToLine";
+f.returnValue.name = "dist";
+f.arguments.resize(3);
+f.arguments[0].name = "p";
+f.arguments[1].name = "a";
+f.arguments[2].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.arguments[2].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 238;
+finalize();
+
+f.section = "Sampling functions";
+f.name = "sampleOffset";
+f.returnValue.name = "valueAtOffset";
+f.arguments.resize(2);
+f.arguments[0].name = "variable";
+f.arguments[1].name = "offset";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 239;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 240;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 241;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Bool;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 242;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Block;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Block;
+f.id = 243;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Rule;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Rule;
+f.id = 244;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::ComponentNode;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::ComponentNode;
+f.id = 245;
+finalize();
+
+f.name = "sampleAt";
+f.returnValue.name = "valueAtPos";
+f.arguments.resize(2);
+f.arguments[0].name = "variable";
+f.arguments[1].name = "worldPos";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 246;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 247;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 248;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Bool;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 249;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Block;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Block;
+f.id = 250;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Rule;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Rule;
+f.id = 251;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::ComponentNode;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::ComponentNode;
+f.id = 252;
+finalize();
+
+f.name = "sampleAt";
+f.returnValue.name = "valueAtPos";
+f.arguments.resize(2);
+f.arguments[0].name = "variable";
+f.arguments[1].name = "worldPos";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 253;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 254;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 255;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Bool;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 256;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Block;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Block;
+f.id = 257;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Rule;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Rule;
+f.id = 258;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::ComponentNode;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::ComponentNode;
+f.id = 259;
+finalize();
+
+f.name = "sampleGradient2D";
+f.returnValue.name = "gradient";
+f.arguments.resize(2);
+f.arguments[0].name = "value";
+f.arguments[1].name = "dist";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 260;
+finalize();
+
+f.name = "sampleAvg2D";
+f.returnValue.name = "avg";
+f.arguments.resize(2);
+f.arguments[0].name = "value";
+f.arguments[1].name = "dist";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 261;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 262;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 263;
+finalize();
+
+f.section = "Biome functions";
+f.name = "biomeParam_nearest";
+f.returnValue.name = "var";
+f.arguments.resize(1);
+f.arguments[0].name = "var";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 264;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 265;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 266;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Bool;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 267;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Block;
+f.returnValue.type = WGA_Value::ValueType::Block;
+f.id = 268;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Rule;
+f.returnValue.type = WGA_Value::ValueType::Rule;
+f.id = 269;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::ComponentNode;
+f.returnValue.type = WGA_Value::ValueType::ComponentNode;
+f.id = 270;
+finalize();
+
+f.name = "biomeParam_nearestSet";
+f.returnValue.name = "var";
+f.arguments.resize(1);
+f.arguments[0].name = "var";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 271;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 272;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 273;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Bool;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 274;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Block;
+f.returnValue.type = WGA_Value::ValueType::Block;
+f.id = 275;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Rule;
+f.returnValue.type = WGA_Value::ValueType::Rule;
+f.id = 276;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::ComponentNode;
+f.returnValue.type = WGA_Value::ValueType::ComponentNode;
+f.id = 277;
+finalize();
+
+f.name = "biomeParam_weighted";
+f.returnValue.name = "var";
+f.arguments.resize(2);
+f.arguments[0].name = "var";
+f.arguments[1].name = "exp";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 278;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 279;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 280;
+finalize();
+
+f.section = "Structure functions";
+f.name = "spawn2D";
+f.returnValue.name = "result";
+f.arguments.resize(5);
+f.arguments[0].name = "entryRule";
+f.arguments[1].name = "maxRadius";
+f.arguments[2].name = "seed";
+f.arguments[3].name = "spawnZ";
+f.arguments[4].name = "spawnCondition";
+f.arguments[0].type = WGA_Value::ValueType::Rule;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.arguments[2].type = WGA_Value::ValueType::Float;
+f.arguments[3].type = WGA_Value::ValueType::Float;
+f.arguments[4].type = WGA_Value::ValueType::Bool;
+f.returnValue.type = WGA_Value::ValueType::Block;
+f.id = 281;
+finalize();
+
+f.name = "worldPos";
+f.returnValue.name = "worldPos";
+f.arguments.resize(1);
+f.arguments[0].name = "node";
+f.arguments[0].type = WGA_Value::ValueType::ComponentNode;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 282;
+finalize();
+
+f.name = "worldPos";
+f.returnValue.name = "worldPos";
+f.arguments.resize(1);
+f.arguments[0].name = "localPos";
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 283;
+finalize();
+
+f.name = "localPos";
+f.returnValue.name = "localPos";
+f.arguments.resize(0);
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 284;
+finalize();
+
+f.name = "localPos";
+f.returnValue.name = "localPos";
+f.arguments.resize(1);
+f.arguments[0].name = "worldPos";
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 285;
+finalize();
+
+f.name = "localSeed";
+f.returnValue.name = "seed";
+f.arguments.resize(0);
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 286;
+finalize();
+
+f.name = "distanceTo";
+f.returnValue.name = "dist";
+f.arguments.resize(1);
+f.arguments[0].name = "node";
+f.arguments[0].type = WGA_Value::ValueType::ComponentNode;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 287;
+finalize();
+
+f.name = "sampleAt";
+f.returnValue.name = "valueAtNodePos";
+f.arguments.resize(2);
+f.arguments[0].name = "variable";
+f.arguments[1].name = "node";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::ComponentNode;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 288;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::ComponentNode;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 289;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::ComponentNode;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 290;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Bool;
+f.arguments[1].type = WGA_Value::ValueType::ComponentNode;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 291;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Block;
+f.arguments[1].type = WGA_Value::ValueType::ComponentNode;
+f.returnValue.type = WGA_Value::ValueType::Block;
+f.id = 292;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Rule;
+f.arguments[1].type = WGA_Value::ValueType::ComponentNode;
+f.returnValue.type = WGA_Value::ValueType::Rule;
+f.id = 293;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::ComponentNode;
+f.arguments[1].type = WGA_Value::ValueType::ComponentNode;
+f.returnValue.type = WGA_Value::ValueType::ComponentNode;
+f.id = 294;
+finalize();
+
+f.section = "Noise functions";
+f.name = "randC";
+f.returnValue.name = "result";
+f.arguments.resize(1);
+f.arguments[0].name = "seed";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 295;
+finalize();
+
+f.name = "randL";
+f.returnValue.name = "result";
+f.arguments.resize(1);
+f.arguments[0].name = "seed";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 296;
+finalize();
+
+f.name = "randPC";
+f.returnValue.name = "result";
+f.arguments.resize(1);
+f.arguments[0].name = "seed";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 297;
+finalize();
+
+f.name = "rand2D";
+f.returnValue.name = "result";
+f.arguments.resize(1);
+f.arguments[0].name = "seed";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 298;
+finalize();
+
+f.name = "rand3D";
+f.returnValue.name = "result";
+f.arguments.resize(1);
+f.arguments[0].name = "seed";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 299;
+finalize();
+
+f.name = "valueNoisePC";
+f.returnValue.name = "result";
+f.arguments.resize(3);
+f.arguments[0].name = "octaveSize";
+f.arguments[1].name = "seed";
+f.arguments[2].name = "nodeValue";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.arguments[2].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 300;
+finalize();
+
+f.name = "valueNoise2D";
+f.returnValue.name = "result";
+f.arguments.resize(3);
+f.arguments[0].name = "octaveSize";
+f.arguments[1].name = "seed";
+f.arguments[2].name = "nodeValue";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.arguments[2].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 301;
+finalize();
+
+f.name = "perlin2D";
+f.returnValue.name = "result";
+f.arguments.resize(2);
+f.arguments[0].name = "octaveSize";
+f.arguments[1].name = "seed";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 302;
+finalize();
+
+f.name = "perlin3D";
+f.returnValue.name = "result";
+f.arguments.resize(2);
+f.arguments[0].name = "octaveSize";
+f.arguments[1].name = "seed";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 303;
+finalize();
+
+f.name = "voronoi2D";
+f.returnValue.name = "result";
+f.arguments.resize(4);
+f.arguments[0].name = "octaveSize";
+f.arguments[1].name = "seed";
+f.arguments[2].name = "resultType";
+f.arguments[3].name = "metricExponent";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.arguments[2].type = WGA_Value::ValueType::Float;
+f.arguments[3].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 304;
+finalize();
+
+f.name = "voronoi2DColored";
+f.returnValue.name = "result";
+f.arguments.resize(5);
+f.arguments[0].name = "octaveSize";
+f.arguments[1].name = "seed";
+f.arguments[2].name = "resultType";
+f.arguments[3].name = "metricExponent";
+f.arguments[4].name = "coloring";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.arguments[2].type = WGA_Value::ValueType::Float;
+f.arguments[3].type = WGA_Value::ValueType::Float;
+f.arguments[4].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 305;
+finalize();
+
+f.name = "poissonDisc2DBool";
+f.returnValue.name = "isNode";
+f.arguments.resize(2);
+f.arguments[0].name = "seed";
+f.arguments[1].name = "radius";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 306;
+finalize();
+
+f.name = "osimplex2D";
+f.returnValue.name = "result";
+f.arguments.resize(2);
+f.arguments[0].name = "octaveSize";
+f.arguments[1].name = "seed";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 307;
+finalize();
+
+f.name = "osimplex3D";
+f.returnValue.name = "result";
+f.arguments.resize(2);
+f.arguments[0].name = "octaveSize";
+f.arguments[1].name = "seed";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 308;
+finalize();
+
+f.section = "Aggregation functions";
+f.name = "minPC";
+f.returnValue.name = "minVal";
+f.arguments.resize(1);
+f.arguments[0].name = "val";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 309;
+finalize();
+
+f.name = "maxPC";
+f.returnValue.name = "maxVal";
+f.arguments.resize(1);
+f.arguments[0].name = "val";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 310;
+finalize();
+
+f.section = "Math functions";
+f.name = "min";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 311;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 312;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 313;
+finalize();
+
+f.name = "max";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 314;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 315;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 316;
+finalize();
+
+f.name = "smoothMin";
+f.returnValue.name = "r";
+f.arguments.resize(3);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[2].name = "k";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.arguments[2].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 317;
+finalize();
+
+f.name = "smoothMax";
+f.returnValue.name = "r";
+f.arguments.resize(3);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[2].name = "k";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.arguments[2].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 318;
+finalize();
+
+f.name = "clamp";
+f.returnValue.name = "r";
+f.arguments.resize(3);
+f.arguments[0].name = "v";
+f.arguments[1].name = "min";
+f.arguments[2].name = "max";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.arguments[2].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 319;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.arguments[2].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 320;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.arguments[2].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 321;
+finalize();
+
+f.name = "clamp01";
+f.returnValue.name = "r";
+f.arguments.resize(1);
+f.arguments[0].name = "v";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 322;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 323;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 324;
+finalize();
+
+f.name = "mix";
+f.returnValue.name = "r";
+f.arguments.resize(3);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[2].name = "p";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.arguments[2].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 325;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.arguments[2].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 326;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.arguments[2].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 327;
+finalize();
+
+f.name = "abs";
+f.returnValue.name = "r";
+f.arguments.resize(1);
+f.arguments[0].name = "v";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 328;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 329;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 330;
+finalize();
+
+f.name = "floor";
+f.returnValue.name = "r";
+f.arguments.resize(1);
+f.arguments[0].name = "v";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 331;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 332;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 333;
+finalize();
+
+f.name = "ceil";
+f.returnValue.name = "r";
+f.arguments.resize(1);
+f.arguments[0].name = "v";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 334;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 335;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 336;
+finalize();
+
+f.name = "round";
+f.returnValue.name = "r";
+f.arguments.resize(1);
+f.arguments[0].name = "v";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 337;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 338;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 339;
+finalize();
+
+f.name = "fract";
+f.returnValue.name = "r";
+f.arguments.resize(1);
+f.arguments[0].name = "v";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 340;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 341;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 342;
+finalize();
+
+f.name = "ffract";
+f.returnValue.name = "r";
+f.arguments.resize(1);
+f.arguments[0].name = "v";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 343;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 344;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 345;
+finalize();
+
+f.name = "pow";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "v";
+f.arguments[1].name = "e";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 346;
+finalize();
+
+f.name = "sin";
+f.returnValue.name = "r";
+f.arguments.resize(1);
+f.arguments[0].name = "x";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 347;
+finalize();
+
+f.name = "cos";
+f.returnValue.name = "r";
+f.arguments.resize(1);
+f.arguments[0].name = "x";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 348;
+finalize();
+
+f.section = "Basic math functions";
+f.name = "inverse";
+f.returnValue.name = "r";
+f.arguments.resize(1);
+f.arguments[0].name = "a";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 349;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 350;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 351;
+finalize();
+
+f.name = "add";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 352;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 353;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 354;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 355;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 356;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 357;
+finalize();
+
+f.name = "sub";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 358;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 359;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 360;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 361;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 362;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 363;
+finalize();
+
+f.name = "mult";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 364;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 365;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 366;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 367;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 368;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 369;
+finalize();
+
+f.name = "div";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 370;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 371;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 372;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 373;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 374;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 375;
+finalize();
+
+f.name = "mod";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 376;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float;
+f.id = 377;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 378;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float2;
+f.id = 379;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 380;
+finalize();
+
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Float3;
+f.id = 381;
+finalize();
+
+f.section = "Basic logic functions";
+f.name = "logOr";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Bool;
+f.arguments[1].type = WGA_Value::ValueType::Bool;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 382;
+finalize();
+
+f.name = "logAnd";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Bool;
+f.arguments[1].type = WGA_Value::ValueType::Bool;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 383;
+finalize();
+
+f.name = "logNot";
+f.returnValue.name = "r";
+f.arguments.resize(1);
+f.arguments[0].name = "a";
+f.arguments[0].type = WGA_Value::ValueType::Bool;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 384;
+finalize();
+
+f.name = "bool";
+f.returnValue.name = "b";
+f.arguments.resize(1);
+f.arguments[0].name = "a";
+f.arguments[0].type = WGA_Value::ValueType::Block;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 385;
+finalize();
+
+f.section = "Comparison functions";
+f.name = "compEq";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 386;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 387;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 388;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Bool;
+f.arguments[1].type = WGA_Value::ValueType::Bool;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 389;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Block;
+f.arguments[1].type = WGA_Value::ValueType::Block;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 390;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Rule;
+f.arguments[1].type = WGA_Value::ValueType::Rule;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 391;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::ComponentNode;
+f.arguments[1].type = WGA_Value::ValueType::ComponentNode;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 392;
+finalize();
+
+f.name = "compEq";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 393;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 394;
+finalize();
+
+f.name = "compNeq";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 395;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float2;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 396;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float3;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 397;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Bool;
+f.arguments[1].type = WGA_Value::ValueType::Bool;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 398;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Block;
+f.arguments[1].type = WGA_Value::ValueType::Block;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 399;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Rule;
+f.arguments[1].type = WGA_Value::ValueType::Rule;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 400;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::ComponentNode;
+f.arguments[1].type = WGA_Value::ValueType::ComponentNode;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 401;
+finalize();
+
+f.name = "compNeq";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Float2;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 402;
+finalize();
+
+f.arguments[0].type = WGA_Value::ValueType::Float3;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 403;
+finalize();
+
+f.name = "compLt";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 404;
+finalize();
+
+f.name = "compGt";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 405;
+finalize();
+
+f.name = "compLeq";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 406;
+finalize();
+
+f.name = "compGeq";
+f.returnValue.name = "r";
+f.arguments.resize(2);
+f.arguments[0].name = "a";
+f.arguments[1].name = "b";
+f.arguments[0].type = WGA_Value::ValueType::Float;
+f.arguments[1].type = WGA_Value::ValueType::Float;
+f.returnValue.type = WGA_Value::ValueType::Bool;
+f.id = 407;
+finalize();
 
 
-	}();
+	} ();
 	return fs;
 }
