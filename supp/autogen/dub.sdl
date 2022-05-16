@@ -1,0 +1,6 @@
+name "ac-worldgen-autogen"
+
+dependency "dyaml" version="~>0.8.6"
+
+targetType "executable"
+sourceFiles "main.d"

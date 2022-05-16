@@ -1,0 +1,675 @@
+- section: Utility functions
+  functions:
+  - function: worldPos
+    desc: Returns world position of the currently calculated block.
+    result: Float3 pos
+    args: []
+    dim: 3D
+    impl: data.worldPos(key.origin, i).to<float>()
+
+  - function: select
+    desc: If `cond` is `true`, returns `thn`, else returns `els`.
+    result: Arg2 result
+    args: [Bool cond, Any thn, Arg2 els]
+    dim: max
+    impl: :Utility
+
+
+
+- section: Vector functions
+  functions:
+  - function: float2
+    desc: Constructs a 2-dimensional vector.
+    result: Float2 r
+    args: [Float x, Float y]
+    dim: max
+    impl: Vector2F(arg1, arg2)
+
+  - function: float2
+    desc: Constructs a 2-dimensional vector.
+    result: Float2 r
+    args: [Float v]
+    dim: max
+    impl: Vector2F(arg1)
+
+  - function: float3
+    desc: Constructs a 3-dimensional vector.
+    result: Float3 r
+    args: [Float x, Float y, Float z]
+    dim: max
+    impl: Vector3F(arg1, arg2, arg3)
+
+  - function: float3
+    desc: Constructs a 3-dimensional vector.
+    result: Float3 r
+    args: [Float2 xy, Float z]
+    dim: max
+    impl: Vector3F(arg1, arg2)
+
+  - function: float3
+    desc: Constructs a 3-dimensional vector.
+    result: Float3 r
+    args: [Float v]
+    dim: max
+    impl: Vector3F(arg1)
+
+  - function: x
+    desc: Returns the `x` component of a vector.
+    result: Float x
+    args: [Float2+ vec]
+    dim: max
+    impl: arg1.x()
+
+  - function: y
+    desc: Returns the `y` component of a vector.
+    result: Float y
+    args: [Float2+ vec]
+    dim: max
+    impl: arg1.y()
+
+  - function: z
+    desc: Returns the `z` component of a vector.
+    result: Float x
+    args: [Float3 vec]
+    dim: max
+    impl: arg1.z()
+
+  - function: xy
+    desc: Returns the `x` and `y` components of a vector.
+    result: Float2 xy
+    args: [Float3 vec]
+    dim: max
+    impl: arg1.xy()
+
+  - function: normalize
+    desc: Returns the vector normalized.
+    result: Arg1 r
+    args: [Float2+ v]
+    dim: max
+    impl: arg1.normalized()
+
+  - function: length
+    desc: Returns euclidean length of a vector.
+    result: Float len
+    args: [Float2+ v]
+    dim: max
+    impl: arg1.length()
+
+  - function: lengthExp
+    desc: Returns length of a vector with the dimensional exponent being `exp` (1 = manhattan, 2 = euclidean).
+    result: Float len
+    args: [Float2+ v, Float exp]
+    dim: max
+    impl: :Utility
+
+  - function: manhattanLength
+    desc: Returns manhattan length of a vector.
+    result: Float dist
+    args: [Float2+ v]
+    dim: max
+    impl: arg1.manhattanLength()
+
+  - function: distance
+    desc: Returns euclidean distance between two vectors.
+    result: Float dist
+    args: [Float2+ vec1, Arg1 vec2]
+    dim: max
+    impl: (arg1 - arg2).length()
+
+  - function: manhattanDistance
+    desc: Returns manhattan distance between two vectors.
+    result: Float dist
+    args: [Float2+ vec1, Arg1 vec2]
+    dim: max
+    impl: (arg1 - arg2).manhattanLength()
+
+  - function: distanceTo
+    desc: Returns distance from the current block to `targetWorldPos` (in world coordinates).
+    result: Float dist
+    args: [Float3 targetWorldPos]
+    dim: 3D
+    impl: (data.worldPos(key.origin, i).to<float>() - arg1).length()
+
+  - function: distanceTo
+    desc: Returns distance from the current block to `targetWorldPos` (in world coordinates).
+    result: Float dist
+    args: [Float2 targetWorldPos]
+    dim: 2D
+    impl: (data.worldPosXY(key.origin, i).to<float>() - arg1).length()
+
+  - function: distanceTo2D
+    desc: Returns distance from the current block to `targetWorldPos` (in world coordinates). Only considers X and Y coordinates.
+    result: Float dist
+    args: [Float3 targetWorldPos]
+    dim: 2D
+    impl: (data.worldPosXY(key.origin, i).to<float>() - arg1.xy()).length()
+
+  - function: distanceToLine
+    desc: Returns distance of the point `p` to a line defined by points `a` and `b`.
+    result: Float dist
+    args: [Float3 p, Float3 a, Float3 b]
+    dim: max
+    impl: :Utility
+
+
+
+- section: Sampling functions
+  functions:
+  - function: sampleOffset
+    desc: Returns value of `variable` sampled on a world position of (`worldPos() + offset`).
+    result: Arg1 valueAtOffset
+    args: [Any variable, Float3 offset]
+    dim: :std::max(WGA_Value::Dimensionality::D2D, arg1)
+    impl: :Sampling
+
+  - function: sampleAt
+    desc: Returns value of `variable` sampled on the given world position. The position doesn't have to be constant.
+    result: Arg1 valueAtPos
+    args: [Any variable, Float3 worldPos]
+    dim: arg2
+    impl: :Sampling
+
+  - function: sampleAt
+    desc: Returns value of `variable` sampled on the given world position. The position doesn't have to be constant.
+    result: Arg1 valueAtPos
+    args: [Any variable, Float2 worldPos]
+    dim: arg2
+    impl: :Sampling
+
+  - function: sampleGradient2D
+    desc: Returns 2D gradient of `value`, calculated as `float2(val[x + dist] - val[x - dist], val[y + dist] - val[y - dist]) / (1 + dist * 2)`
+    result: Float2 gradient
+    args: [Float value, Float dist]
+    dim: :std::max(WGA_Value::Dimensionality::D2D, arg1)
+    impl: :Sampling
+
+  - function: sampleAvg2D
+    desc: Samples at offsets (0,0), (dist,0), (-dist,0), (0,dist) and (0,-dist) and returns the average.`
+    result: Arg1 avg
+    args: [Num value, Float dist]
+    dim: :std::max(WGA_Value::Dimensionality::D2D, arg1)
+    impl: :Sampling
+
+
+
+- section: Biome functions
+  functions:
+  - function: biomeParam_nearest
+    desc: |
+      **This function cannot be used in the WOGLAC language. There is a special syntax construct for biome params.**
+
+      Returns value of variable $var of the nearest biome.
+    result: Arg1 var
+    args: [Any var]
+    dim: :std::max(WGA_Value::Dimensionality::D2D, arg1)
+    impl: :Biome
+
+  - function: biomeParam_nearestSet
+    desc: |
+      **This function cannot be used in the WOGLAC language. There is a special syntax construct for biome params.**
+
+      Returns value of variable $var of the nearest biome that has the variable set.
+    result: Arg1 var
+    args: [Any var]
+    dim: :std::max(WGA_Value::Dimensionality::D2D, arg1)
+    impl: :Biome
+
+  - function: biomeParam_weighted
+    desc: |
+      **This function cannot be used in the WOGLAC language. There is a special syntax construct for biome params.**
+
+      Returns value of variable $var weighted across surrounding biomes. The $exp adjusts exponent for the individual weights (1 = linear interpolation).
+    result: Arg1 var
+    args: [Num var, Float exp]
+    dim: :std::max(WGA_Value::Dimensionality::D2D, arg1)
+    impl: :Biome
+
+
+
+- section: Structure functions
+  functions:
+  - function: spawn2D
+    desc: Creates a structure procgen pass and returns generated blocks (block.undefined on places where nothing was generated to differentiate from generated block.air). Structures can expand up to `maxRadius` chunks from the entry chunk. For each (x, y, `spawnZ`) point in space, the `entryRule` is expanded if `spawnCondition` is `true`.
+    result: Block result
+    args: [Rule entryRule, Float maxRadius, Float seed, Float spawnZ, Bool spawnCondition]
+    dim: 3D
+    impl: :Structure
+
+  - function: worldPos
+    desc: Returns position of the provided component node in global world coordinates (only usable in structure generation).
+    result: Float3 worldPos
+    args: [ComponentNode node]
+    dim: arg1
+    impl: :Structure
+    contextual: true
+
+  - function: worldPos
+    desc: Transforms world component-local position to world position.
+    result: Float3 worldPos
+    args: [Float3 localPos]
+    dim: arg1
+    impl: :Structure
+    contextual: true
+
+  - function: localPos
+    desc: Returns component-local position.
+    result: Float3 localPos
+    args: []
+    dim: 3D
+    impl: :Structure
+    contextual: true
+
+  - function: localPos
+    desc: Transforms world position to component-local position.
+    result: Float3 localPos
+    args: [Float3 worldPos]
+    dim: arg1
+    impl: :Structure
+    contextual: true
+
+  - function: localSeed
+    desc: Returns component-local seed.
+    result: Float seed
+    args: []
+    dim: Const
+    impl: :Structure
+    contextual: true
+
+  - function: distanceTo
+    desc: Returns distance from the current block to the provided component node.
+    result: Float dist
+    args: [ComponentNode node]
+    dim: 3D
+    impl: :Structure
+    contextual: true
+
+  - function: sampleAt
+    desc: Returns value of `variable` sampled on position of the given node.
+    result: Arg1 valueAtNodePos
+    args: [Any variable, ComponentNode node]
+    dim: min
+    impl: :Structure
+    contextual: true
+
+
+
+- section: Noise functions
+  functions:
+  - function: randC
+    desc: Returns random value in range [0,1], constant everywhere.
+    result: Float result
+    args: [Float seed]
+    dim: Const
+    impl: :Noise
+
+  - function: randL
+    desc: Returns random value in range [0,1], constant everywhere. Incorporates local seed of the currently generated structure (works similarly to `randC(localSeed() + seed)`).
+    result: Float result
+    args: [Float seed]
+    dim: Const
+    impl: :Structure
+    contextual: true
+
+  - function: randPC
+    desc: Returns random value in range [0,1], different for each chunk.
+    result: Float result
+    args: [Float seed]
+    dim: PerChunk
+    impl: :Noise
+
+  - function: rand2D
+    desc: Returns random value in range [0,1], different for every column.
+    result: Float result
+    args: [Float seed]
+    dim: 2D
+    impl: :Noise
+
+  - function: rand3D
+    desc: Returns random value in range [0,1], different for every block.
+    result: Float result
+    args: [Float seed]
+    dim: 3D
+    impl: :Noise
+
+  - function: valueNoisePC
+    desc: Linearly interpolates between values at node points that are determined by `nodeValue`.
+    result: Float result
+    args: [Float octaveSize, Float seed, Float nodeValue]
+    dim: PerChunk
+    impl: :Noise
+
+  - function: valueNoise2D
+    desc: Linearly interpolates between values at node points that are determined by `nodeValue`.
+    result: Float result
+    args: [Float octaveSize, Float seed, Float nodeValue]
+    dim: 2D
+    impl: :Noise
+
+  - function: perlin2D
+    desc: Returns 2D Perlin noise value in range [-1,1].
+    result: Float result
+    args: [Float octaveSize, Float seed]
+    dim: 2D
+    impl: :Noise
+
+  - function: perlin3D
+    desc: Returns 3D Perlin noise value in range [-1,1].
+    result: Float result
+    args: [Float octaveSize, Float seed]
+    dim: 3D
+    impl: :Noise
+
+  - function: voronoi2D
+    desc: |
+      Returns 2D Voronoi-diagram based value. Use `metricExponent = 2` for standard euclidean metric.
+      * `resultType=0` -> distance to the edge (2ndDist-1stDist)
+      * `resultType=1` -> distance to the nearest point (1stDist)
+      * `resultType=2` -> 1stDist / 2ndDist
+    result: Float result
+    args: [Float octaveSize, Float seed, Float resultType, Float metricExponent]
+    dim: 2D
+    impl: :Noise
+
+  - function: voronoi2DColored
+    desc: |
+      Same as voronoi2D, except each node now accepts `coloring`; there are no edges between nodes of the same color. For that to work, there are special `resultType` values:
+      * `resultType=10` -> weighted distance from center
+      * `resultType=11` -> nearest point coloring
+      * `resultType=12` -> weighted distance from border
+    result: Float result
+    args: [Float octaveSize, Float seed, Float resultType, Float metricExponent, Float coloring]
+    dim: 2D
+    impl: :Noise
+
+  - function: poissonDisc2DBool
+    desc: Spreads points pseudorandomly on the 2D plane. Each point has a `radius` (2D dimensionality) that can be between 1 and 16. Distance of any two points is not less than sum of their radii. Returns true if there is a point on the current position or false if there isn't.
+    result: Bool isNode
+    args: [Float seed, Float radius]
+    dim: 2D
+    impl: :Noise
+
+  - function: osimplex2D
+    desc: Returns 2D OpenSimplex 2 noise value in range [-1,1]. Implemented using FastNoise2 lib.
+    result: Float result
+    args: [Float octaveSize, Float seed]
+    dim: 2D
+    impl: :Noise
+
+  - function: osimplex3D
+    desc: Returns 3D OpenSimplex 2 noise value in range [-1,1]. Implemented using FastNoise2 lib.
+    result: Float result
+    args: [Float octaveSize, Float seed]
+    dim: 3D
+    impl: :Noise
+
+
+
+- section: Aggregation functions
+  functions:
+  - function: minPC
+    desc: Returns minimum value of `val` across the entire chunk. Expects `val` to have `2D` dimensionality.
+    result: Float minVal
+    args: [Float val]
+    dim: PerChunk
+    impl: :Utility
+
+  - function: maxPC
+    desc: Returns maximum value of `val` across the entire chunk. Expects `val` to have `2D` dimensionality.
+    result: Float maxVal
+    args: [Float val]
+    dim: PerChunk
+    impl: :Utility
+
+
+
+- section: Math functions
+  functions:
+  - function: min
+    desc: Returns minimum of the two values.
+    result: Arg1 r
+    args: [Num a, Arg1 b]
+    dim: max
+    impl: arg1.min(arg2)
+
+  - function: max
+    desc: Returns maximum of the two values.
+    result: Arg1 r
+    args: [Num a, Arg1 b]
+    dim: max
+    impl: arg1.max(arg2)
+
+  - function: smoothMin
+    desc: Returns smoothed minimum of the two values with smoothing radius `k`.
+    result: Float r
+    args: [Float a, Float b, Float k]
+    dim: max
+    impl: :Utility
+
+  - function: smoothMax
+    desc: Returns smoothed maximum of the two values with smoothing radius `k .
+    result: Float r
+    args: [Float a, Float b, Float k]
+    dim: max
+    impl: :Utility
+
+  - function: clamp
+    desc: Returns value `v` limited to bounds [`min–max`].
+    result: Arg1 r
+    args: [Num v, Arg1 min, Arg1 max]
+    dim: max
+    impl: arg1.clamp(arg2, arg3)
+
+  - function: clamp01
+    desc: Returns value `v` limited to bounds [0-1].
+    result: Arg1 r
+    args: [Num v]
+    dim: arg1
+    impl: arg1.clamp(0, 1)
+
+  - function: mix
+    desc: Returns `a * (1 - p) + b * p`.
+    result: Arg1 r
+    args: [Num a, Arg1 b, Arg1 p]
+    dim: max
+    impl: arg1 * (Arg1::T(1.0f) - arg3) + arg2 * arg3
+
+  - function: abs
+    desc: Returns absolute value of the parameter
+    result: Arg1 r
+    args: [Num v]
+    dim: max
+    impl: arg1.abs()
+
+  - function: floor
+    desc: 
+    result: Arg1 r
+    args: [Num v]
+    dim: arg1
+    impl: arg1.floor()
+
+  - function: ceil
+    desc: 
+    result: Arg1 r
+    args: [Num v]
+    dim: arg1
+    impl: arg1.ceil()
+
+  - function: round
+    desc: 
+    result: Arg1 r
+    args: [Num v]
+    dim: arg1
+    impl: arg1.round()
+
+  - function: fract
+    desc: Returns fractional part of the number `x - trunc(x)`.
+    result: Arg1 r
+    args: [Num v]
+    dim: arg1
+    impl: arg1.componentUnary([] (float f) { return f - trunc(f); })
+
+  - function: ffract
+    desc: Returns fractional part of the number `x - floor(x)`.
+    result: Arg1 r
+    args: [Num v]
+    dim: arg1
+    impl: arg1.componentUnary([] (float f) { return f - floor(f); })
+
+  - function: pow
+    desc: Returns power of `v` to the exponent `e`.
+    result: Float r
+    args: [Float v, Float e]
+    dim: max
+    impl: pow(arg1, arg2)
+
+  - function: sin
+    desc: Returns `sin(x)`, `x` is in radians.
+    result: Float r
+    args: [Float x]
+    dim: max
+    impl: sin(arg1)
+
+  - function: cos
+    desc: Returns `cos(x)`, `x` is in radians.
+    result: Float r
+    args: [Float x]
+    dim: max
+    impl: cos(arg1)
+
+
+
+- section: Basic math functions
+  functions:
+  - function: inverse
+    desc: Returns negative value of the argument (`-a`).
+    result: Arg1 r
+    args: [Num a]
+    dim: max
+    impl: -arg1
+
+  - function: add
+    desc: 
+    result: Arg1 r
+    args: [Num a, Arg1OrFloat b]
+    dim: max
+    impl: arg1 + arg2
+
+  - function: sub
+    desc: 
+    result: Arg1 r
+    args: [Num a, Arg1OrFloat b]
+    dim: max
+    impl: arg1 - arg2
+
+  - function: mult
+    desc: 
+    result: Arg1 r
+    args: [Num a, Arg1OrFloat b]
+    dim: max
+    impl: arg1 * arg2
+
+  - function: div
+    desc: 
+    result: Arg1 r
+    args: [Num a, Arg1OrFloat b]
+    dim: max
+    impl: arg1 / arg2
+
+  - function: mod
+    desc: Floating point modulo (C++ fmod)
+    result: Arg1 r
+    args: [Num a, Arg1OrFloat b]
+    dim: max
+    impl: arg1.componentBinary(arg2, [] (float a, float b) { return fmod(a, b); })
+
+
+
+- section: Basic logic functions
+  functions:
+  - function: logOr
+    desc: 
+    result: Arg1 r
+    args: [Bool a, Arg1 b]
+    dim: max
+    impl: arg1 || arg2
+
+  - function: logAnd
+    desc: 
+    result: Arg1 r
+    args: [Bool a, Arg1 b]
+    dim: max
+    impl: "arg1 && arg2"
+
+  - function: logNot
+    desc: 
+    result: Arg1 r
+    args: [Bool a]
+    dim: arg1
+    impl: "!arg1"
+
+  - function: bool
+    desc: Converts to bool (returns `true` if the block is not `block.undefined`, even with air.)
+    result: Bool b
+    args: [Block a]
+    dim: max
+    impl: arg1 != blockID_undefined
+
+
+
+- section: Comparison functions
+  functions:
+  - function: compEq
+    desc: 
+    result: Bool r
+    args: [Any a, Arg1 b]
+    dim: max
+    impl: arg1 == arg2
+
+  - function: compEq
+    desc: 
+    result: Bool r
+    args: [Float2+ a, Float b]
+    dim: max
+    impl: arg1 == arg2
+
+  - function: compNeq
+    desc: 
+    result: Bool r
+    args: [Any a, Arg1 b]
+    dim: max
+    impl: arg1 != arg2
+
+  - function: compNeq
+    desc: 
+    result: Bool r
+    args: [Float2+ a, Float b]
+    dim: max
+    impl: arg1 != arg2
+
+  - function: compLt
+    desc: 
+    result: Bool r
+    args: [Float a, Arg1 b]
+    dim: max
+    impl: arg1 < arg2
+
+  - function: compGt
+    desc: 
+    result: Bool r
+    args: [Float a, Arg1 b]
+    dim: max
+    impl: arg1 > arg2
+
+  - function: compLeq
+    desc: 
+    result: Bool r
+    args: [Float a, Arg1 b]
+    dim: max
+    impl: arg1 <= arg2
+
+  - function: compGeq
+    desc: 
+    result: Bool r
+    args: [Float a, Arg1 b]
+    dim: max
+    impl: arg1 >= arg2
