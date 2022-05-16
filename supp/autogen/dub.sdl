@@ -1,0 +1,5 @@
+name "ac-worldgen-autogen"
+
+dependency "dyaml" version="~>0.8.6"
+
+sourceFiles "*.d"

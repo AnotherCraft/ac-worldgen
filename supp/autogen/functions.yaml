@@ -1,0 +1,7 @@
+- section: Utility functions
+  functions:
+    - function: worldPos
+      result: Float3 pos
+      desc: Returns world position of the currently calculated block.
+      dim: 3D
+      inline: data.worldPos(key.origin, i).to<float>()
