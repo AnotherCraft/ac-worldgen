@@ -11,14 +11,14 @@ import std.exception;
 
 import dyaml;
 
-static const auto baseTypes = [
+const baseTypes = [
 	"Float", "Float2", "Float3",
 	"Bool",
 	"Block",
 	"Rule", "ComponentNode"
 	];
 
-static const auto baseDims = [
+const baseDims = [
 	"2D", "3D", "Const", "PerChunk"
 	];
 
@@ -118,13 +118,15 @@ void main() {
 						else
 							fillCode ~=
 `
+%s
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
   %s
   data[i] = (%s);
  }
  return data;`.format(
- 	iota(argt.length).map!(i => `const Arg%s::T arg%s = argh%s[i];\n`.format(i+1, i+1, i+1)).join,
+ 	iota(argt.length).map!(i => "Arg%s::DataHandle argh%s = argv%s.dataHandle(key.origin, key.subKey);\n".format(i+1, i+1, i+1)).join,
+ 	iota(argt.length).map!(i => "const Arg%s::T arg%s = argh%s[i];\n".format(i+1, i+1, i+1)).join,
  	impl
  	);
 
@@ -198,6 +200,7 @@ const WorldGenAPI::Functions &WorldGenAPI::functions() {
 		};
 
 		$IMPL$
+		return fs;
 	} ();
 	return fs;
 }
@@ -211,7 +214,6 @@ const WorldGenAPI::Functions &WorldGenAPI::functions() {
 #include "../funcs/wga_funcs_cpu.h"
 
 #include "util/iterators.h"
-#include "util/macroutils.h"
 
 #include "../supp/wga_fillfunc_cpu.h"
 

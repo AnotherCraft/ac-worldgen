@@ -6,7 +6,6 @@
 #include <format>
 
 #include "util/iterators.h"
-#include "util/macroutils.h"
 
 #include <iostream>
 
