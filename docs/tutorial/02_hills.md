@@ -1,5 +1,5 @@
 # Hills
-For generating hills, we can start off with basic 2D [Perlin noise](https://en.wikipedia.org/wiki/Perlin_noise). For that, woglac offers the function `Float perlin2D(Float octaveSize, Float seed)` that returns `-1` to `1` for each `x, y` position. `octaveSize` denotes the scale of the noise in chunks (16 blocks). For `seed` we just bash the keyboard for some random number to make the noise unique – calling the function with the same seed always produces the same results. To make the code more readable, the `octaveSize` paremeters are prefixed with `~` and `seed` parameters are prefixed with `#`.
+For generating hills, we can start off with basic 2D [Perlin noise](https://en.wikipedia.org/wiki/Perlin_noise). For that, woglac offers the function `Float perlin2D(Float scale, Float seed)` that returns `-1` to `1` for each `x, y` position. `scale` denotes the scale of the noise in chunks (16 blocks). For `seed` we just bash the keyboard for some random number to make the noise unique – calling the function with the same seed always produces the same results. To make the code more readable, the `scale` paremeters are prefixed with `~` and `seed` parameters are prefixed with `#`.
 
 ```WOGLAC
 Float z = worldPos()::z();
@@ -10,7 +10,7 @@ export Block resultBlock = z < terrainZ ? block.core.dirt : block.air;
 ```
 ![](img/hills.jpg)
 
-Okay, now let's make the hills bigger by increasing the `octaveSize` and higher by increasing `noiseHeight`:
+Okay, now let's make the hills bigger by increasing the `scale` and higher by increasing `noiseHeight`:
 ```WOGLAC
 Float z = worldPos()::z();
 

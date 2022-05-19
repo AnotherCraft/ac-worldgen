@@ -55,6 +55,9 @@ void main() {
 			if("contextual" in funcn)
 				isContextual = funcn["contextual"].as!bool;
 
+			if("desc" in funcn && funcn["desc"].type == NodeType.string)
+				apiCode ~= "f.description = R\"STRING(%s)STRING\";".format(funcn["desc"].as!string);
+
 			string[] argTypes;
 			argTypes.length = argd.length;
 			void procf(string t, int i, void delegate(string pt, int i) callback) {

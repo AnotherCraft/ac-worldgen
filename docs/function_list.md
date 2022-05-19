@@ -214,6 +214,7 @@ ComponentNode biomeParam_nearest(ComponentNode var)
 **This function cannot be used in the WOGLAC language. There is a special syntax construct for biome params.**
 
 Returns value of variable $var of the nearest biome.
+
 ## `biomeParam_nearestSet` 
 ```WOGLAC
 Float biomeParam_nearestSet(Float var)
@@ -228,6 +229,7 @@ ComponentNode biomeParam_nearestSet(ComponentNode var)
 **This function cannot be used in the WOGLAC language. There is a special syntax construct for biome params.**
 
 Returns value of variable $var of the nearest biome that has the variable set.
+
 ## `biomeParam_weighted` 
 ```WOGLAC
 Float biomeParam_weighted(Float var, Float exp)
@@ -238,6 +240,7 @@ Float3 biomeParam_weighted(Float3 var, Float exp)
 **This function cannot be used in the WOGLAC language. There is a special syntax construct for biome params.**
 
 Returns value of variable $var weighted across surrounding biomes. The $exp adjusts exponent for the individual weights (1 = linear interpolation).
+
 # Structure functions
 
 ## `spawn2D` 
@@ -297,46 +300,52 @@ Float rand3D(Float seed)
 Returns random value in range [0,1], different for every block.
 ## `valueNoisePC` 
 ```WOGLAC
-Float valueNoisePC(Float octaveSize, Float seed, Float nodeValue)
+Float valueNoisePC(Float scale, Float seed, Float nodeValue)
 ```
 
-Linearly interpolates between values at node points that are determined by `nodeValue`.
+Linearly interpolates between values at node points that are determined by `nodeValue`. $scale has to be a whole number >= 1 or things might not work properly.
 ## `valueNoise2D` 
 ```WOGLAC
-Float valueNoise2D(Float octaveSize, Float seed, Float nodeValue)
+Float valueNoise2D(Float scale, Float seed, Float nodeValue)
 ```
 
-Linearly interpolates between values at node points that are determined by `nodeValue`.
+Linearly interpolates between values at node points that are determined by `nodeValue`. $scale has to be a whole number >= 1 or things might not work properly.
 ## `perlin2D` 
 ```WOGLAC
-Float perlin2D(Float octaveSize, Float seed)
+Float perlin2D(Float scale, Float seed)
 ```
 
-Returns 2D Perlin noise value in range [-1,1].
+Returns 2D Perlin noise value in range [-1,1]. $scale has to be a whole number >= 1 or things might not work properly.
 ## `perlin3D` 
 ```WOGLAC
-Float perlin3D(Float octaveSize, Float seed)
+Float perlin3D(Float scale, Float seed)
 ```
 
-Returns 3D Perlin noise value in range [-1,1].
+Returns 3D Perlin noise value in range [-1,1]. $scale has to be a whole number >= 1 or things might not work properly.
 ## `voronoi2D` 
 ```WOGLAC
-Float voronoi2D(Float octaveSize, Float seed, Float resultType, Float metricExponent)
+Float voronoi2D(Float scale, Float seed, Float resultType, Float metricExponent)
 ```
 
-Returns 2D Voronoi-diagram based value. Use `metricExponent = 2` for standard euclidean metric.
+Returns 2D Voronoi-diagram based value. Use `metricExponent = 2` for standard euclidean metric
 * `resultType=0` -> distance to the edge (2ndDist-1stDist)
 * `resultType=1` -> distance to the nearest point (1stDist)
 * `resultType=2` -> 1stDist / 2ndDist
+
+$scale has to be a whole number >= 1 or things might not work properly.
+
 ## `voronoi2DColored` 
 ```WOGLAC
-Float voronoi2DColored(Float octaveSize, Float seed, Float resultType, Float metricExponent, Float coloring)
+Float voronoi2DColored(Float scale, Float seed, Float resultType, Float metricExponent, Float coloring)
 ```
 
 Same as voronoi2D, except each node now accepts `coloring`; there are no edges between nodes of the same color. For that to work, there are special `resultType` values:
 * `resultType=10` -> weighted distance from center
 * `resultType=11` -> nearest point coloring
 * `resultType=12` -> weighted distance from border
+
+$scale has to be a whole number >= 1 or things might not work properly.
+
 ## `poissonDisc2DBool` 
 ```WOGLAC
 Bool poissonDisc2DBool(Float seed, Float radius)
@@ -345,13 +354,13 @@ Bool poissonDisc2DBool(Float seed, Float radius)
 Spreads points pseudorandomly on the 2D plane. Each point has a `radius` (2D dimensionality) that can be between 1 and 16. Distance of any two points is not less than sum of their radii. Returns true if there is a point on the current position or false if there isn't.
 ## `osimplex2D` 
 ```WOGLAC
-Float osimplex2D(Float octaveSize, Float seed)
+Float osimplex2D(Float scale, Float seed)
 ```
 
 Returns 2D OpenSimplex 2 noise value in range [-1,1]. Implemented using FastNoise2 lib.
 ## `osimplex3D` 
 ```WOGLAC
-Float osimplex3D(Float octaveSize, Float seed)
+Float osimplex3D(Float scale, Float seed)
 ```
 
 Returns 3D OpenSimplex 2 noise value in range [-1,1]. Implemented using FastNoise2 lib.
@@ -438,7 +447,7 @@ Float2 floor(Float2 v)
 Float3 floor(Float3 v)
 ```
 
-
+Returns absolute value of the parameter
 ## `ceil` 
 ```WOGLAC
 Float ceil(Float v)
@@ -446,7 +455,7 @@ Float2 ceil(Float2 v)
 Float3 ceil(Float3 v)
 ```
 
-
+Returns absolute value of the parameter
 ## `round` 
 ```WOGLAC
 Float round(Float v)
@@ -454,7 +463,7 @@ Float2 round(Float2 v)
 Float3 round(Float3 v)
 ```
 
-
+Returns absolute value of the parameter
 ## `fract` 
 ```WOGLAC
 Float fract(Float v)
@@ -508,7 +517,7 @@ Float3 add(Float3 a, Float3 b)
 Float3 add(Float3 a, Float b)
 ```
 
-
+Returns negative value of the argument (`-a`).
 ## `sub` 
 ```WOGLAC
 Float sub(Float a, Float b)
@@ -518,7 +527,7 @@ Float3 sub(Float3 a, Float3 b)
 Float3 sub(Float3 a, Float b)
 ```
 
-
+Returns negative value of the argument (`-a`).
 ## `mult` 
 ```WOGLAC
 Float mult(Float a, Float b)
@@ -528,7 +537,7 @@ Float3 mult(Float3 a, Float3 b)
 Float3 mult(Float3 a, Float b)
 ```
 
-
+Returns negative value of the argument (`-a`).
 ## `div` 
 ```WOGLAC
 Float div(Float a, Float b)
@@ -538,7 +547,7 @@ Float3 div(Float3 a, Float3 b)
 Float3 div(Float3 a, Float b)
 ```
 
-
+Returns negative value of the argument (`-a`).
 ## `mod` 
 ```WOGLAC
 Float mod(Float a, Float b)
@@ -556,19 +565,19 @@ Floating point modulo (C++ fmod)
 Bool logOr(Bool a, Bool b)
 ```
 
-
+Floating point modulo (C++ fmod)
 ## `logAnd` 
 ```WOGLAC
 Bool logAnd(Bool a, Bool b)
 ```
 
-
+Floating point modulo (C++ fmod)
 ## `logNot` 
 ```WOGLAC
 Bool logNot(Bool a)
 ```
 
-
+Floating point modulo (C++ fmod)
 ## `bool` 
 ```WOGLAC
 Bool bool(Block a)
@@ -590,7 +599,7 @@ Bool compEq(Float2 a, Float b)
 Bool compEq(Float3 a, Float b)
 ```
 
-
+Converts to bool (returns `true` if the block is not `block.undefined`, even with air.)
 ## `compNeq` 
 ```WOGLAC
 Bool compNeq(Float a, Float b)
@@ -604,28 +613,28 @@ Bool compNeq(Float2 a, Float b)
 Bool compNeq(Float3 a, Float b)
 ```
 
-
+Converts to bool (returns `true` if the block is not `block.undefined`, even with air.)
 ## `compLt` 
 ```WOGLAC
 Bool compLt(Float a, Float b)
 ```
 
-
+Converts to bool (returns `true` if the block is not `block.undefined`, even with air.)
 ## `compGt` 
 ```WOGLAC
 Bool compGt(Float a, Float b)
 ```
 
-
+Converts to bool (returns `true` if the block is not `block.undefined`, even with air.)
 ## `compLeq` 
 ```WOGLAC
 Bool compLeq(Float a, Float b)
 ```
 
-
+Converts to bool (returns `true` if the block is not `block.undefined`, even with air.)
 ## `compGeq` 
 ```WOGLAC
 Bool compGeq(Float a, Float b)
 ```
 
-
+Converts to bool (returns `true` if the block is not `block.undefined`, even with air.)
