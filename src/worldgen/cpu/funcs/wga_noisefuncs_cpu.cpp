@@ -9,18 +9,18 @@
 // So that things aren't screwed up when transitioning from negative to positive numbers
 static constexpr auto ofst = std::numeric_limits<int32_t>::max();
 
-void WGA_NoiseFuncs_CPU::valueNoisePC(WGA_Funcs_CPU::Api api, Key key, DH <VT::Float> result, V <VT::Float> octaveSizev, V <VT::Float> seedv, V <VT::Float> value) {
-	const uint32_t octaveSize = static_cast<uint32_t>(octaveSizev.constValue());
+void WGA_NoiseFuncs_CPU::valueNoisePC(WGA_Funcs_CPU::Api api, Key key, DH <VT::Float> result, V <VT::Float> scalev, V <VT::Float> seedv, V <VT::Float> value) {
+	const uint32_t scale = static_cast<uint32_t>(scalev.constValue());
 	const Seed seed = api->seed() ^ static_cast<Seed>(seedv.constValue());
 
 	const Vector2U32 chunkPos = adjustOrigin(key.origin, seed).chunkPosition().to<uint32_t>() + ofst;
-	const Vector2U32 nodeOrigin = chunkPos / octaveSize;
-	const Vector2F originProgress = (chunkPos % octaveSize).to<float>() / octaveSize;
+	const Vector2U32 nodeOrigin = chunkPos / scale;
+	const Vector2F originProgress = (chunkPos % scale).to<float>() / scale;
 	const Vector2F originProgressInv = Vector2F(1) - originProgress;
 
 	float nodes[4];
 	for(uint32_t i = 0; i < 4; i++)
-		nodes[i] = value.chunkValue(((nodeOrigin + Vector2U32(i % 2, i / 2)) * octaveSize - ofst).to<ChunkWorldPos_T>());
+		nodes[i] = value.chunkValue(((nodeOrigin + Vector2U32(i % 2, i / 2)) * scale - ofst).to<ChunkWorldPos_T>());
 
 	result[0] =
 		(
@@ -29,18 +29,18 @@ void WGA_NoiseFuncs_CPU::valueNoisePC(WGA_Funcs_CPU::Api api, Key key, DH <VT::F
 		);
 }
 
-void WGA_NoiseFuncs_CPU::valueNoise2D(WGA_Funcs_CPU::Api api, Key key, DH <VT::Float> result, V <VT::Float> octaveSizev, V <VT::Float> seedv, V <VT::Float> value) {
-	const uint32_t octaveSize = static_cast<uint32_t>(octaveSizev.constValue());
+void WGA_NoiseFuncs_CPU::valueNoise2D(WGA_Funcs_CPU::Api api, Key key, DH <VT::Float> result, V <VT::Float> scalev, V <VT::Float> seedv, V <VT::Float> value) {
+	const uint32_t scale = static_cast<uint32_t>(scalev.constValue());
 	const Seed seed = api->seed() ^ static_cast<Seed>(seedv.constValue());
 
 	const Vector2U32 chunkPos = adjustOrigin(key.origin, seed).chunkPosition().to<uint32_t>() + ofst;
-	const Vector2U32 nodeOrigin = chunkPos / octaveSize;
-	const Vector2F originProgress = (chunkPos % octaveSize).to<float>() / octaveSize;
-	const float progressCoef = 1.0f / (octaveSize * chunkSize);
+	const Vector2U32 nodeOrigin = chunkPos / scale;
+	const Vector2F originProgress = (chunkPos % scale).to<float>() / scale;
+	const float progressCoef = 1.0f / (scale * chunkSize);
 
 	float nodes[4];
 	for(uint32_t i = 0; i < 4; i++)
-		nodes[i] = value.chunkValue(((nodeOrigin + Vector2U32(i % 2, i / 2)) * octaveSize - ofst).to<ChunkWorldPos_T>());
+		nodes[i] = value.chunkValue(((nodeOrigin + Vector2U32(i % 2, i / 2)) * scale - ofst).to<ChunkWorldPos_T>());
 
 	for(int i = 0; i < chunkSurface; i++) {
 		const Vector2F prog = originProgress + Vector2F(i % chunkSize, i / chunkSize) * progressCoef;
@@ -54,14 +54,14 @@ void WGA_NoiseFuncs_CPU::valueNoise2D(WGA_Funcs_CPU::Api api, Key key, DH <VT::F
 	}
 }
 
-void WGA_NoiseFuncs_CPU::perlin2D(WGA_Funcs_CPU::Api api, Key key, DH <VT::Float> result, V <VT::Float> octaveSizev, V <VT::Float> seedv) {
-	const uint32_t octaveSize = static_cast<uint32_t>(octaveSizev.constValue());
+void WGA_NoiseFuncs_CPU::perlin2D(WGA_Funcs_CPU::Api api, Key key, DH <VT::Float> result, V <VT::Float> scalev, V <VT::Float> seedv) {
+	const uint32_t scale = static_cast<uint32_t>(scalev.constValue());
 	const Seed seed = WorldGen_CPU_Utils::hash(static_cast<Seed>(seedv.constValue()), api->seed());
 
 	const Vector2U32 chunkPos = adjustOrigin(key.origin, seed).chunkPosition().to<uint32_t>() + ofst;
-	const Vector2U32 nodeOrigin = chunkPos / octaveSize;
-	const Vector2F originProgress = (chunkPos % octaveSize).to<float>() / octaveSize;
-	const float progressCoef = 1.0f / (octaveSize * chunkSize);
+	const Vector2U32 nodeOrigin = chunkPos / scale;
+	const Vector2F originProgress = (chunkPos % scale).to<float>() / scale;
+	const float progressCoef = 1.0f / (scale * chunkSize);
 
 	Vector2F gradients[4];
 	for(uint32_t g = 0; g < 4; g++) {
@@ -120,14 +120,14 @@ void WGA_NoiseFuncs_CPU::perlin2D(WGA_Funcs_CPU::Api api, Key key, DH <VT::Float
 	}
 }
 
-void WGA_NoiseFuncs_CPU::perlin3D(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key key, DH <WGA_Value::ValueType::Float> result, V <WGA_Value::ValueType::Float> octaveSizev, V <WGA_Value::ValueType::Float> seedv) {
-	const uint32_t octaveSize = static_cast<uint32_t>(octaveSizev.constValue());
+void WGA_NoiseFuncs_CPU::perlin3D(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key key, DH <WGA_Value::ValueType::Float> result, V <WGA_Value::ValueType::Float> scalev, V <WGA_Value::ValueType::Float> seedv) {
+	const uint32_t scale = static_cast<uint32_t>(scalev.constValue());
 	const Seed seed = WorldGen_CPU_Utils::hash(static_cast<Seed>(seedv.constValue()), api->seed());
 
 	const Vector3U32 chunkPos = (adjustOrigin(key.origin, seed) / chunkSize).to<uint32_t>() + ofst;
-	const Vector3U32 nodeOrigin = chunkPos / octaveSize;
-	const Vector3F originProgress = (chunkPos % octaveSize).to<float>() / octaveSize;
-	const float progressCoef = 1.0f / (octaveSize * chunkSize);
+	const Vector3U32 nodeOrigin = chunkPos / scale;
+	const Vector3F originProgress = (chunkPos % scale).to<float>() / scale;
+	const float progressCoef = 1.0f / (scale * chunkSize);
 
 	static const std::vector<V3F> graidentVariants = [] {
 		std::vector<V3F> r;
@@ -210,20 +210,20 @@ void WGA_NoiseFuncs_CPU::perlin3D(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key key
 	}
 }
 
-void WGA_NoiseFuncs_CPU::voronoi2D(WGA_Funcs_CPU::Api api, Key key, DH <VT::Float> result, V <VT::Float> octaveSizev, V <VT::Float> seedv, V <VT::Float> resultTypev, V <VT::Float> metricExponentv) {
-	return voronoi2DColored(api, key, result, octaveSizev, seedv, resultTypev, metricExponentv, static_cast<WGA_Value_CPU *>(nullptr));
+void WGA_NoiseFuncs_CPU::voronoi2D(WGA_Funcs_CPU::Api api, Key key, DH <VT::Float> result, V <VT::Float> scalev, V <VT::Float> seedv, V <VT::Float> resultTypev, V <VT::Float> metricExponentv) {
+	return voronoi2DColored(api, key, result, scalev, seedv, resultTypev, metricExponentv, static_cast<WGA_Value_CPU *>(nullptr));
 }
 
-void WGA_NoiseFuncs_CPU::voronoi2DColored(WGA_Funcs_CPU::Api api, Key key, DH <VT::Float> result, V <VT::Float> octaveSizev, V <VT::Float> seedv, V <VT::Float> resultTypev, V <VT::Float> metricExponentv, V <VT::Float> coloring) {
-	const uint32_t octaveSize = static_cast<uint32_t>(octaveSizev.constValue());
+void WGA_NoiseFuncs_CPU::voronoi2DColored(WGA_Funcs_CPU::Api api, Key key, DH <VT::Float> result, V <VT::Float> scalev, V <VT::Float> seedv, V <VT::Float> resultTypev, V <VT::Float> metricExponentv, V <VT::Float> coloring) {
+	const uint32_t scale = static_cast<uint32_t>(scalev.constValue());
 	const Seed seed = WorldGen_CPU_Utils::hash(static_cast<Seed>(seedv.constValue()), api->seed());
 	const int resultType = static_cast<int>(resultTypev.constValue());
-	DH <VT::Float> metricExponentHandle = metricExponentv.dataHandle(key.origin, 0);
+	const DH <VT::Float> metricExponentHandle = metricExponentv.dataHandle(key.origin, 0);
 
 	const Vector2U32 chunkPos = key.origin.chunkPosition().to<uint32_t>() + ofst;
-	const Vector2U32 nodeOrigin = chunkPos / octaveSize;
-	const Vector2F originProgress = (chunkPos % octaveSize).to<float>() / octaveSize;
-	const float progressCoef = 1.0f / (chunkSize * octaveSize);
+	const Vector2U32 nodeOrigin = chunkPos / scale;
+	const Vector2F originProgress = (chunkPos % scale).to<float>() / scale;
+	const float progressCoef = 1.0f / (chunkSize * scale);
 
 	constexpr int maxCnt = 25;
 	Vector2F voronoiPoints[maxCnt];
@@ -233,7 +233,7 @@ void WGA_NoiseFuncs_CPU::voronoi2DColored(WGA_Funcs_CPU::Api api, Key key, DH <V
 		const Vector2U32 nodePos = nodeOrigin + offset.to<uint32_t>();
 		const Seed localSeed = WorldGen_CPU_Utils::hash(nodePos, seed);
 		voronoiPoints[i] = offset.to<float>() + Vector2F(localSeed & 0xffff, (localSeed >> 16) & 0xffff) / 0xffff;
-		voronoiColorings[i] = coloring.v ? coloring.chunkValue((nodePos * octaveSize + ofst).to<ChunkWorldPos_T>()) : Vector<float, 1>(0);
+		voronoiColorings[i] = coloring.v ? coloring.chunkValue((nodePos * scale + ofst).to<ChunkWorldPos_T>()) : Vector<float, 1>(0);
 	}
 
 	int i = 0;
@@ -336,20 +336,20 @@ void WGA_NoiseFuncs_CPU::voronoi2DColored(WGA_Funcs_CPU::Api api, Key key, DH <V
 }
 
 void
-WGA_NoiseFuncs_CPU::voronoi3D(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key key, DH <WGA_Value::ValueType::Float> result, V <WGA_Value::ValueType::Float> octaveSize, V <WGA_Value::ValueType::Float> seed, V <WGA_Value::ValueType::Float> resultType, V <WGA_Value::ValueType::Float> metricExponent) {
-	return voronoi3DParam(api, key, result, octaveSize, seed, resultType, metricExponent, static_cast<WGA_Value_CPU *>(nullptr));
+WGA_NoiseFuncs_CPU::voronoi3D(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key key, DH <WGA_Value::ValueType::Float> result, V <WGA_Value::ValueType::Float> scale, V <WGA_Value::ValueType::Float> seed, V <WGA_Value::ValueType::Float> resultType, V <WGA_Value::ValueType::Float> metricExponent) {
+	return voronoi3DParam(api, key, result, scale, seed, resultType, metricExponent, static_cast<WGA_Value_CPU *>(nullptr));
 }
 
-void WGA_NoiseFuncs_CPU::voronoi3DParam(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key key, DH <WGA_Value::ValueType::Float> result, V <WGA_Value::ValueType::Float> octaveSizev, V <WGA_Value::ValueType::Float> seedv, V <WGA_Value::ValueType::Float> resultTypev, V <WGA_Value::ValueType::Float> metricExponentv, V <WGA_Value::ValueType::Float> paramv) {  /// WIP, SLOW, NOT WORKING
-	const uint32_t octaveSize = static_cast<uint32_t>(octaveSizev.constValue()) * chunkSize;
+void WGA_NoiseFuncs_CPU::voronoi3DParam(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key key, DH <WGA_Value::ValueType::Float> result, V <WGA_Value::ValueType::Float> scalev, V <WGA_Value::ValueType::Float> seedv, V <WGA_Value::ValueType::Float> resultTypev, V <WGA_Value::ValueType::Float> metricExponentv, V <WGA_Value::ValueType::Float> paramv) {  /// WIP, SLOW, NOT WORKING
+	const uint32_t scale = static_cast<uint32_t>(scalev.constValue()) * chunkSize;
 	const Seed seed = WorldGen_CPU_Utils::hash(static_cast<Seed>(seedv.constValue()), api->seed());
 	const int resultType = static_cast<int>(resultTypev.constValue());
-	DH <VT::Float> metricExponentHandle = metricExponentv.dataHandle(key.origin, 0);
+	const DH <VT::Float> metricExponentHandle = metricExponentv.dataHandle(key.origin, 0);
 
 	const Vector3U32 basePos = key.origin.to<uint32_t>() + ofst;
-	const Vector3U32 nodeOrigin = basePos / octaveSize;
-	const Vector3F originProgress = (basePos % octaveSize).to<float>() / octaveSize;
-	const float progressCoef = 1.0f / (chunkSize * octaveSize);
+	const Vector3U32 nodeOrigin = basePos / scale;
+	const Vector3F originProgress = (basePos % scale).to<float>() / scale;
+	const float progressCoef = 1.0f / (chunkSize * scale);
 
 	constexpr int maxCnt = 5 * 5 * 5;
 	V3F voronoiPoints[maxCnt];
@@ -360,7 +360,7 @@ void WGA_NoiseFuncs_CPU::voronoi3DParam(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::K
 		const Seed localSeed = WorldGen_CPU_Utils::hash(nodePos, seed);
 		voronoiPoints[i] =
 			offset.to<float>() + V3F(localSeed & 0xff, (localSeed >> 8) & 0xff, (localSeed >> 16) & 0xff) / 0xff;
-		voronoiParams[i] = paramv.v ? paramv.sampleAt((nodePos * octaveSize - ofst).to<BlockWorldPos_T>())
+		voronoiParams[i] = paramv.v ? paramv.sampleAt((nodePos * scale - ofst).to<BlockWorldPos_T>())
 		                            : Vector<float, 1>(0);
 	}
 
@@ -559,22 +559,22 @@ void WGA_NoiseFuncs_CPU::poissonDisc2DBool(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU
 		result[(node.pos - originF).to<BlockWorldPos_T>()] = true;
 }
 
-void WGA_NoiseFuncs_CPU::osimplex2D(WGA_Funcs_CPU::Api api, Key key, DH <VT::Float> result, V <VT::Float> octaveSizev, V <VT::Float> seedv) {
+void WGA_NoiseFuncs_CPU::osimplex2D(WGA_Funcs_CPU::Api api, Key key, DH <VT::Float> result, V <VT::Float> scalev, V <VT::Float> seedv) {
 	static const auto node = FastNoise::New<FastNoise::Simplex>();
 
-	const float octaveSize = octaveSizev.constValue();
+	const float scale = scalev.constValue();
 	const int seed = api->seed() ^ static_cast<int>(seedv.constValue());
 
-	node->GenUniformGrid2D(reinterpret_cast<float *>(result.data), key.origin.x(), key.origin.y(), chunkSize, chunkSize, 1.0f / (octaveSize * chunkSize), seed);
+	node->GenUniformGrid2D(reinterpret_cast<float *>(result.data), key.origin.x(), key.origin.y(), chunkSize, chunkSize, 1.0f / (scale * chunkSize), seed);
 }
 
-void WGA_NoiseFuncs_CPU::osimplex3D(WGA_Funcs_CPU::Api api, Key key, DH <VT::Float> result, V <VT::Float> octaveSizev, V <VT::Float> seedv) {
+void WGA_NoiseFuncs_CPU::osimplex3D(WGA_Funcs_CPU::Api api, Key key, DH <VT::Float> result, V <VT::Float> scalev, V <VT::Float> seedv) {
 	static const auto node = FastNoise::New<FastNoise::Simplex>();
 
-	const float octaveSize = octaveSizev.constValue();
+	const float scale = scalev.constValue();
 	const int seed = api->seed() ^ static_cast<int>(seedv.constValue());
 
-	node->GenUniformGrid3D(reinterpret_cast<float *>(result.data), key.origin.x(), key.origin.y(), key.origin.z(), chunkSize, chunkSize, chunkSize, 1.0f / (octaveSize * chunkSize), seed);
+	node->GenUniformGrid3D(reinterpret_cast<float *>(result.data), key.origin.x(), key.origin.y(), key.origin.z(), chunkSize, chunkSize, chunkSize, 1.0f / (scale * chunkSize), seed);
 }
 
 void WGA_NoiseFuncs_CPU::rand(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key key, DH <WGA_Value::ValueType::Float> result, V <WGA_Value::ValueType::Float> seedv) {

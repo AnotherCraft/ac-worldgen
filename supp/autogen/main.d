@@ -55,6 +55,9 @@ void main() {
 			if("contextual" in funcn)
 				isContextual = funcn["contextual"].as!bool;
 
+			if("desc" in funcn && funcn["desc"].type == NodeType.string)
+				apiCode ~= "f.description = R\"STRING(%s)STRING\";".format(funcn["desc"].as!string);
+
 			string[] argTypes;
 			argTypes.length = argd.length;
 			void procf(string t, int i, void delegate(string pt, int i) callback) {
@@ -125,7 +128,7 @@ for(int i = 0; i < sz; i++) {
   data[i] = (%s);
  }
  return data;`.format(
- 	iota(argt.length).map!(i => "Arg%s::DataHandle argh%s = argv%s.dataHandle(key.origin, key.subKey);\n".format(i+1, i+1, i+1)).join,
+ 	iota(argt.length).map!(i => "const Arg%s::DataHandle argh%s = argv%s.dataHandle(key.origin, key.subKey);\n".format(i+1, i+1, i+1)).join,
  	iota(argt.length).map!(i => "const Arg%s::T arg%s = argh%s[i];\n".format(i+1, i+1, i+1)).join,
  	impl
  	);

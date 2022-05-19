@@ -348,8 +348,8 @@ Example:
 perlin2D(~1, #2432); // Generates perlin noise with seed 2432 (the seed is combined with the world seed)
 ```
 
-### `octaveSize`
-The `octaveSize` parameter denotes scaling of a generator function, is usually in the units of chunks. This value has to always be a whole number >= `1`, otherwise the functions will not work properly.
+### `scale`
+The `scale` parameter denotes scaling of a generator function, usually in the units of chunks. This value has to always be a whole number >= `1`, otherwise the functions will not work properly.
 
 * The expected dimensionality is always `C`.
 * It is heavily recommended (for code readability) to prefix numeric values passed to this parameter with the `~x` prefix.
