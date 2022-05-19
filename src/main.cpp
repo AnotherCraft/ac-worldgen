@@ -268,7 +268,7 @@ Compiles the source files and prints out the list of exports.
 					return [val, pos] {
 						ZoneScopedN("getData");
 
-						auto h = WGA_ValueWrapper_CPU<vt>(static_cast<WGA_Value_CPU *>(val)).dataHandle(pos);
+						const auto h = WGA_ValueWrapper_CPU<vt>(static_cast<WGA_Value_CPU *>(val)).dataHandle(pos);
 						Data r{
 							.recordCount = h.size
 						};

@@ -7,7 +7,7 @@ void WGA_SamplingFuncs_CPU::sampleGradient2D(WGA_Funcs_CPU::Api api, WGA_Funcs_C
 	// Each sampling point will have its own separate cache
 	auto valXp = value, valXm = value, valYp = value, valYm = value;
 
-	auto disth = dist.dataHandle(key.origin);
+	const auto disth = dist.dataHandle(key.origin);
 	for(int i = 0; i < result.size; i++) {
 		const BlockWorldPos worldPos = result.worldPos(key.origin, i);
 

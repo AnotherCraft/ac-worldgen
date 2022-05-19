@@ -218,7 +218,7 @@ void WGA_NoiseFuncs_CPU::voronoi2DColored(WGA_Funcs_CPU::Api api, Key key, DH <V
 	const uint32_t octaveSize = static_cast<uint32_t>(octaveSizev.constValue());
 	const Seed seed = WorldGen_CPU_Utils::hash(static_cast<Seed>(seedv.constValue()), api->seed());
 	const int resultType = static_cast<int>(resultTypev.constValue());
-	DH <VT::Float> metricExponentHandle = metricExponentv.dataHandle(key.origin, 0);
+	const DH <VT::Float> metricExponentHandle = metricExponentv.dataHandle(key.origin, 0);
 
 	const Vector2U32 chunkPos = key.origin.chunkPosition().to<uint32_t>() + ofst;
 	const Vector2U32 nodeOrigin = chunkPos / octaveSize;
@@ -344,7 +344,7 @@ void WGA_NoiseFuncs_CPU::voronoi3DParam(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::K
 	const uint32_t octaveSize = static_cast<uint32_t>(octaveSizev.constValue()) * chunkSize;
 	const Seed seed = WorldGen_CPU_Utils::hash(static_cast<Seed>(seedv.constValue()), api->seed());
 	const int resultType = static_cast<int>(resultTypev.constValue());
-	DH <VT::Float> metricExponentHandle = metricExponentv.dataHandle(key.origin, 0);
+	const DH <VT::Float> metricExponentHandle = metricExponentv.dataHandle(key.origin, 0);
 
 	const Vector3U32 basePos = key.origin.to<uint32_t>() + ofst;
 	const Vector3U32 nodeOrigin = basePos / octaveSize;

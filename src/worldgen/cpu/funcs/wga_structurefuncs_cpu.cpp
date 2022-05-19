@@ -11,23 +11,9 @@ void WGA_StructureFuncs_CPU::spawn2D(Api api, Key key, DH <VT::Block> result, V 
 	const auto spawnFunc = [&spawnZ, &spawnCondition, &entryRule](Api api, Key key, SpawnList &spawnList) {
 		ZoneScopedN("spawn2DSpawnFunc");
 
-		WGA_DataHandle_CPU<VT::Float> spawnZHandle;
-		{
-			ZoneScopedN("spawnZHandle");
-			spawnZHandle = spawnZ.dataHandle(key.origin);
-		}
-
-		WGA_DataHandle_CPU<VT::Bool> spawnConditionHandle;
-		{
-			ZoneScopedN("spawnConditionHandle");
-			spawnConditionHandle = spawnCondition.dataHandle(key.origin);
-		}
-
-		WGA_DataHandle_CPU<VT::Rule> entryRuleHandle;
-		{
-			ZoneScopedN("entryRuleHandle");
-			entryRuleHandle = entryRule.dataHandle(key.origin);
-		}
+		const WGA_DataHandle_CPU<VT::Float> spawnZHandle = spawnZ.dataHandle(key.origin);
+		const WGA_DataHandle_CPU<VT::Bool> spawnConditionHandle = spawnCondition.dataHandle(key.origin);
+		const WGA_DataHandle_CPU<VT::Rule> entryRuleHandle = entryRule.dataHandle(key.origin);
 
 		for(int i = 0; i < chunkSurface; i++) {
 			const BlockWorldPos_T z = spawnZHandle[i];

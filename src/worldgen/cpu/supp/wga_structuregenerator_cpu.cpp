@@ -127,9 +127,7 @@ WGA_StructureOutputData_CPUPtr WGA_StructureGenerator_CPU::generateOutput() {
 
 				auto it = vectorIterator<BlockWorldPos>(worldStartPos & ~0xf, worldEndPos & ~0xf, 16);
 				for(const BlockWorldPos &subChunkPos: it) {
-					WGA_DataHandle_CPU<WGA_Value::ValueType::Block> blockh;
-
-					blockh = blockv.dataHandle(subChunkPos);
+					const WGA_DataHandle_CPU<WGA_Value::ValueType::Block> blockh = blockv.dataHandle(subChunkPos);
 					auto &srr = result->subChunkRecords[subChunkPos];
 
 					const BlockWorldPos start = worldStartPos.max(subChunkPos) - subChunkPos;

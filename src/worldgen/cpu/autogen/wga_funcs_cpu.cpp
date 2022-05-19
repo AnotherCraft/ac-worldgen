@@ -246,8 +246,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -279,7 +279,7 @@ result[9] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -314,9 +314,9 @@ using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
 Arg2 argv2 = Arg2(args[1]);
 Arg3 argv3 = Arg3(args[2]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
-Arg3::DataHandle argh3 = argv3.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg3::DataHandle argh3 = argv3.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -351,8 +351,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -384,7 +384,7 @@ result[12] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -415,7 +415,7 @@ result[13] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -446,7 +446,7 @@ result[14] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -477,7 +477,7 @@ result[15] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -508,7 +508,7 @@ result[16] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -539,7 +539,7 @@ result[17] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -570,7 +570,7 @@ result[18] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -601,7 +601,7 @@ result[19] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -632,7 +632,7 @@ result[20] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -663,7 +663,7 @@ result[21] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -694,7 +694,7 @@ result[22] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -773,7 +773,7 @@ result[25] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -804,7 +804,7 @@ result[26] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -837,8 +837,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -872,8 +872,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -907,8 +907,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -942,8 +942,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -975,7 +975,7 @@ result[31] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -1006,7 +1006,7 @@ result[32] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -1037,7 +1037,7 @@ result[33] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -2786,8 +2786,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -2821,8 +2821,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -2856,8 +2856,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -2891,8 +2891,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -2926,8 +2926,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -2961,8 +2961,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -3050,9 +3050,9 @@ using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
 Arg2 argv2 = Arg2(args[1]);
 Arg3 argv3 = Arg3(args[2]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
-Arg3::DataHandle argh3 = argv3.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg3::DataHandle argh3 = argv3.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -3089,9 +3089,9 @@ using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
 Arg2 argv2 = Arg2(args[1]);
 Arg3 argv3 = Arg3(args[2]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
-Arg3::DataHandle argh3 = argv3.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg3::DataHandle argh3 = argv3.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -3128,9 +3128,9 @@ using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
 Arg2 argv2 = Arg2(args[1]);
 Arg3 argv3 = Arg3(args[2]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
-Arg3::DataHandle argh3 = argv3.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg3::DataHandle argh3 = argv3.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -3163,7 +3163,7 @@ result[118] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -3194,7 +3194,7 @@ result[119] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -3225,7 +3225,7 @@ result[120] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -3260,9 +3260,9 @@ using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
 Arg2 argv2 = Arg2(args[1]);
 Arg3 argv3 = Arg3(args[2]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
-Arg3::DataHandle argh3 = argv3.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg3::DataHandle argh3 = argv3.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -3299,9 +3299,9 @@ using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
 Arg2 argv2 = Arg2(args[1]);
 Arg3 argv3 = Arg3(args[2]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
-Arg3::DataHandle argh3 = argv3.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg3::DataHandle argh3 = argv3.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -3338,9 +3338,9 @@ using Arg3 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
 Arg2 argv2 = Arg2(args[1]);
 Arg3 argv3 = Arg3(args[2]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
-Arg3::DataHandle argh3 = argv3.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg3::DataHandle argh3 = argv3.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -3373,7 +3373,7 @@ result[124] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -3404,7 +3404,7 @@ result[125] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -3435,7 +3435,7 @@ result[126] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -3466,7 +3466,7 @@ result[127] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -3497,7 +3497,7 @@ result[128] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -3528,7 +3528,7 @@ result[129] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -3559,7 +3559,7 @@ result[130] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -3590,7 +3590,7 @@ result[131] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -3621,7 +3621,7 @@ result[132] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -3652,7 +3652,7 @@ result[133] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -3683,7 +3683,7 @@ result[134] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -3714,7 +3714,7 @@ result[135] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -3745,7 +3745,7 @@ result[136] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -3776,7 +3776,7 @@ result[137] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -3807,7 +3807,7 @@ result[138] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -3838,7 +3838,7 @@ result[139] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -3869,7 +3869,7 @@ result[140] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -3900,7 +3900,7 @@ result[141] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -3933,8 +3933,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -3966,7 +3966,7 @@ result[143] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -3997,7 +3997,7 @@ result[144] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -4028,7 +4028,7 @@ result[145] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -4059,7 +4059,7 @@ result[146] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -4090,7 +4090,7 @@ result[147] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -4123,8 +4123,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -4158,8 +4158,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -4193,8 +4193,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -4228,8 +4228,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -4263,8 +4263,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -4298,8 +4298,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -4333,8 +4333,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -4368,8 +4368,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -4403,8 +4403,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -4438,8 +4438,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -4473,8 +4473,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -4508,8 +4508,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -4543,8 +4543,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -4578,8 +4578,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -4613,8 +4613,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -4648,8 +4648,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -4683,8 +4683,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -4718,8 +4718,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -4753,8 +4753,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -4788,8 +4788,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -4823,8 +4823,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -4858,8 +4858,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -4893,8 +4893,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -4928,8 +4928,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -4963,8 +4963,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -4998,8 +4998,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -5033,8 +5033,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -5068,8 +5068,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -5103,8 +5103,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -5138,8 +5138,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -5173,8 +5173,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -5208,8 +5208,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -5241,7 +5241,7 @@ result[180] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -5272,7 +5272,7 @@ result[181] = [] (WorldGenAPI_CPU *api, const WorldGenAPI::FunctionArgs &args) {
   const auto fillFunc = [=] (const WGA_DataRecord_CPU::Key &key, const typename Result::DataHandle &data) {
   	Arg1 argv1 = Arg1(args[0]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -5305,8 +5305,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -5340,8 +5340,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -5375,8 +5375,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -5410,8 +5410,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -5445,8 +5445,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -5480,8 +5480,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -5515,8 +5515,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -5550,8 +5550,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -5585,8 +5585,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -5620,8 +5620,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -5655,8 +5655,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float2>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -5690,8 +5690,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -5725,8 +5725,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -5760,8 +5760,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -5795,8 +5795,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Rule>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -5830,8 +5830,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::ComponentNode>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -5865,8 +5865,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -5900,8 +5900,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -5935,8 +5935,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -5970,8 +5970,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -6005,8 +6005,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
@@ -6040,8 +6040,8 @@ using Arg2 = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float>;
   	Arg1 argv1 = Arg1(args[0]);
 Arg2 argv2 = Arg2(args[1]);
 
-Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
-Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
+const Arg1::DataHandle argh1 = argv1.dataHandle(key.origin, key.subKey);
+const Arg2::DataHandle argh2 = argv2.dataHandle(key.origin, key.subKey);
 
 const int sz = data.size;
 for(int i = 0; i < sz; i++) {
