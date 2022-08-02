@@ -9,6 +9,12 @@ project(${target} VERSION 0.0.1 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Formatter requires c++latest for MSVC2019 and less
+if (DEFINED MSVC_VERSION AND MSVC_VERSION LESS 1930)
+    set(CMAKE_CXX20_STANDARD_COMPILE_OPTION "-std:c++latest")
+    set(CMAKE_CXX20_EXTENSION_COMPILE_OPTION "-std:c++latest")
+endif()
+
 set(CMAKE_BASE_DIR "${CMAKE_BINARY_DIR}/../../..")
 set(PROJECT_BASE_DIR "${PROJECT_SOURCE_DIR}/..")
 

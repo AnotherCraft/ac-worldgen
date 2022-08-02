@@ -73,6 +73,7 @@ ExternalProject_Add(
 # ===========================================
 ExternalProject_Add(ac_worldgen_nodeploy
         SOURCE_DIR "${PROJECT_SOURCE_DIR}/src"
+        BUILD_ALWAYS ON
         INSTALL_COMMAND ""
         EXCLUDE_FROM_ALL ON
         CMAKE_ARGS ${EXTERNAL_ARGS}
@@ -80,6 +81,7 @@ ExternalProject_Add(ac_worldgen_nodeploy
 
 ExternalProject_Add(ac_worldgen_deploy
         DEPENDS antlr tracy fastNoise2
+        BUILD_ALWAYS ON
         SOURCE_DIR "${PROJECT_SOURCE_DIR}/src"
         INSTALL_COMMAND ""
         CMAKE_ARGS ${EXTERNAL_ARGS}
