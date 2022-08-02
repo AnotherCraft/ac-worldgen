@@ -24,11 +24,8 @@ target_compile_definitions(${target} PRIVATE _USE_MATH_DEFINES)
 # ===========================================
 # Tracy
 # ===========================================
-target_include_directories(${target} SYSTEM PRIVATE "${PROJECT_BASE_DIR}/deps/tracy")
-target_compile_definitions(${target} PRIVATE TRACY_ENABLE)
-target_compile_definitions(${target} PRIVATE TRACY_ON_DEMAND)
-find_library(tracy_lib NAMES tracyclient PATHS "${CMAKE_BASE_DIR}/tracy-prefix/src/tracy-build" "${CMAKE_BASE_DIR}/tracy-prefix/src/tracy-build/Debug" REQUIRED)
-target_link_libraries(${target} PRIVATE "${tracy_lib}")
+find_package(tracy PATHS "${CMAKE_BASE_DIR}/install/tracy/share/Tracy" REQUIRED)
+target_link_libraries(ac_client PRIVATE tracy)
 
 # ===========================================
 # FastNoise2
