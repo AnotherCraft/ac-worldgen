@@ -1,5 +1,5 @@
 
-// Generated from Woglac.g4 by ANTLR 4.7.2
+// Generated from Woglac.g4 by ANTLR 4.10.1
 
 #pragma once
 
@@ -40,14 +40,21 @@ public:
     RuleExtendedIdentifier = 38, RuleLiteralExpression = 39
   };
 
-  WoglacParser(antlr4::TokenStream *input);
-  ~WoglacParser();
+  explicit WoglacParser(antlr4::TokenStream *input);
 
-  virtual std::string getGrammarFileName() const override;
-  virtual const antlr4::atn::ATN& getATN() const override { return _atn; };
-  virtual const std::vector<std::string>& getTokenNames() const override { return _tokenNames; }; // deprecated: use vocabulary instead.
-  virtual const std::vector<std::string>& getRuleNames() const override;
-  virtual antlr4::dfa::Vocabulary& getVocabulary() const override;
+  WoglacParser(antlr4::TokenStream *input, const antlr4::atn::ParserATNSimulatorOptions &options);
+
+  ~WoglacParser() override;
+
+  std::string getGrammarFileName() const override;
+
+  const antlr4::atn::ATN& getATN() const override;
+
+  const std::vector<std::string>& getRuleNames() const override;
+
+  const antlr4::dfa::Vocabulary& getVocabulary() const override;
+
+  antlr4::atn::SerializedATNView getSerializedATN() const override;
 
 
   class ModuleContext;
@@ -93,8 +100,8 @@ public:
 
   class  ModuleContext : public antlr4::ParserRuleContext {
   public:
-    WoglacParser::StatementContext *statementContext = nullptr;;
-    std::vector<StatementContext *> content;;
+    WoglacParser::StatementContext *statementContext = nullptr;
+    std::vector<StatementContext *> content;
     ModuleContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *EOF();
@@ -135,11 +142,11 @@ public:
 
   class  ScopeContext : public antlr4::ParserRuleContext {
   public:
-    antlr4::Token *extend = nullptr;;
-    antlr4::Token *type = nullptr;;
-    WoglacParser::ExtendedIdentifierContext *id = nullptr;;
-    WoglacParser::StatementContext *statementContext = nullptr;;
-    std::vector<StatementContext *> content;;
+    antlr4::Token *extend = nullptr;
+    antlr4::Token *type = nullptr;
+    WoglacParser::ExtendedIdentifierContext *id = nullptr;
+    WoglacParser::StatementContext *statementContext = nullptr;
+    std::vector<StatementContext *> content;
     ScopeContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     ContentOrSemicolonContext *contentOrSemicolon();
@@ -156,8 +163,8 @@ public:
 
   class  ContentOrSemicolonContext : public antlr4::ParserRuleContext {
   public:
-    WoglacParser::StatementContext *statementContext = nullptr;;
-    std::vector<StatementContext *> content;;
+    WoglacParser::StatementContext *statementContext = nullptr;
+    std::vector<StatementContext *> content;
     ContentOrSemicolonContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     std::vector<StatementContext *> statement();
@@ -172,9 +179,9 @@ public:
 
   class  PragmaStatementContext : public antlr4::ParserRuleContext {
   public:
-    WoglacParser::ExtendedIdentifierContext *id = nullptr;;
-    WoglacParser::LiteralExpressionContext *valLit = nullptr;;
-    antlr4::Token *valId = nullptr;;
+    WoglacParser::ExtendedIdentifierContext *id = nullptr;
+    WoglacParser::LiteralExpressionContext *valLit = nullptr;
+    antlr4::Token *valId = nullptr;
     PragmaStatementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     ExtendedIdentifierContext *extendedIdentifier();
@@ -190,10 +197,10 @@ public:
 
   class  VariableDefinitionContext : public antlr4::ParserRuleContext {
   public:
-    antlr4::Token *exportFlag = nullptr;;
-    antlr4::Token *type = nullptr;;
-    WoglacParser::ExtendedIdentifierContext *id = nullptr;;
-    WoglacParser::ExpressionContext *val = nullptr;;
+    antlr4::Token *exportFlag = nullptr;
+    antlr4::Token *type = nullptr;
+    WoglacParser::ExtendedIdentifierContext *id = nullptr;
+    WoglacParser::ExpressionContext *val = nullptr;
     VariableDefinitionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *Type();
@@ -209,11 +216,11 @@ public:
 
   class  ParamDefinitionContext : public antlr4::ParserRuleContext {
   public:
-    antlr4::Token *targetType = nullptr;;
-    WoglacParser::ExtendedIdentifierContext *target = nullptr;;
-    antlr4::Token *type = nullptr;;
-    antlr4::Token *id = nullptr;;
-    WoglacParser::ExpressionContext *defaultValue = nullptr;;
+    antlr4::Token *targetType = nullptr;
+    WoglacParser::ExtendedIdentifierContext *target = nullptr;
+    antlr4::Token *type = nullptr;
+    antlr4::Token *id = nullptr;
+    WoglacParser::ExpressionContext *defaultValue = nullptr;
     ParamDefinitionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *Type();
@@ -230,9 +237,9 @@ public:
 
   class  BiomeParamDefinitionContext : public antlr4::ParserRuleContext {
   public:
-    antlr4::Token *type = nullptr;;
-    WoglacParser::ExtendedIdentifierContext *id = nullptr;;
-    WoglacParser::ExpressionContext *defaultValue = nullptr;;
+    antlr4::Token *type = nullptr;
+    WoglacParser::ExtendedIdentifierContext *id = nullptr;
+    WoglacParser::ExpressionContext *defaultValue = nullptr;
     BiomeParamDefinitionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *Type();
@@ -248,10 +255,10 @@ public:
 
   class  ParamSetStatementContext : public antlr4::ParserRuleContext {
   public:
-    antlr4::Token *targetType = nullptr;;
-    WoglacParser::ExtendedIdentifierContext *target = nullptr;;
-    WoglacParser::ExtendedIdentifierContext *param = nullptr;;
-    WoglacParser::ExpressionContext *value = nullptr;;
+    antlr4::Token *targetType = nullptr;
+    WoglacParser::ExtendedIdentifierContext *target = nullptr;
+    WoglacParser::ExtendedIdentifierContext *param = nullptr;
+    WoglacParser::ExpressionContext *value = nullptr;
     ParamSetStatementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     std::vector<ExtendedIdentifierContext *> extendedIdentifier();
@@ -267,10 +274,10 @@ public:
 
   class  BiomeConditionStatementContext : public antlr4::ParserRuleContext {
   public:
-    WoglacParser::ExtendedIdentifierContext *target = nullptr;;
-    WoglacParser::ExtendedIdentifierContext *param = nullptr;;
-    antlr4::Token *mean = nullptr;;
-    antlr4::Token *dev = nullptr;;
+    WoglacParser::ExtendedIdentifierContext *target = nullptr;
+    WoglacParser::ExtendedIdentifierContext *param = nullptr;
+    antlr4::Token *mean = nullptr;
+    antlr4::Token *dev = nullptr;
     BiomeConditionStatementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     std::vector<ExtendedIdentifierContext *> extendedIdentifier();
@@ -287,9 +294,9 @@ public:
 
   class  StructureConditionStatementContext : public antlr4::ParserRuleContext {
   public:
-    antlr4::Token *targetType = nullptr;;
-    WoglacParser::ExtendedIdentifierContext *target = nullptr;;
-    WoglacParser::ExpressionContext *cond = nullptr;;
+    antlr4::Token *targetType = nullptr;
+    WoglacParser::ExtendedIdentifierContext *target = nullptr;
+    WoglacParser::ExpressionContext *cond = nullptr;
     StructureConditionStatementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     ExpressionContext *expression();
@@ -304,12 +311,12 @@ public:
 
   class  RuleExpansionStatementContext : public antlr4::ParserRuleContext {
   public:
-    WoglacParser::ExtendedIdentifierContext *target = nullptr;;
-    WoglacParser::ExtendedIdentifierContext *expansionTarget = nullptr;;
-    antlr4::Token *node = nullptr;;
-    antlr4::Token *priority = nullptr;;
-    antlr4::Token *probabilityRatio = nullptr;;
-    WoglacParser::ContentOrSemicolonContext *content = nullptr;;
+    WoglacParser::ExtendedIdentifierContext *target = nullptr;
+    WoglacParser::ExtendedIdentifierContext *expansionTarget = nullptr;
+    antlr4::Token *node = nullptr;
+    antlr4::Token *priority = nullptr;
+    antlr4::Token *probabilityRatio = nullptr;
+    WoglacParser::ContentOrSemicolonContext *content = nullptr;
     RuleExpansionStatementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     ContentOrSemicolonContext *contentOrSemicolon();
@@ -328,9 +335,9 @@ public:
 
   class  ComponentNodeStatementContext : public antlr4::ParserRuleContext {
   public:
-    WoglacParser::ExtendedIdentifierContext *target = nullptr;;
-    WoglacParser::PositionExpressionContext *pos = nullptr;;
-    WoglacParser::ComponentNodeStatementCommonPartContext *cmn = nullptr;;
+    WoglacParser::ExtendedIdentifierContext *target = nullptr;
+    WoglacParser::PositionExpressionContext *pos = nullptr;
+    WoglacParser::ComponentNodeStatementCommonPartContext *cmn = nullptr;
     ComponentNodeStatementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     PositionExpressionContext *positionExpression();
@@ -346,9 +353,9 @@ public:
 
   class  ComponentNodeStatementCommonPartContext : public antlr4::ParserRuleContext {
   public:
-    WoglacParser::ComponentNodePropertiesSectionContext *prop = nullptr;;
-    antlr4::Token *group = nullptr;;
-    WoglacParser::ExtendedIdentifierContext *rule_ = nullptr;;
+    WoglacParser::ComponentNodePropertiesSectionContext *prop = nullptr;
+    antlr4::Token *group = nullptr;
+    WoglacParser::ExtendedIdentifierContext *rule_ = nullptr;
     ComponentNodeStatementCommonPartContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     ContentOrSemicolonContext *contentOrSemicolon();
@@ -365,11 +372,11 @@ public:
 
   class  ComponentNodePropertiesSectionContext : public antlr4::ParserRuleContext {
   public:
-    antlr4::Token *notAdjacent = nullptr;;
-    antlr4::Token *horizontalEdge = nullptr;;
-    antlr4::Token *verticalEdge = nullptr;;
-    WoglacParser::ComponentNodeOrientationExpressionContext *ori = nullptr;;
-    WoglacParser::ComponentNodeOrientationExpressionContext *ori2 = nullptr;;
+    antlr4::Token *notAdjacent = nullptr;
+    antlr4::Token *horizontalEdge = nullptr;
+    antlr4::Token *verticalEdge = nullptr;
+    WoglacParser::ComponentNodeOrientationExpressionContext *ori = nullptr;
+    WoglacParser::ComponentNodeOrientationExpressionContext *ori2 = nullptr;
     ComponentNodePropertiesSectionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     std::vector<ComponentNodeOrientationExpressionContext *> componentNodeOrientationExpression();
@@ -384,8 +391,8 @@ public:
 
   class  ComponentNodeOrientationExpressionContext : public antlr4::ParserRuleContext {
   public:
-    antlr4::Token *dir = nullptr;;
-    antlr4::Token *sign = nullptr;;
+    antlr4::Token *dir = nullptr;
+    antlr4::Token *sign = nullptr;
     ComponentNodeOrientationExpressionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *Identifier();
@@ -399,13 +406,13 @@ public:
 
   class  ComponentAreaStatementContext : public antlr4::ParserRuleContext {
   public:
-    WoglacParser::ExtendedIdentifierContext *target = nullptr;;
-    WoglacParser::PositionExpressionContext *startPos = nullptr;;
-    WoglacParser::PositionExpressionContext *endPos = nullptr;;
-    antlr4::Token *canOverlap = nullptr;;
-    antlr4::Token *mustOverlap = nullptr;;
-    antlr4::Token *isVirtual = nullptr;;
-    antlr4::Token *name = nullptr;;
+    WoglacParser::ExtendedIdentifierContext *target = nullptr;
+    WoglacParser::PositionExpressionContext *startPos = nullptr;
+    WoglacParser::PositionExpressionContext *endPos = nullptr;
+    antlr4::Token *canOverlap = nullptr;
+    antlr4::Token *mustOverlap = nullptr;
+    antlr4::Token *isVirtual = nullptr;
+    antlr4::Token *name = nullptr;
     ComponentAreaStatementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     std::vector<PositionExpressionContext *> positionExpression();
@@ -422,10 +429,10 @@ public:
 
   class  ComponentBlockStatementContext : public antlr4::ParserRuleContext {
   public:
-    WoglacParser::ExtendedIdentifierContext *target = nullptr;;
-    WoglacParser::PositionExpressionContext *startPos = nullptr;;
-    WoglacParser::PositionExpressionContext *endPos = nullptr;;
-    WoglacParser::ExpressionContext *val = nullptr;;
+    WoglacParser::ExtendedIdentifierContext *target = nullptr;
+    WoglacParser::PositionExpressionContext *startPos = nullptr;
+    WoglacParser::PositionExpressionContext *endPos = nullptr;
+    WoglacParser::ExpressionContext *val = nullptr;
     ComponentBlockStatementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     std::vector<PositionExpressionContext *> positionExpression();
@@ -442,9 +449,9 @@ public:
 
   class  ComponentIncludeStatementContext : public antlr4::ParserRuleContext {
   public:
-    antlr4::Token *file = nullptr;;
-    WoglacParser::ComponentIncludeStatementParamContext *componentIncludeStatementParamContext = nullptr;;
-    std::vector<ComponentIncludeStatementParamContext *> content;;
+    antlr4::Token *file = nullptr;
+    WoglacParser::ComponentIncludeStatementParamContext *componentIncludeStatementParamContext = nullptr;
+    std::vector<ComponentIncludeStatementParamContext *> content;
     ComponentIncludeStatementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *StringLiteral();
@@ -460,8 +467,8 @@ public:
 
   class  ComponentIncludeStatementParamContext : public antlr4::ParserRuleContext {
   public:
-    WoglacParser::ComponentIncludeStatementBlockParamContext *block = nullptr;;
-    WoglacParser::ComponentIncludeStatementNodeParamContext *node = nullptr;;
+    WoglacParser::ComponentIncludeStatementBlockParamContext *block = nullptr;
+    WoglacParser::ComponentIncludeStatementNodeParamContext *node = nullptr;
     ComponentIncludeStatementParamContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     ComponentIncludeStatementBlockParamContext *componentIncludeStatementBlockParam();
@@ -476,8 +483,8 @@ public:
 
   class  ComponentIncludeStatementBlockParamContext : public antlr4::ParserRuleContext {
   public:
-    antlr4::Token *id = nullptr;;
-    WoglacParser::ExpressionContext *val = nullptr;;
+    antlr4::Token *id = nullptr;
+    WoglacParser::ExpressionContext *val = nullptr;
     ComponentIncludeStatementBlockParamContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *NumericLiteral();
@@ -492,8 +499,8 @@ public:
 
   class  ComponentIncludeStatementNodeParamContext : public antlr4::ParserRuleContext {
   public:
-    antlr4::Token *id = nullptr;;
-    WoglacParser::ComponentNodeStatementCommonPartContext *com = nullptr;;
+    antlr4::Token *id = nullptr;
+    WoglacParser::ComponentNodeStatementCommonPartContext *com = nullptr;
     ComponentIncludeStatementNodeParamContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *NumericLiteral();
@@ -508,10 +515,10 @@ public:
 
   class  PositionExpressionContext : public antlr4::ParserRuleContext {
   public:
-    WoglacParser::ExpressionContext *x = nullptr;;
-    WoglacParser::ExpressionContext *y = nullptr;;
-    WoglacParser::ExpressionContext *z = nullptr;;
-    WoglacParser::ExpressionContext *vec = nullptr;;
+    WoglacParser::ExpressionContext *x = nullptr;
+    WoglacParser::ExpressionContext *y = nullptr;
+    WoglacParser::ExpressionContext *z = nullptr;
+    WoglacParser::ExpressionContext *vec = nullptr;
     PositionExpressionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     std::vector<ExpressionContext *> expression();
@@ -526,7 +533,7 @@ public:
 
   class  ExpressionContext : public antlr4::ParserRuleContext {
   public:
-    WoglacParser::TernaryExpressionContext *e = nullptr;;
+    WoglacParser::TernaryExpressionContext *e = nullptr;
     ExpressionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     TernaryExpressionContext *ternaryExpression();
@@ -540,7 +547,7 @@ public:
 
   class  ParentExpressionContext : public antlr4::ParserRuleContext {
   public:
-    WoglacParser::ExpressionContext *e = nullptr;;
+    WoglacParser::ExpressionContext *e = nullptr;
     ParentExpressionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     ExpressionContext *expression();
@@ -554,10 +561,10 @@ public:
 
   class  TernaryExpressionContext : public antlr4::ParserRuleContext {
   public:
-    WoglacParser::LogicalExpressionContext *base = nullptr;;
-    WoglacParser::LogicalExpressionContext *condition = nullptr;;
-    WoglacParser::LogicalExpressionContext *thenBranch = nullptr;;
-    WoglacParser::TernaryExpressionContext *elseBranch = nullptr;;
+    WoglacParser::LogicalExpressionContext *base = nullptr;
+    WoglacParser::LogicalExpressionContext *condition = nullptr;
+    WoglacParser::LogicalExpressionContext *thenBranch = nullptr;
+    WoglacParser::TernaryExpressionContext *elseBranch = nullptr;
     TernaryExpressionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     std::vector<LogicalExpressionContext *> logicalExpression();
@@ -573,8 +580,8 @@ public:
 
   class  LogicalExpressionContext : public antlr4::ParserRuleContext {
   public:
-    WoglacParser::AndExpressionContext *a = nullptr;;
-    WoglacParser::OrExpressionContext *o = nullptr;;
+    WoglacParser::AndExpressionContext *a = nullptr;
+    WoglacParser::OrExpressionContext *o = nullptr;
     LogicalExpressionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     AndExpressionContext *andExpression();
@@ -589,9 +596,9 @@ public:
 
   class  AndExpressionContext : public antlr4::ParserRuleContext {
   public:
-    WoglacParser::AndExpressionContext *left = nullptr;;
-    WoglacParser::ComparisonExpressionContext *base = nullptr;;
-    WoglacParser::ComparisonExpressionContext *right = nullptr;;
+    WoglacParser::AndExpressionContext *left = nullptr;
+    WoglacParser::ComparisonExpressionContext *base = nullptr;
+    WoglacParser::ComparisonExpressionContext *right = nullptr;
     AndExpressionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     ComparisonExpressionContext *comparisonExpression();
@@ -606,9 +613,9 @@ public:
   AndExpressionContext* andExpression(int precedence);
   class  OrExpressionContext : public antlr4::ParserRuleContext {
   public:
-    WoglacParser::OrExpressionContext *left = nullptr;;
-    WoglacParser::ComparisonExpressionContext *base = nullptr;;
-    WoglacParser::ComparisonExpressionContext *right = nullptr;;
+    WoglacParser::OrExpressionContext *left = nullptr;
+    WoglacParser::ComparisonExpressionContext *base = nullptr;
+    WoglacParser::ComparisonExpressionContext *right = nullptr;
     OrExpressionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     ComparisonExpressionContext *comparisonExpression();
@@ -623,10 +630,10 @@ public:
   OrExpressionContext* orExpression(int precedence);
   class  ComparisonExpressionContext : public antlr4::ParserRuleContext {
   public:
-    WoglacParser::AddExpressionContext *base = nullptr;;
-    WoglacParser::AddExpressionContext *left = nullptr;;
-    antlr4::Token *op = nullptr;;
-    WoglacParser::AddExpressionContext *right = nullptr;;
+    WoglacParser::AddExpressionContext *base = nullptr;
+    WoglacParser::AddExpressionContext *left = nullptr;
+    antlr4::Token *op = nullptr;
+    WoglacParser::AddExpressionContext *right = nullptr;
     ComparisonExpressionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     std::vector<AddExpressionContext *> addExpression();
@@ -642,10 +649,10 @@ public:
 
   class  AddExpressionContext : public antlr4::ParserRuleContext {
   public:
-    WoglacParser::AddExpressionContext *left = nullptr;;
-    WoglacParser::MultExpressionContext *base = nullptr;;
-    antlr4::Token *op = nullptr;;
-    WoglacParser::MultExpressionContext *right = nullptr;;
+    WoglacParser::AddExpressionContext *left = nullptr;
+    WoglacParser::MultExpressionContext *base = nullptr;
+    antlr4::Token *op = nullptr;
+    WoglacParser::MultExpressionContext *right = nullptr;
     AddExpressionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     MultExpressionContext *multExpression();
@@ -660,10 +667,10 @@ public:
   AddExpressionContext* addExpression(int precedence);
   class  MultExpressionContext : public antlr4::ParserRuleContext {
   public:
-    WoglacParser::MultExpressionContext *left = nullptr;;
-    WoglacParser::UnaryExpressionContext *base = nullptr;;
-    antlr4::Token *op = nullptr;;
-    WoglacParser::UnaryExpressionContext *right = nullptr;;
+    WoglacParser::MultExpressionContext *left = nullptr;
+    WoglacParser::UnaryExpressionContext *base = nullptr;
+    antlr4::Token *op = nullptr;
+    WoglacParser::UnaryExpressionContext *right = nullptr;
     MultExpressionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     UnaryExpressionContext *unaryExpression();
@@ -679,9 +686,9 @@ public:
   MultExpressionContext* multExpression(int precedence);
   class  UnaryExpressionContext : public antlr4::ParserRuleContext {
   public:
-    WoglacParser::InlineFunctionCallExpressionContext *base = nullptr;;
-    antlr4::Token *op = nullptr;;
-    WoglacParser::InlineFunctionCallExpressionContext *arg = nullptr;;
+    WoglacParser::InlineFunctionCallExpressionContext *base = nullptr;
+    antlr4::Token *op = nullptr;
+    WoglacParser::InlineFunctionCallExpressionContext *arg = nullptr;
     UnaryExpressionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     InlineFunctionCallExpressionContext *inlineFunctionCallExpression();
@@ -695,10 +702,10 @@ public:
 
   class  InlineFunctionCallExpressionContext : public antlr4::ParserRuleContext {
   public:
-    WoglacParser::InlineFunctionCallExpressionContext *arg1 = nullptr;;
-    WoglacParser::AtomicExpressionContext *base = nullptr;;
-    antlr4::Token *id = nullptr;;
-    WoglacParser::ArugmentListExpressionContext *args = nullptr;;
+    WoglacParser::InlineFunctionCallExpressionContext *arg1 = nullptr;
+    WoglacParser::AtomicExpressionContext *base = nullptr;
+    antlr4::Token *id = nullptr;
+    WoglacParser::ArugmentListExpressionContext *args = nullptr;
     InlineFunctionCallExpressionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     AtomicExpressionContext *atomicExpression();
@@ -715,11 +722,11 @@ public:
   InlineFunctionCallExpressionContext* inlineFunctionCallExpression(int precedence);
   class  AtomicExpressionContext : public antlr4::ParserRuleContext {
   public:
-    WoglacParser::FunctionCallExpressionContext *funcCall = nullptr;;
-    WoglacParser::LiteralExpressionContext *lit = nullptr;;
-    WoglacParser::ParentExpressionContext *par = nullptr;;
-    WoglacParser::BiomeParamExpressionContext *bio = nullptr;;
-    WoglacParser::ExtendedIdentifierContext *id = nullptr;;
+    WoglacParser::FunctionCallExpressionContext *funcCall = nullptr;
+    WoglacParser::LiteralExpressionContext *lit = nullptr;
+    WoglacParser::ParentExpressionContext *par = nullptr;
+    WoglacParser::BiomeParamExpressionContext *bio = nullptr;
+    WoglacParser::ExtendedIdentifierContext *id = nullptr;
     AtomicExpressionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     FunctionCallExpressionContext *functionCallExpression();
@@ -737,8 +744,8 @@ public:
 
   class  ArugmentListExpressionContext : public antlr4::ParserRuleContext {
   public:
-    WoglacParser::ExpressionContext *expressionContext = nullptr;;
-    std::vector<ExpressionContext *> args;;
+    WoglacParser::ExpressionContext *expressionContext = nullptr;
+    std::vector<ExpressionContext *> args;
     ArugmentListExpressionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     std::vector<ExpressionContext *> expression();
@@ -753,10 +760,10 @@ public:
 
   class  BiomeParamExpressionContext : public antlr4::ParserRuleContext {
   public:
-    WoglacParser::ExtendedIdentifierContext *param = nullptr;;
-    antlr4::Token *method = nullptr;;
-    WoglacParser::ExpressionContext *expressionContext = nullptr;;
-    std::vector<ExpressionContext *> params;;
+    WoglacParser::ExtendedIdentifierContext *param = nullptr;
+    antlr4::Token *method = nullptr;
+    WoglacParser::ExpressionContext *expressionContext = nullptr;
+    std::vector<ExpressionContext *> params;
     BiomeParamExpressionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     ExtendedIdentifierContext *extendedIdentifier();
@@ -773,8 +780,8 @@ public:
 
   class  FunctionCallExpressionContext : public antlr4::ParserRuleContext {
   public:
-    antlr4::Token *id = nullptr;;
-    WoglacParser::ArugmentListExpressionContext *args = nullptr;;
+    antlr4::Token *id = nullptr;
+    WoglacParser::ArugmentListExpressionContext *args = nullptr;
     FunctionCallExpressionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *Identifier();
@@ -789,8 +796,8 @@ public:
 
   class  ExtendedIdentifierContext : public antlr4::ParserRuleContext {
   public:
-    antlr4::Token *identifierToken = nullptr;;
-    std::vector<antlr4::Token *> id;;
+    antlr4::Token *identifierToken = nullptr;
+    std::vector<antlr4::Token *> id;
     ExtendedIdentifierContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     std::vector<antlr4::tree::TerminalNode *> Identifier();
@@ -805,10 +812,10 @@ public:
 
   class  LiteralExpressionContext : public antlr4::ParserRuleContext {
   public:
-    antlr4::Token *num = nullptr;;
-    antlr4::Token *block = nullptr;;
-    antlr4::Token *bool_ = nullptr;;
-    antlr4::Token *string = nullptr;;
+    antlr4::Token *num = nullptr;
+    antlr4::Token *block = nullptr;
+    antlr4::Token *bool_ = nullptr;
+    antlr4::Token *string = nullptr;
     LiteralExpressionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *NumericLiteral();
@@ -824,29 +831,19 @@ public:
   LiteralExpressionContext* literalExpression();
 
 
-  virtual bool sempred(antlr4::RuleContext *_localctx, size_t ruleIndex, size_t predicateIndex) override;
+  bool sempred(antlr4::RuleContext *_localctx, size_t ruleIndex, size_t predicateIndex) override;
+
   bool andExpressionSempred(AndExpressionContext *_localctx, size_t predicateIndex);
   bool orExpressionSempred(OrExpressionContext *_localctx, size_t predicateIndex);
   bool addExpressionSempred(AddExpressionContext *_localctx, size_t predicateIndex);
   bool multExpressionSempred(MultExpressionContext *_localctx, size_t predicateIndex);
   bool inlineFunctionCallExpressionSempred(InlineFunctionCallExpressionContext *_localctx, size_t predicateIndex);
 
+  // By default the static state used to implement the parser is lazily initialized during the first
+  // call to the constructor. You can call this function if you wish to initialize the static state
+  // ahead of time.
+  static void initialize();
+
 private:
-  static std::vector<antlr4::dfa::DFA> _decisionToDFA;
-  static antlr4::atn::PredictionContextCache _sharedContextCache;
-  static std::vector<std::string> _ruleNames;
-  static std::vector<std::string> _tokenNames;
-
-  static std::vector<std::string> _literalNames;
-  static std::vector<std::string> _symbolicNames;
-  static antlr4::dfa::Vocabulary _vocabulary;
-  static antlr4::atn::ATN _atn;
-  static std::vector<uint16_t> _serializedATN;
-
-
-  struct Initializer {
-    Initializer();
-  };
-  static Initializer _init;
 };
 

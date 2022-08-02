@@ -12,6 +12,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 list(APPEND EXTERNAL_ARGS
         -D "CMAKE_MAKE_PROGRAM=${CMAKE_MAKE_PROGRAM}"
         -D "CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}"
+        -D "CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}"
 
         -G "${CMAKE_GENERATOR}"
         )
@@ -28,8 +29,8 @@ ExternalProject_Add(
         tracy
         SOURCE_DIR "${PROJECT_SOURCE_DIR}/deps/tracy"
         EXCLUDE_FROM_ALL ON
-        INSTALL_COMMAND "" # Does not have install target
         CMAKE_ARGS ${EXTERNAL_ARGS}
+        -D "CMAKE_INSTALL_PREFIX:PATH=${CMAKE_BINARY_DIR}/install/tracy"
         -D TRACY_ENABLE=ON
         -D TRACY_ON_DEMAND=ON
 )
@@ -45,6 +46,7 @@ ExternalProject_Add(
         TEST_COMMAND ""
 
         CMAKE_ARGS ${EXTERNAL_ARGS}
+        -D ANTLR_BUILD_CPP_TESTS=OFF
         -D WITH_STATIC_CRT=OFF
         -D "CMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/install/antlr"
 )
@@ -69,16 +71,21 @@ ExternalProject_Add(
 # ===========================================
 # Worldgen
 # ===========================================
-ExternalProject_Add(x_ac_worldgen
+ExternalProject_Add(ac_worldgen_nodeploy
         SOURCE_DIR "${PROJECT_SOURCE_DIR}/src"
         BUILD_ALWAYS ON
         INSTALL_COMMAND ""
-        STEP_TARGETS build
+        EXCLUDE_FROM_ALL ON
         CMAKE_ARGS ${EXTERNAL_ARGS}
         )
 
-add_custom_target(ac_worldgen_nodeploy DEPENDS x_ac_worldgen-build)
-add_custom_target(ac_worldgen_deploy ALL DEPENDS antlr tracy fastNoise2 x_ac_worldgen)
+ExternalProject_Add(ac_worldgen_deploy
+        DEPENDS antlr tracy fastNoise2
+        BUILD_ALWAYS ON
+        SOURCE_DIR "${PROJECT_SOURCE_DIR}/src"
+        INSTALL_COMMAND ""
+        CMAKE_ARGS ${EXTERNAL_ARGS}
+        )
 
 # ===========================================
 # Dummy target for intellisense

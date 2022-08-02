@@ -9,6 +9,12 @@ project(${target} VERSION 0.0.1 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Formatter requires c++latest for MSVC2019 and less
+if (DEFINED MSVC_VERSION AND MSVC_VERSION LESS 1930)
+    set(CMAKE_CXX20_STANDARD_COMPILE_OPTION "-std:c++latest")
+    set(CMAKE_CXX20_EXTENSION_COMPILE_OPTION "-std:c++latest")
+endif()
+
 set(CMAKE_BASE_DIR "${CMAKE_BINARY_DIR}/../../..")
 set(PROJECT_BASE_DIR "${PROJECT_SOURCE_DIR}/..")
 
@@ -24,11 +30,9 @@ target_compile_definitions(${target} PRIVATE _USE_MATH_DEFINES)
 # ===========================================
 # Tracy
 # ===========================================
-target_include_directories(${target} SYSTEM PRIVATE "${PROJECT_BASE_DIR}/deps/tracy")
-target_compile_definitions(${target} PRIVATE TRACY_ENABLE)
-target_compile_definitions(${target} PRIVATE TRACY_ON_DEMAND)
-find_library(tracy_lib NAMES tracyclient PATHS "${CMAKE_BASE_DIR}/tracy-prefix/src/tracy-build" REQUIRED)
-target_link_libraries(${target} PRIVATE "${tracy_lib}")
+find_package(Threads REQUIRED) # Dependency of Tracy
+find_package(tracy PATHS "${CMAKE_BASE_DIR}/install/tracy/share/Tracy" REQUIRED)
+target_link_libraries(ac_worldgen PRIVATE Tracy::TracyClient)
 
 # ===========================================
 # FastNoise2
