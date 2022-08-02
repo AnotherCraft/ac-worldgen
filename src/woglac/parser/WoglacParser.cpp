@@ -1,5 +1,5 @@
 
-// Generated from Woglac.g4 by ANTLR 4.7.2
+// Generated from Woglac.g4 by ANTLR 4.10.1
 
 
 #include "WoglacListener.h"
@@ -8,14 +8,267 @@
 
 
 using namespace antlrcpp;
+
 using namespace antlr4;
 
-WoglacParser::WoglacParser(TokenStream *input) : Parser(input) {
-  _interpreter = new atn::ParserATNSimulator(this, _atn, _decisionToDFA, _sharedContextCache);
+namespace {
+
+struct WoglacParserStaticData final {
+  WoglacParserStaticData(std::vector<std::string> ruleNames,
+                        std::vector<std::string> literalNames,
+                        std::vector<std::string> symbolicNames)
+      : ruleNames(std::move(ruleNames)), literalNames(std::move(literalNames)),
+        symbolicNames(std::move(symbolicNames)),
+        vocabulary(this->literalNames, this->symbolicNames) {}
+
+  WoglacParserStaticData(const WoglacParserStaticData&) = delete;
+  WoglacParserStaticData(WoglacParserStaticData&&) = delete;
+  WoglacParserStaticData& operator=(const WoglacParserStaticData&) = delete;
+  WoglacParserStaticData& operator=(WoglacParserStaticData&&) = delete;
+
+  std::vector<antlr4::dfa::DFA> decisionToDFA;
+  antlr4::atn::PredictionContextCache sharedContextCache;
+  const std::vector<std::string> ruleNames;
+  const std::vector<std::string> literalNames;
+  const std::vector<std::string> symbolicNames;
+  const antlr4::dfa::Vocabulary vocabulary;
+  antlr4::atn::SerializedATNView serializedATN;
+  std::unique_ptr<antlr4::atn::ATN> atn;
+};
+
+std::once_flag woglacParserOnceFlag;
+WoglacParserStaticData *woglacParserStaticData = nullptr;
+
+void woglacParserInitialize() {
+  assert(woglacParserStaticData == nullptr);
+  auto staticData = std::make_unique<WoglacParserStaticData>(
+    std::vector<std::string>{
+      "module", "statement", "scope", "contentOrSemicolon", "pragmaStatement", 
+      "variableDefinition", "paramDefinition", "biomeParamDefinition", "paramSetStatement", 
+      "biomeConditionStatement", "structureConditionStatement", "ruleExpansionStatement", 
+      "componentNodeStatement", "componentNodeStatementCommonPart", "componentNodePropertiesSection", 
+      "componentNodeOrientationExpression", "componentAreaStatement", "componentBlockStatement", 
+      "componentIncludeStatement", "componentIncludeStatementParam", "componentIncludeStatementBlockParam", 
+      "componentIncludeStatementNodeParam", "positionExpression", "expression", 
+      "parentExpression", "ternaryExpression", "logicalExpression", "andExpression", 
+      "orExpression", "comparisonExpression", "addExpression", "multExpression", 
+      "unaryExpression", "inlineFunctionCallExpression", "atomicExpression", 
+      "arugmentListExpression", "biomeParamExpression", "functionCallExpression", 
+      "extendedIdentifier", "literalExpression"
+    },
+    std::vector<std::string>{
+      "", "'extend'", "'namespace'", "'rule'", "'component'", "'biome'", 
+      "'{'", "'}'", "';'", "'pragma'", "'='", "'export'", "'param'", "'\\u003F='", 
+      "'condition'", "'+-'", "'->'", "'::'", "'void'", "'!'", "':'", "'node'", 
+      "'('", "'|'", "'-'", "')'", "'+'", "'area'", "'#'", "'\\u003F'", "'block'", 
+      "'include'", "','", "'&&'", "'||'", "'.'", "'~'"
+    },
+    std::vector<std::string>{
+      "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", 
+      "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", 
+      "", "", "", "LineComment", "BlockComment", "Whitespace", "Type", "BlockLiteral", 
+      "ComparisonOp", "BoolLiteral", "StringLiteral", "MultOp", "Identifier", 
+      "NumericLiteral"
+    }
+  );
+  static const int32_t serializedATNSegment[] = {
+  	4,1,47,496,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,
+  	7,7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,2,14,7,
+  	14,2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,7,20,2,21,7,
+  	21,2,22,7,22,2,23,7,23,2,24,7,24,2,25,7,25,2,26,7,26,2,27,7,27,2,28,7,
+  	28,2,29,7,29,2,30,7,30,2,31,7,31,2,32,7,32,2,33,7,33,2,34,7,34,2,35,7,
+  	35,2,36,7,36,2,37,7,37,2,38,7,38,2,39,7,39,1,0,5,0,82,8,0,10,0,12,0,85,
+  	9,0,1,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,1,102,
+  	8,1,1,2,3,2,105,8,2,1,2,1,2,1,2,1,2,1,2,1,2,5,2,113,8,2,10,2,12,2,116,
+  	9,2,1,2,3,2,119,8,2,1,3,1,3,5,3,123,8,3,10,3,12,3,126,9,3,1,3,1,3,3,3,
+  	130,8,3,1,4,1,4,1,4,1,4,1,4,3,4,137,8,4,3,4,139,8,4,1,4,1,4,1,5,3,5,144,
+  	8,5,1,5,1,5,1,5,1,5,1,5,1,5,1,6,1,6,3,6,154,8,6,3,6,156,8,6,1,6,1,6,1,
+  	6,1,6,1,6,3,6,163,8,6,1,6,1,6,1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,8,1,8,
+  	3,8,177,8,8,1,8,1,8,1,8,1,8,1,8,1,8,1,9,1,9,3,9,187,8,9,3,9,189,8,9,1,
+  	9,1,9,1,9,1,9,1,9,1,9,1,9,1,9,1,10,1,10,3,10,201,8,10,3,10,203,8,10,1,
+  	10,1,10,1,10,1,10,1,11,1,11,3,11,211,8,11,1,11,1,11,1,11,1,11,3,11,217,
+  	8,11,1,11,3,11,220,8,11,1,11,1,11,3,11,224,8,11,1,11,1,11,3,11,228,8,
+  	11,1,11,1,11,1,12,1,12,3,12,234,8,12,1,12,1,12,1,12,1,12,1,13,3,13,241,
+  	8,13,1,13,3,13,244,8,13,1,13,1,13,3,13,248,8,13,1,13,1,13,1,14,1,14,3,
+  	14,254,8,14,1,14,3,14,257,8,14,1,14,3,14,260,8,14,1,14,1,14,3,14,264,
+  	8,14,1,14,1,14,1,15,1,15,1,15,1,16,1,16,3,16,273,8,16,1,16,1,16,1,16,
+  	1,16,1,16,3,16,280,8,16,1,16,3,16,283,8,16,1,16,3,16,286,8,16,1,16,3,
+  	16,289,8,16,1,16,3,16,292,8,16,1,16,1,16,1,17,1,17,3,17,298,8,17,1,17,
+  	1,17,1,17,3,17,303,8,17,1,17,1,17,1,17,1,17,1,18,1,18,1,18,1,18,1,18,
+  	5,18,314,8,18,10,18,12,18,317,9,18,1,18,1,18,1,19,1,19,3,19,323,8,19,
+  	1,20,1,20,1,20,1,20,1,20,1,20,1,21,1,21,1,21,1,21,1,21,1,22,1,22,1,22,
+  	1,22,1,22,1,22,1,22,1,22,3,22,344,8,22,1,22,1,22,1,23,1,23,1,24,1,24,
+  	1,24,1,24,1,25,1,25,1,25,1,25,3,25,358,8,25,1,25,1,25,1,25,3,25,363,8,
+  	25,1,26,1,26,3,26,367,8,26,1,27,1,27,1,27,1,27,1,27,1,27,5,27,375,8,27,
+  	10,27,12,27,378,9,27,1,28,1,28,1,28,1,28,1,28,1,28,5,28,386,8,28,10,28,
+  	12,28,389,9,28,1,29,1,29,1,29,1,29,1,29,3,29,396,8,29,1,30,1,30,1,30,
+  	1,30,1,30,1,30,5,30,404,8,30,10,30,12,30,407,9,30,1,31,1,31,1,31,1,31,
+  	1,31,1,31,5,31,415,8,31,10,31,12,31,418,9,31,1,32,1,32,1,32,1,32,1,32,
+  	3,32,425,8,32,1,33,1,33,1,33,1,33,1,33,1,33,1,33,5,33,434,8,33,10,33,
+  	12,33,437,9,33,1,34,1,34,1,34,1,34,1,34,3,34,444,8,34,1,35,1,35,1,35,
+  	1,35,5,35,450,8,35,10,35,12,35,453,9,35,1,35,3,35,456,8,35,3,35,458,8,
+  	35,1,35,1,35,1,36,1,36,1,36,1,36,1,36,1,36,1,36,5,36,469,8,36,10,36,12,
+  	36,472,9,36,1,36,1,36,1,37,1,37,1,37,1,38,1,38,1,38,5,38,482,8,38,10,
+  	38,12,38,485,9,38,1,39,3,39,488,8,39,1,39,1,39,1,39,1,39,3,39,494,8,39,
+  	1,39,0,5,54,56,60,62,66,40,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,
+  	32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,
+  	78,0,5,1,0,2,5,1,0,3,4,1,0,3,5,2,0,24,24,26,26,2,0,28,28,36,36,532,0,
+  	83,1,0,0,0,2,101,1,0,0,0,4,118,1,0,0,0,6,129,1,0,0,0,8,131,1,0,0,0,10,
+  	143,1,0,0,0,12,155,1,0,0,0,14,166,1,0,0,0,16,176,1,0,0,0,18,188,1,0,0,
+  	0,20,202,1,0,0,0,22,208,1,0,0,0,24,233,1,0,0,0,26,240,1,0,0,0,28,251,
+  	1,0,0,0,30,267,1,0,0,0,32,272,1,0,0,0,34,297,1,0,0,0,36,308,1,0,0,0,38,
+  	322,1,0,0,0,40,324,1,0,0,0,42,330,1,0,0,0,44,335,1,0,0,0,46,347,1,0,0,
+  	0,48,349,1,0,0,0,50,362,1,0,0,0,52,366,1,0,0,0,54,368,1,0,0,0,56,379,
+  	1,0,0,0,58,395,1,0,0,0,60,397,1,0,0,0,62,408,1,0,0,0,64,424,1,0,0,0,66,
+  	426,1,0,0,0,68,443,1,0,0,0,70,445,1,0,0,0,72,461,1,0,0,0,74,475,1,0,0,
+  	0,76,478,1,0,0,0,78,493,1,0,0,0,80,82,3,2,1,0,81,80,1,0,0,0,82,85,1,0,
+  	0,0,83,81,1,0,0,0,83,84,1,0,0,0,84,86,1,0,0,0,85,83,1,0,0,0,86,87,5,0,
+  	0,1,87,1,1,0,0,0,88,102,3,8,4,0,89,102,3,12,6,0,90,102,3,14,7,0,91,102,
+  	3,16,8,0,92,102,3,18,9,0,93,102,3,10,5,0,94,102,3,22,11,0,95,102,3,4,
+  	2,0,96,102,3,24,12,0,97,102,3,34,17,0,98,102,3,32,16,0,99,102,3,20,10,
+  	0,100,102,3,36,18,0,101,88,1,0,0,0,101,89,1,0,0,0,101,90,1,0,0,0,101,
+  	91,1,0,0,0,101,92,1,0,0,0,101,93,1,0,0,0,101,94,1,0,0,0,101,95,1,0,0,
+  	0,101,96,1,0,0,0,101,97,1,0,0,0,101,98,1,0,0,0,101,99,1,0,0,0,101,100,
+  	1,0,0,0,102,3,1,0,0,0,103,105,5,1,0,0,104,103,1,0,0,0,104,105,1,0,0,0,
+  	105,106,1,0,0,0,106,107,7,0,0,0,107,108,3,76,38,0,108,109,3,6,3,0,109,
+  	119,1,0,0,0,110,114,5,6,0,0,111,113,3,2,1,0,112,111,1,0,0,0,113,116,1,
+  	0,0,0,114,112,1,0,0,0,114,115,1,0,0,0,115,117,1,0,0,0,116,114,1,0,0,0,
+  	117,119,5,7,0,0,118,104,1,0,0,0,118,110,1,0,0,0,119,5,1,0,0,0,120,124,
+  	5,6,0,0,121,123,3,2,1,0,122,121,1,0,0,0,123,126,1,0,0,0,124,122,1,0,0,
+  	0,124,125,1,0,0,0,125,127,1,0,0,0,126,124,1,0,0,0,127,130,5,7,0,0,128,
+  	130,5,8,0,0,129,120,1,0,0,0,129,128,1,0,0,0,130,7,1,0,0,0,131,132,5,9,
+  	0,0,132,138,3,76,38,0,133,136,5,10,0,0,134,137,3,78,39,0,135,137,5,46,
+  	0,0,136,134,1,0,0,0,136,135,1,0,0,0,137,139,1,0,0,0,138,133,1,0,0,0,138,
+  	139,1,0,0,0,139,140,1,0,0,0,140,141,5,8,0,0,141,9,1,0,0,0,142,144,5,11,
+  	0,0,143,142,1,0,0,0,143,144,1,0,0,0,144,145,1,0,0,0,145,146,5,40,0,0,
+  	146,147,3,76,38,0,147,148,5,10,0,0,148,149,3,46,23,0,149,150,5,8,0,0,
+  	150,11,1,0,0,0,151,153,7,1,0,0,152,154,3,76,38,0,153,152,1,0,0,0,153,
+  	154,1,0,0,0,154,156,1,0,0,0,155,151,1,0,0,0,155,156,1,0,0,0,156,157,1,
+  	0,0,0,157,158,5,12,0,0,158,159,5,40,0,0,159,162,5,46,0,0,160,161,5,13,
+  	0,0,161,163,3,46,23,0,162,160,1,0,0,0,162,163,1,0,0,0,163,164,1,0,0,0,
+  	164,165,5,8,0,0,165,13,1,0,0,0,166,167,5,5,0,0,167,168,5,12,0,0,168,169,
+  	5,40,0,0,169,170,3,76,38,0,170,171,5,13,0,0,171,172,3,46,23,0,172,173,
+  	5,8,0,0,173,15,1,0,0,0,174,175,7,2,0,0,175,177,3,76,38,0,176,174,1,0,
+  	0,0,176,177,1,0,0,0,177,178,1,0,0,0,178,179,5,12,0,0,179,180,3,76,38,
+  	0,180,181,5,10,0,0,181,182,3,46,23,0,182,183,5,8,0,0,183,17,1,0,0,0,184,
+  	186,5,5,0,0,185,187,3,76,38,0,186,185,1,0,0,0,186,187,1,0,0,0,187,189,
+  	1,0,0,0,188,184,1,0,0,0,188,189,1,0,0,0,189,190,1,0,0,0,190,191,5,14,
+  	0,0,191,192,3,76,38,0,192,193,5,10,0,0,193,194,5,47,0,0,194,195,5,15,
+  	0,0,195,196,5,47,0,0,196,197,5,8,0,0,197,19,1,0,0,0,198,200,7,1,0,0,199,
+  	201,3,76,38,0,200,199,1,0,0,0,200,201,1,0,0,0,201,203,1,0,0,0,202,198,
+  	1,0,0,0,202,203,1,0,0,0,203,204,1,0,0,0,204,205,5,14,0,0,205,206,3,46,
+  	23,0,206,207,5,8,0,0,207,21,1,0,0,0,208,210,5,3,0,0,209,211,3,76,38,0,
+  	210,209,1,0,0,0,210,211,1,0,0,0,211,212,1,0,0,0,212,219,5,16,0,0,213,
+  	216,3,76,38,0,214,215,5,17,0,0,215,217,5,46,0,0,216,214,1,0,0,0,216,217,
+  	1,0,0,0,217,220,1,0,0,0,218,220,5,18,0,0,219,213,1,0,0,0,219,218,1,0,
+  	0,0,220,223,1,0,0,0,221,222,5,19,0,0,222,224,5,47,0,0,223,221,1,0,0,0,
+  	223,224,1,0,0,0,224,227,1,0,0,0,225,226,5,20,0,0,226,228,5,47,0,0,227,
+  	225,1,0,0,0,227,228,1,0,0,0,228,229,1,0,0,0,229,230,3,6,3,0,230,23,1,
+  	0,0,0,231,232,5,4,0,0,232,234,3,76,38,0,233,231,1,0,0,0,233,234,1,0,0,
+  	0,234,235,1,0,0,0,235,236,5,21,0,0,236,237,3,44,22,0,237,238,3,26,13,
+  	0,238,25,1,0,0,0,239,241,3,28,14,0,240,239,1,0,0,0,240,241,1,0,0,0,241,
+  	243,1,0,0,0,242,244,5,46,0,0,243,242,1,0,0,0,243,244,1,0,0,0,244,247,
+  	1,0,0,0,245,246,5,16,0,0,246,248,3,76,38,0,247,245,1,0,0,0,247,248,1,
+  	0,0,0,248,249,1,0,0,0,249,250,3,6,3,0,250,27,1,0,0,0,251,253,5,22,0,0,
+  	252,254,5,10,0,0,253,252,1,0,0,0,253,254,1,0,0,0,254,256,1,0,0,0,255,
+  	257,5,23,0,0,256,255,1,0,0,0,256,257,1,0,0,0,257,259,1,0,0,0,258,260,
+  	5,24,0,0,259,258,1,0,0,0,259,260,1,0,0,0,260,261,1,0,0,0,261,263,3,30,
+  	15,0,262,264,3,30,15,0,263,262,1,0,0,0,263,264,1,0,0,0,264,265,1,0,0,
+  	0,265,266,5,25,0,0,266,29,1,0,0,0,267,268,5,46,0,0,268,269,7,3,0,0,269,
+  	31,1,0,0,0,270,271,5,4,0,0,271,273,3,76,38,0,272,270,1,0,0,0,272,273,
+  	1,0,0,0,273,274,1,0,0,0,274,275,5,27,0,0,275,276,3,44,22,0,276,288,3,
+  	44,22,0,277,279,5,22,0,0,278,280,5,28,0,0,279,278,1,0,0,0,279,280,1,0,
+  	0,0,280,282,1,0,0,0,281,283,5,19,0,0,282,281,1,0,0,0,282,283,1,0,0,0,
+  	283,285,1,0,0,0,284,286,5,29,0,0,285,284,1,0,0,0,285,286,1,0,0,0,286,
+  	287,1,0,0,0,287,289,5,25,0,0,288,277,1,0,0,0,288,289,1,0,0,0,289,291,
+  	1,0,0,0,290,292,5,46,0,0,291,290,1,0,0,0,291,292,1,0,0,0,292,293,1,0,
+  	0,0,293,294,5,8,0,0,294,33,1,0,0,0,295,296,5,4,0,0,296,298,3,76,38,0,
+  	297,295,1,0,0,0,297,298,1,0,0,0,298,299,1,0,0,0,299,300,5,30,0,0,300,
+  	302,3,44,22,0,301,303,3,44,22,0,302,301,1,0,0,0,302,303,1,0,0,0,303,304,
+  	1,0,0,0,304,305,5,10,0,0,305,306,3,46,23,0,306,307,5,8,0,0,307,35,1,0,
+  	0,0,308,309,5,4,0,0,309,310,5,31,0,0,310,311,5,44,0,0,311,315,5,6,0,0,
+  	312,314,3,38,19,0,313,312,1,0,0,0,314,317,1,0,0,0,315,313,1,0,0,0,315,
+  	316,1,0,0,0,316,318,1,0,0,0,317,315,1,0,0,0,318,319,5,7,0,0,319,37,1,
+  	0,0,0,320,323,3,40,20,0,321,323,3,42,21,0,322,320,1,0,0,0,322,321,1,0,
+  	0,0,323,39,1,0,0,0,324,325,5,47,0,0,325,326,5,16,0,0,326,327,5,30,0,0,
+  	327,328,3,46,23,0,328,329,5,8,0,0,329,41,1,0,0,0,330,331,5,47,0,0,331,
+  	332,5,16,0,0,332,333,5,21,0,0,333,334,3,26,13,0,334,43,1,0,0,0,335,343,
+  	5,22,0,0,336,337,3,46,23,0,337,338,5,32,0,0,338,339,3,46,23,0,339,340,
+  	5,32,0,0,340,341,3,46,23,0,341,344,1,0,0,0,342,344,3,46,23,0,343,336,
+  	1,0,0,0,343,342,1,0,0,0,344,345,1,0,0,0,345,346,5,25,0,0,346,45,1,0,0,
+  	0,347,348,3,50,25,0,348,47,1,0,0,0,349,350,5,22,0,0,350,351,3,46,23,0,
+  	351,352,5,25,0,0,352,49,1,0,0,0,353,363,3,52,26,0,354,355,3,52,26,0,355,
+  	357,5,29,0,0,356,358,3,52,26,0,357,356,1,0,0,0,357,358,1,0,0,0,358,359,
+  	1,0,0,0,359,360,5,20,0,0,360,361,3,50,25,0,361,363,1,0,0,0,362,353,1,
+  	0,0,0,362,354,1,0,0,0,363,51,1,0,0,0,364,367,3,54,27,0,365,367,3,56,28,
+  	0,366,364,1,0,0,0,366,365,1,0,0,0,367,53,1,0,0,0,368,369,6,27,-1,0,369,
+  	370,3,58,29,0,370,376,1,0,0,0,371,372,10,1,0,0,372,373,5,33,0,0,373,375,
+  	3,58,29,0,374,371,1,0,0,0,375,378,1,0,0,0,376,374,1,0,0,0,376,377,1,0,
+  	0,0,377,55,1,0,0,0,378,376,1,0,0,0,379,380,6,28,-1,0,380,381,3,58,29,
+  	0,381,387,1,0,0,0,382,383,10,1,0,0,383,384,5,34,0,0,384,386,3,58,29,0,
+  	385,382,1,0,0,0,386,389,1,0,0,0,387,385,1,0,0,0,387,388,1,0,0,0,388,57,
+  	1,0,0,0,389,387,1,0,0,0,390,396,3,60,30,0,391,392,3,60,30,0,392,393,5,
+  	42,0,0,393,394,3,60,30,0,394,396,1,0,0,0,395,390,1,0,0,0,395,391,1,0,
+  	0,0,396,59,1,0,0,0,397,398,6,30,-1,0,398,399,3,62,31,0,399,405,1,0,0,
+  	0,400,401,10,1,0,0,401,402,7,3,0,0,402,404,3,62,31,0,403,400,1,0,0,0,
+  	404,407,1,0,0,0,405,403,1,0,0,0,405,406,1,0,0,0,406,61,1,0,0,0,407,405,
+  	1,0,0,0,408,409,6,31,-1,0,409,410,3,64,32,0,410,416,1,0,0,0,411,412,10,
+  	1,0,0,412,413,5,45,0,0,413,415,3,64,32,0,414,411,1,0,0,0,415,418,1,0,
+  	0,0,416,414,1,0,0,0,416,417,1,0,0,0,417,63,1,0,0,0,418,416,1,0,0,0,419,
+  	425,3,66,33,0,420,421,7,3,0,0,421,425,3,66,33,0,422,423,5,19,0,0,423,
+  	425,3,66,33,0,424,419,1,0,0,0,424,420,1,0,0,0,424,422,1,0,0,0,425,65,
+  	1,0,0,0,426,427,6,33,-1,0,427,428,3,68,34,0,428,435,1,0,0,0,429,430,10,
+  	1,0,0,430,431,5,17,0,0,431,432,5,46,0,0,432,434,3,70,35,0,433,429,1,0,
+  	0,0,434,437,1,0,0,0,435,433,1,0,0,0,435,436,1,0,0,0,436,67,1,0,0,0,437,
+  	435,1,0,0,0,438,444,3,74,37,0,439,444,3,78,39,0,440,444,3,48,24,0,441,
+  	444,3,72,36,0,442,444,3,76,38,0,443,438,1,0,0,0,443,439,1,0,0,0,443,440,
+  	1,0,0,0,443,441,1,0,0,0,443,442,1,0,0,0,444,69,1,0,0,0,445,457,5,22,0,
+  	0,446,451,3,46,23,0,447,448,5,32,0,0,448,450,3,46,23,0,449,447,1,0,0,
+  	0,450,453,1,0,0,0,451,449,1,0,0,0,451,452,1,0,0,0,452,455,1,0,0,0,453,
+  	451,1,0,0,0,454,456,5,32,0,0,455,454,1,0,0,0,455,456,1,0,0,0,456,458,
+  	1,0,0,0,457,446,1,0,0,0,457,458,1,0,0,0,458,459,1,0,0,0,459,460,5,25,
+  	0,0,460,71,1,0,0,0,461,462,5,5,0,0,462,463,5,22,0,0,463,464,3,76,38,0,
+  	464,465,5,32,0,0,465,470,5,46,0,0,466,467,5,32,0,0,467,469,3,46,23,0,
+  	468,466,1,0,0,0,469,472,1,0,0,0,470,468,1,0,0,0,470,471,1,0,0,0,471,473,
+  	1,0,0,0,472,470,1,0,0,0,473,474,5,25,0,0,474,73,1,0,0,0,475,476,5,46,
+  	0,0,476,477,3,70,35,0,477,75,1,0,0,0,478,483,5,46,0,0,479,480,5,35,0,
+  	0,480,482,5,46,0,0,481,479,1,0,0,0,482,485,1,0,0,0,483,481,1,0,0,0,483,
+  	484,1,0,0,0,484,77,1,0,0,0,485,483,1,0,0,0,486,488,7,4,0,0,487,486,1,
+  	0,0,0,487,488,1,0,0,0,488,489,1,0,0,0,489,494,5,47,0,0,490,494,5,41,0,
+  	0,491,494,5,43,0,0,492,494,5,44,0,0,493,487,1,0,0,0,493,490,1,0,0,0,493,
+  	491,1,0,0,0,493,492,1,0,0,0,494,79,1,0,0,0,60,83,101,104,114,118,124,
+  	129,136,138,143,153,155,162,176,186,188,200,202,210,216,219,223,227,233,
+  	240,243,247,253,256,259,263,272,279,282,285,288,291,297,302,315,322,343,
+  	357,362,366,376,387,395,405,416,424,435,443,451,455,457,470,483,487,493
+  };
+  staticData->serializedATN = antlr4::atn::SerializedATNView(serializedATNSegment, sizeof(serializedATNSegment) / sizeof(serializedATNSegment[0]));
+
+  antlr4::atn::ATNDeserializer deserializer;
+  staticData->atn = deserializer.deserialize(staticData->serializedATN);
+
+  const size_t count = staticData->atn->getNumberOfDecisions();
+  staticData->decisionToDFA.reserve(count);
+  for (size_t i = 0; i < count; i++) { 
+    staticData->decisionToDFA.emplace_back(staticData->atn->getDecisionState(i), i);
+  }
+  woglacParserStaticData = staticData.release();
+}
+
+}
+
+WoglacParser::WoglacParser(TokenStream *input) : WoglacParser(input, antlr4::atn::ParserATNSimulatorOptions()) {}
+
+WoglacParser::WoglacParser(TokenStream *input, const antlr4::atn::ParserATNSimulatorOptions &options) : Parser(input) {
+  WoglacParser::initialize();
+  _interpreter = new atn::ParserATNSimulator(this, *woglacParserStaticData->atn, woglacParserStaticData->decisionToDFA, woglacParserStaticData->sharedContextCache, options);
 }
 
 WoglacParser::~WoglacParser() {
   delete _interpreter;
+}
+
+const atn::ATN& WoglacParser::getATN() const {
+  return *woglacParserStaticData->atn;
 }
 
 std::string WoglacParser::getGrammarFileName() const {
@@ -23,11 +276,15 @@ std::string WoglacParser::getGrammarFileName() const {
 }
 
 const std::vector<std::string>& WoglacParser::getRuleNames() const {
-  return _ruleNames;
+  return woglacParserStaticData->ruleNames;
 }
 
-dfa::Vocabulary& WoglacParser::getVocabulary() const {
-  return _vocabulary;
+const dfa::Vocabulary& WoglacParser::getVocabulary() const {
+  return woglacParserStaticData->vocabulary;
+}
+
+antlr4::atn::SerializedATNView WoglacParser::getSerializedATN() const {
+  return woglacParserStaticData->serializedATN;
 }
 
 
@@ -71,7 +328,11 @@ WoglacParser::ModuleContext* WoglacParser::module() {
   enterRule(_localctx, 0, WoglacParser::RuleModule);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -95,8 +356,8 @@ WoglacParser::ModuleContext* WoglacParser::module() {
       | (1ULL << WoglacParser::T__29)
       | (1ULL << WoglacParser::Type))) != 0)) {
       setState(80);
-      dynamic_cast<ModuleContext *>(_localctx)->statementContext = statement();
-      dynamic_cast<ModuleContext *>(_localctx)->content.push_back(dynamic_cast<ModuleContext *>(_localctx)->statementContext);
+      antlrcpp::downCast<ModuleContext *>(_localctx)->statementContext = statement();
+      antlrcpp::downCast<ModuleContext *>(_localctx)->content.push_back(antlrcpp::downCast<ModuleContext *>(_localctx)->statementContext);
       setState(85);
       _errHandler->sync(this);
       _la = _input->LA(1);
@@ -193,7 +454,11 @@ WoglacParser::StatementContext* WoglacParser::statement() {
   StatementContext *_localctx = _tracker.createInstance<StatementContext>(_ctx, getState());
   enterRule(_localctx, 2, WoglacParser::RuleStatement);
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -291,6 +556,8 @@ WoglacParser::StatementContext* WoglacParser::statement() {
       break;
     }
 
+    default:
+      break;
     }
    
   }
@@ -347,7 +614,11 @@ WoglacParser::ScopeContext* WoglacParser::scope() {
   enterRule(_localctx, 4, WoglacParser::RuleScope);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -366,24 +637,24 @@ WoglacParser::ScopeContext* WoglacParser::scope() {
         _la = _input->LA(1);
         if (_la == WoglacParser::T__0) {
           setState(103);
-          dynamic_cast<ScopeContext *>(_localctx)->extend = match(WoglacParser::T__0);
+          antlrcpp::downCast<ScopeContext *>(_localctx)->extend = match(WoglacParser::T__0);
         }
         setState(106);
-        dynamic_cast<ScopeContext *>(_localctx)->type = _input->LT(1);
+        antlrcpp::downCast<ScopeContext *>(_localctx)->type = _input->LT(1);
         _la = _input->LA(1);
         if (!((((_la & ~ 0x3fULL) == 0) &&
           ((1ULL << _la) & ((1ULL << WoglacParser::T__1)
           | (1ULL << WoglacParser::T__2)
           | (1ULL << WoglacParser::T__3)
           | (1ULL << WoglacParser::T__4))) != 0))) {
-          dynamic_cast<ScopeContext *>(_localctx)->type = _errHandler->recoverInline(this);
+          antlrcpp::downCast<ScopeContext *>(_localctx)->type = _errHandler->recoverInline(this);
         }
         else {
           _errHandler->reportMatch(this);
           consume();
         }
         setState(107);
-        dynamic_cast<ScopeContext *>(_localctx)->id = extendedIdentifier();
+        antlrcpp::downCast<ScopeContext *>(_localctx)->id = extendedIdentifier();
         setState(108);
         contentOrSemicolon();
         break;
@@ -412,8 +683,8 @@ WoglacParser::ScopeContext* WoglacParser::scope() {
           | (1ULL << WoglacParser::T__29)
           | (1ULL << WoglacParser::Type))) != 0)) {
           setState(111);
-          dynamic_cast<ScopeContext *>(_localctx)->statementContext = statement();
-          dynamic_cast<ScopeContext *>(_localctx)->content.push_back(dynamic_cast<ScopeContext *>(_localctx)->statementContext);
+          antlrcpp::downCast<ScopeContext *>(_localctx)->statementContext = statement();
+          antlrcpp::downCast<ScopeContext *>(_localctx)->content.push_back(antlrcpp::downCast<ScopeContext *>(_localctx)->statementContext);
           setState(116);
           _errHandler->sync(this);
           _la = _input->LA(1);
@@ -473,7 +744,11 @@ WoglacParser::ContentOrSemicolonContext* WoglacParser::contentOrSemicolon() {
   enterRule(_localctx, 6, WoglacParser::RuleContentOrSemicolon);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -503,8 +778,8 @@ WoglacParser::ContentOrSemicolonContext* WoglacParser::contentOrSemicolon() {
           | (1ULL << WoglacParser::T__29)
           | (1ULL << WoglacParser::Type))) != 0)) {
           setState(121);
-          dynamic_cast<ContentOrSemicolonContext *>(_localctx)->statementContext = statement();
-          dynamic_cast<ContentOrSemicolonContext *>(_localctx)->content.push_back(dynamic_cast<ContentOrSemicolonContext *>(_localctx)->statementContext);
+          antlrcpp::downCast<ContentOrSemicolonContext *>(_localctx)->statementContext = statement();
+          antlrcpp::downCast<ContentOrSemicolonContext *>(_localctx)->content.push_back(antlrcpp::downCast<ContentOrSemicolonContext *>(_localctx)->statementContext);
           setState(126);
           _errHandler->sync(this);
           _la = _input->LA(1);
@@ -575,7 +850,11 @@ WoglacParser::PragmaStatementContext* WoglacParser::pragmaStatement() {
   enterRule(_localctx, 8, WoglacParser::RulePragmaStatement);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -583,7 +862,7 @@ WoglacParser::PragmaStatementContext* WoglacParser::pragmaStatement() {
     setState(131);
     match(WoglacParser::T__8);
     setState(132);
-    dynamic_cast<PragmaStatementContext *>(_localctx)->id = extendedIdentifier();
+    antlrcpp::downCast<PragmaStatementContext *>(_localctx)->id = extendedIdentifier();
     setState(138);
     _errHandler->sync(this);
 
@@ -601,13 +880,13 @@ WoglacParser::PragmaStatementContext* WoglacParser::pragmaStatement() {
         case WoglacParser::StringLiteral:
         case WoglacParser::NumericLiteral: {
           setState(134);
-          dynamic_cast<PragmaStatementContext *>(_localctx)->valLit = literalExpression();
+          antlrcpp::downCast<PragmaStatementContext *>(_localctx)->valLit = literalExpression();
           break;
         }
 
         case WoglacParser::Identifier: {
           setState(135);
-          dynamic_cast<PragmaStatementContext *>(_localctx)->valId = match(WoglacParser::Identifier);
+          antlrcpp::downCast<PragmaStatementContext *>(_localctx)->valId = match(WoglacParser::Identifier);
           break;
         }
 
@@ -668,7 +947,11 @@ WoglacParser::VariableDefinitionContext* WoglacParser::variableDefinition() {
   enterRule(_localctx, 10, WoglacParser::RuleVariableDefinition);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -679,16 +962,16 @@ WoglacParser::VariableDefinitionContext* WoglacParser::variableDefinition() {
     _la = _input->LA(1);
     if (_la == WoglacParser::T__10) {
       setState(142);
-      dynamic_cast<VariableDefinitionContext *>(_localctx)->exportFlag = match(WoglacParser::T__10);
+      antlrcpp::downCast<VariableDefinitionContext *>(_localctx)->exportFlag = match(WoglacParser::T__10);
     }
     setState(145);
-    dynamic_cast<VariableDefinitionContext *>(_localctx)->type = match(WoglacParser::Type);
+    antlrcpp::downCast<VariableDefinitionContext *>(_localctx)->type = match(WoglacParser::Type);
     setState(146);
-    dynamic_cast<VariableDefinitionContext *>(_localctx)->id = extendedIdentifier();
+    antlrcpp::downCast<VariableDefinitionContext *>(_localctx)->id = extendedIdentifier();
     setState(147);
     match(WoglacParser::T__9);
     setState(148);
-    dynamic_cast<VariableDefinitionContext *>(_localctx)->val = expression();
+    antlrcpp::downCast<VariableDefinitionContext *>(_localctx)->val = expression();
     setState(149);
     match(WoglacParser::T__7);
    
@@ -746,7 +1029,11 @@ WoglacParser::ParamDefinitionContext* WoglacParser::paramDefinition() {
   enterRule(_localctx, 12, WoglacParser::RuleParamDefinition);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -759,12 +1046,12 @@ WoglacParser::ParamDefinitionContext* WoglacParser::paramDefinition() {
 
     || _la == WoglacParser::T__3) {
       setState(151);
-      dynamic_cast<ParamDefinitionContext *>(_localctx)->targetType = _input->LT(1);
+      antlrcpp::downCast<ParamDefinitionContext *>(_localctx)->targetType = _input->LT(1);
       _la = _input->LA(1);
       if (!(_la == WoglacParser::T__2
 
       || _la == WoglacParser::T__3)) {
-        dynamic_cast<ParamDefinitionContext *>(_localctx)->targetType = _errHandler->recoverInline(this);
+        antlrcpp::downCast<ParamDefinitionContext *>(_localctx)->targetType = _errHandler->recoverInline(this);
       }
       else {
         _errHandler->reportMatch(this);
@@ -776,15 +1063,15 @@ WoglacParser::ParamDefinitionContext* WoglacParser::paramDefinition() {
       _la = _input->LA(1);
       if (_la == WoglacParser::Identifier) {
         setState(152);
-        dynamic_cast<ParamDefinitionContext *>(_localctx)->target = extendedIdentifier();
+        antlrcpp::downCast<ParamDefinitionContext *>(_localctx)->target = extendedIdentifier();
       }
     }
     setState(157);
     match(WoglacParser::T__11);
     setState(158);
-    dynamic_cast<ParamDefinitionContext *>(_localctx)->type = match(WoglacParser::Type);
+    antlrcpp::downCast<ParamDefinitionContext *>(_localctx)->type = match(WoglacParser::Type);
     setState(159);
-    dynamic_cast<ParamDefinitionContext *>(_localctx)->id = match(WoglacParser::Identifier);
+    antlrcpp::downCast<ParamDefinitionContext *>(_localctx)->id = match(WoglacParser::Identifier);
     setState(162);
     _errHandler->sync(this);
 
@@ -793,7 +1080,7 @@ WoglacParser::ParamDefinitionContext* WoglacParser::paramDefinition() {
       setState(160);
       match(WoglacParser::T__12);
       setState(161);
-      dynamic_cast<ParamDefinitionContext *>(_localctx)->defaultValue = expression();
+      antlrcpp::downCast<ParamDefinitionContext *>(_localctx)->defaultValue = expression();
     }
     setState(164);
     match(WoglacParser::T__7);
@@ -847,7 +1134,11 @@ WoglacParser::BiomeParamDefinitionContext* WoglacParser::biomeParamDefinition() 
   BiomeParamDefinitionContext *_localctx = _tracker.createInstance<BiomeParamDefinitionContext>(_ctx, getState());
   enterRule(_localctx, 14, WoglacParser::RuleBiomeParamDefinition);
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -857,13 +1148,13 @@ WoglacParser::BiomeParamDefinitionContext* WoglacParser::biomeParamDefinition() 
     setState(167);
     match(WoglacParser::T__11);
     setState(168);
-    dynamic_cast<BiomeParamDefinitionContext *>(_localctx)->type = match(WoglacParser::Type);
+    antlrcpp::downCast<BiomeParamDefinitionContext *>(_localctx)->type = match(WoglacParser::Type);
     setState(169);
-    dynamic_cast<BiomeParamDefinitionContext *>(_localctx)->id = extendedIdentifier();
+    antlrcpp::downCast<BiomeParamDefinitionContext *>(_localctx)->id = extendedIdentifier();
     setState(170);
     match(WoglacParser::T__12);
     setState(171);
-    dynamic_cast<BiomeParamDefinitionContext *>(_localctx)->defaultValue = expression();
+    antlrcpp::downCast<BiomeParamDefinitionContext *>(_localctx)->defaultValue = expression();
     setState(172);
     match(WoglacParser::T__7);
    
@@ -917,7 +1208,11 @@ WoglacParser::ParamSetStatementContext* WoglacParser::paramSetStatement() {
   enterRule(_localctx, 16, WoglacParser::RuleParamSetStatement);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -931,29 +1226,29 @@ WoglacParser::ParamSetStatementContext* WoglacParser::paramSetStatement() {
       | (1ULL << WoglacParser::T__3)
       | (1ULL << WoglacParser::T__4))) != 0)) {
       setState(174);
-      dynamic_cast<ParamSetStatementContext *>(_localctx)->targetType = _input->LT(1);
+      antlrcpp::downCast<ParamSetStatementContext *>(_localctx)->targetType = _input->LT(1);
       _la = _input->LA(1);
       if (!((((_la & ~ 0x3fULL) == 0) &&
         ((1ULL << _la) & ((1ULL << WoglacParser::T__2)
         | (1ULL << WoglacParser::T__3)
         | (1ULL << WoglacParser::T__4))) != 0))) {
-        dynamic_cast<ParamSetStatementContext *>(_localctx)->targetType = _errHandler->recoverInline(this);
+        antlrcpp::downCast<ParamSetStatementContext *>(_localctx)->targetType = _errHandler->recoverInline(this);
       }
       else {
         _errHandler->reportMatch(this);
         consume();
       }
       setState(175);
-      dynamic_cast<ParamSetStatementContext *>(_localctx)->target = extendedIdentifier();
+      antlrcpp::downCast<ParamSetStatementContext *>(_localctx)->target = extendedIdentifier();
     }
     setState(178);
     match(WoglacParser::T__11);
     setState(179);
-    dynamic_cast<ParamSetStatementContext *>(_localctx)->param = extendedIdentifier();
+    antlrcpp::downCast<ParamSetStatementContext *>(_localctx)->param = extendedIdentifier();
     setState(180);
     match(WoglacParser::T__9);
     setState(181);
-    dynamic_cast<ParamSetStatementContext *>(_localctx)->value = expression();
+    antlrcpp::downCast<ParamSetStatementContext *>(_localctx)->value = expression();
     setState(182);
     match(WoglacParser::T__7);
    
@@ -1011,7 +1306,11 @@ WoglacParser::BiomeConditionStatementContext* WoglacParser::biomeConditionStatem
   enterRule(_localctx, 18, WoglacParser::RuleBiomeConditionStatement);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -1029,21 +1328,21 @@ WoglacParser::BiomeConditionStatementContext* WoglacParser::biomeConditionStatem
       _la = _input->LA(1);
       if (_la == WoglacParser::Identifier) {
         setState(185);
-        dynamic_cast<BiomeConditionStatementContext *>(_localctx)->target = extendedIdentifier();
+        antlrcpp::downCast<BiomeConditionStatementContext *>(_localctx)->target = extendedIdentifier();
       }
     }
     setState(190);
     match(WoglacParser::T__13);
     setState(191);
-    dynamic_cast<BiomeConditionStatementContext *>(_localctx)->param = extendedIdentifier();
+    antlrcpp::downCast<BiomeConditionStatementContext *>(_localctx)->param = extendedIdentifier();
     setState(192);
     match(WoglacParser::T__9);
     setState(193);
-    dynamic_cast<BiomeConditionStatementContext *>(_localctx)->mean = match(WoglacParser::NumericLiteral);
+    antlrcpp::downCast<BiomeConditionStatementContext *>(_localctx)->mean = match(WoglacParser::NumericLiteral);
     setState(194);
     match(WoglacParser::T__14);
     setState(195);
-    dynamic_cast<BiomeConditionStatementContext *>(_localctx)->dev = match(WoglacParser::NumericLiteral);
+    antlrcpp::downCast<BiomeConditionStatementContext *>(_localctx)->dev = match(WoglacParser::NumericLiteral);
     setState(196);
     match(WoglacParser::T__7);
    
@@ -1093,7 +1392,11 @@ WoglacParser::StructureConditionStatementContext* WoglacParser::structureConditi
   enterRule(_localctx, 20, WoglacParser::RuleStructureConditionStatement);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -1106,12 +1409,12 @@ WoglacParser::StructureConditionStatementContext* WoglacParser::structureConditi
 
     || _la == WoglacParser::T__3) {
       setState(198);
-      dynamic_cast<StructureConditionStatementContext *>(_localctx)->targetType = _input->LT(1);
+      antlrcpp::downCast<StructureConditionStatementContext *>(_localctx)->targetType = _input->LT(1);
       _la = _input->LA(1);
       if (!(_la == WoglacParser::T__2
 
       || _la == WoglacParser::T__3)) {
-        dynamic_cast<StructureConditionStatementContext *>(_localctx)->targetType = _errHandler->recoverInline(this);
+        antlrcpp::downCast<StructureConditionStatementContext *>(_localctx)->targetType = _errHandler->recoverInline(this);
       }
       else {
         _errHandler->reportMatch(this);
@@ -1123,13 +1426,13 @@ WoglacParser::StructureConditionStatementContext* WoglacParser::structureConditi
       _la = _input->LA(1);
       if (_la == WoglacParser::Identifier) {
         setState(199);
-        dynamic_cast<StructureConditionStatementContext *>(_localctx)->target = extendedIdentifier();
+        antlrcpp::downCast<StructureConditionStatementContext *>(_localctx)->target = extendedIdentifier();
       }
     }
     setState(204);
     match(WoglacParser::T__13);
     setState(205);
-    dynamic_cast<StructureConditionStatementContext *>(_localctx)->cond = expression();
+    antlrcpp::downCast<StructureConditionStatementContext *>(_localctx)->cond = expression();
     setState(206);
     match(WoglacParser::T__7);
    
@@ -1195,7 +1498,11 @@ WoglacParser::RuleExpansionStatementContext* WoglacParser::ruleExpansionStatemen
   enterRule(_localctx, 22, WoglacParser::RuleRuleExpansionStatement);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -1208,7 +1515,7 @@ WoglacParser::RuleExpansionStatementContext* WoglacParser::ruleExpansionStatemen
     _la = _input->LA(1);
     if (_la == WoglacParser::Identifier) {
       setState(209);
-      dynamic_cast<RuleExpansionStatementContext *>(_localctx)->target = extendedIdentifier();
+      antlrcpp::downCast<RuleExpansionStatementContext *>(_localctx)->target = extendedIdentifier();
     }
     setState(212);
     match(WoglacParser::T__15);
@@ -1217,7 +1524,7 @@ WoglacParser::RuleExpansionStatementContext* WoglacParser::ruleExpansionStatemen
     switch (_input->LA(1)) {
       case WoglacParser::Identifier: {
         setState(213);
-        dynamic_cast<RuleExpansionStatementContext *>(_localctx)->expansionTarget = extendedIdentifier();
+        antlrcpp::downCast<RuleExpansionStatementContext *>(_localctx)->expansionTarget = extendedIdentifier();
         setState(216);
         _errHandler->sync(this);
 
@@ -1226,7 +1533,7 @@ WoglacParser::RuleExpansionStatementContext* WoglacParser::ruleExpansionStatemen
           setState(214);
           match(WoglacParser::T__16);
           setState(215);
-          dynamic_cast<RuleExpansionStatementContext *>(_localctx)->node = match(WoglacParser::Identifier);
+          antlrcpp::downCast<RuleExpansionStatementContext *>(_localctx)->node = match(WoglacParser::Identifier);
         }
         break;
       }
@@ -1248,7 +1555,7 @@ WoglacParser::RuleExpansionStatementContext* WoglacParser::ruleExpansionStatemen
       setState(221);
       match(WoglacParser::T__18);
       setState(222);
-      dynamic_cast<RuleExpansionStatementContext *>(_localctx)->priority = match(WoglacParser::NumericLiteral);
+      antlrcpp::downCast<RuleExpansionStatementContext *>(_localctx)->priority = match(WoglacParser::NumericLiteral);
     }
     setState(227);
     _errHandler->sync(this);
@@ -1258,10 +1565,10 @@ WoglacParser::RuleExpansionStatementContext* WoglacParser::ruleExpansionStatemen
       setState(225);
       match(WoglacParser::T__19);
       setState(226);
-      dynamic_cast<RuleExpansionStatementContext *>(_localctx)->probabilityRatio = match(WoglacParser::NumericLiteral);
+      antlrcpp::downCast<RuleExpansionStatementContext *>(_localctx)->probabilityRatio = match(WoglacParser::NumericLiteral);
     }
     setState(229);
-    dynamic_cast<RuleExpansionStatementContext *>(_localctx)->content = contentOrSemicolon();
+    antlrcpp::downCast<RuleExpansionStatementContext *>(_localctx)->content = contentOrSemicolon();
    
   }
   catch (RecognitionException &e) {
@@ -1313,7 +1620,11 @@ WoglacParser::ComponentNodeStatementContext* WoglacParser::componentNodeStatemen
   enterRule(_localctx, 24, WoglacParser::RuleComponentNodeStatement);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -1326,14 +1637,14 @@ WoglacParser::ComponentNodeStatementContext* WoglacParser::componentNodeStatemen
       setState(231);
       match(WoglacParser::T__3);
       setState(232);
-      dynamic_cast<ComponentNodeStatementContext *>(_localctx)->target = extendedIdentifier();
+      antlrcpp::downCast<ComponentNodeStatementContext *>(_localctx)->target = extendedIdentifier();
     }
     setState(235);
     match(WoglacParser::T__20);
     setState(236);
-    dynamic_cast<ComponentNodeStatementContext *>(_localctx)->pos = positionExpression();
+    antlrcpp::downCast<ComponentNodeStatementContext *>(_localctx)->pos = positionExpression();
     setState(237);
-    dynamic_cast<ComponentNodeStatementContext *>(_localctx)->cmn = componentNodeStatementCommonPart();
+    antlrcpp::downCast<ComponentNodeStatementContext *>(_localctx)->cmn = componentNodeStatementCommonPart();
    
   }
   catch (RecognitionException &e) {
@@ -1389,7 +1700,11 @@ WoglacParser::ComponentNodeStatementCommonPartContext* WoglacParser::componentNo
   enterRule(_localctx, 26, WoglacParser::RuleComponentNodeStatementCommonPart);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -1400,7 +1715,7 @@ WoglacParser::ComponentNodeStatementCommonPartContext* WoglacParser::componentNo
     _la = _input->LA(1);
     if (_la == WoglacParser::T__21) {
       setState(239);
-      dynamic_cast<ComponentNodeStatementCommonPartContext *>(_localctx)->prop = componentNodePropertiesSection();
+      antlrcpp::downCast<ComponentNodeStatementCommonPartContext *>(_localctx)->prop = componentNodePropertiesSection();
     }
     setState(243);
     _errHandler->sync(this);
@@ -1408,7 +1723,7 @@ WoglacParser::ComponentNodeStatementCommonPartContext* WoglacParser::componentNo
     _la = _input->LA(1);
     if (_la == WoglacParser::Identifier) {
       setState(242);
-      dynamic_cast<ComponentNodeStatementCommonPartContext *>(_localctx)->group = match(WoglacParser::Identifier);
+      antlrcpp::downCast<ComponentNodeStatementCommonPartContext *>(_localctx)->group = match(WoglacParser::Identifier);
     }
     setState(247);
     _errHandler->sync(this);
@@ -1418,7 +1733,7 @@ WoglacParser::ComponentNodeStatementCommonPartContext* WoglacParser::componentNo
       setState(245);
       match(WoglacParser::T__15);
       setState(246);
-      dynamic_cast<ComponentNodeStatementCommonPartContext *>(_localctx)->rule_ = extendedIdentifier();
+      antlrcpp::downCast<ComponentNodeStatementCommonPartContext *>(_localctx)->rule_ = extendedIdentifier();
     }
     setState(249);
     contentOrSemicolon();
@@ -1469,7 +1784,11 @@ WoglacParser::ComponentNodePropertiesSectionContext* WoglacParser::componentNode
   enterRule(_localctx, 28, WoglacParser::RuleComponentNodePropertiesSection);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -1482,7 +1801,7 @@ WoglacParser::ComponentNodePropertiesSectionContext* WoglacParser::componentNode
     _la = _input->LA(1);
     if (_la == WoglacParser::T__9) {
       setState(252);
-      dynamic_cast<ComponentNodePropertiesSectionContext *>(_localctx)->notAdjacent = match(WoglacParser::T__9);
+      antlrcpp::downCast<ComponentNodePropertiesSectionContext *>(_localctx)->notAdjacent = match(WoglacParser::T__9);
     }
     setState(256);
     _errHandler->sync(this);
@@ -1490,7 +1809,7 @@ WoglacParser::ComponentNodePropertiesSectionContext* WoglacParser::componentNode
     _la = _input->LA(1);
     if (_la == WoglacParser::T__22) {
       setState(255);
-      dynamic_cast<ComponentNodePropertiesSectionContext *>(_localctx)->horizontalEdge = match(WoglacParser::T__22);
+      antlrcpp::downCast<ComponentNodePropertiesSectionContext *>(_localctx)->horizontalEdge = match(WoglacParser::T__22);
     }
     setState(259);
     _errHandler->sync(this);
@@ -1498,17 +1817,17 @@ WoglacParser::ComponentNodePropertiesSectionContext* WoglacParser::componentNode
     _la = _input->LA(1);
     if (_la == WoglacParser::T__23) {
       setState(258);
-      dynamic_cast<ComponentNodePropertiesSectionContext *>(_localctx)->verticalEdge = match(WoglacParser::T__23);
+      antlrcpp::downCast<ComponentNodePropertiesSectionContext *>(_localctx)->verticalEdge = match(WoglacParser::T__23);
     }
     setState(261);
-    dynamic_cast<ComponentNodePropertiesSectionContext *>(_localctx)->ori = componentNodeOrientationExpression();
+    antlrcpp::downCast<ComponentNodePropertiesSectionContext *>(_localctx)->ori = componentNodeOrientationExpression();
     setState(263);
     _errHandler->sync(this);
 
     _la = _input->LA(1);
     if (_la == WoglacParser::Identifier) {
       setState(262);
-      dynamic_cast<ComponentNodePropertiesSectionContext *>(_localctx)->ori2 = componentNodeOrientationExpression();
+      antlrcpp::downCast<ComponentNodePropertiesSectionContext *>(_localctx)->ori2 = componentNodeOrientationExpression();
     }
     setState(265);
     match(WoglacParser::T__24);
@@ -1555,20 +1874,24 @@ WoglacParser::ComponentNodeOrientationExpressionContext* WoglacParser::component
   enterRule(_localctx, 30, WoglacParser::RuleComponentNodeOrientationExpression);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
     enterOuterAlt(_localctx, 1);
     setState(267);
-    dynamic_cast<ComponentNodeOrientationExpressionContext *>(_localctx)->dir = match(WoglacParser::Identifier);
+    antlrcpp::downCast<ComponentNodeOrientationExpressionContext *>(_localctx)->dir = match(WoglacParser::Identifier);
     setState(268);
-    dynamic_cast<ComponentNodeOrientationExpressionContext *>(_localctx)->sign = _input->LT(1);
+    antlrcpp::downCast<ComponentNodeOrientationExpressionContext *>(_localctx)->sign = _input->LT(1);
     _la = _input->LA(1);
     if (!(_la == WoglacParser::T__23
 
     || _la == WoglacParser::T__25)) {
-      dynamic_cast<ComponentNodeOrientationExpressionContext *>(_localctx)->sign = _errHandler->recoverInline(this);
+      antlrcpp::downCast<ComponentNodeOrientationExpressionContext *>(_localctx)->sign = _errHandler->recoverInline(this);
     }
     else {
       _errHandler->reportMatch(this);
@@ -1629,7 +1952,11 @@ WoglacParser::ComponentAreaStatementContext* WoglacParser::componentAreaStatemen
   enterRule(_localctx, 32, WoglacParser::RuleComponentAreaStatement);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -1642,14 +1969,14 @@ WoglacParser::ComponentAreaStatementContext* WoglacParser::componentAreaStatemen
       setState(270);
       match(WoglacParser::T__3);
       setState(271);
-      dynamic_cast<ComponentAreaStatementContext *>(_localctx)->target = extendedIdentifier();
+      antlrcpp::downCast<ComponentAreaStatementContext *>(_localctx)->target = extendedIdentifier();
     }
     setState(274);
     match(WoglacParser::T__26);
     setState(275);
-    dynamic_cast<ComponentAreaStatementContext *>(_localctx)->startPos = positionExpression();
+    antlrcpp::downCast<ComponentAreaStatementContext *>(_localctx)->startPos = positionExpression();
     setState(276);
-    dynamic_cast<ComponentAreaStatementContext *>(_localctx)->endPos = positionExpression();
+    antlrcpp::downCast<ComponentAreaStatementContext *>(_localctx)->endPos = positionExpression();
     setState(288);
     _errHandler->sync(this);
 
@@ -1663,7 +1990,7 @@ WoglacParser::ComponentAreaStatementContext* WoglacParser::componentAreaStatemen
       _la = _input->LA(1);
       if (_la == WoglacParser::T__27) {
         setState(278);
-        dynamic_cast<ComponentAreaStatementContext *>(_localctx)->canOverlap = match(WoglacParser::T__27);
+        antlrcpp::downCast<ComponentAreaStatementContext *>(_localctx)->canOverlap = match(WoglacParser::T__27);
       }
       setState(282);
       _errHandler->sync(this);
@@ -1671,7 +1998,7 @@ WoglacParser::ComponentAreaStatementContext* WoglacParser::componentAreaStatemen
       _la = _input->LA(1);
       if (_la == WoglacParser::T__18) {
         setState(281);
-        dynamic_cast<ComponentAreaStatementContext *>(_localctx)->mustOverlap = match(WoglacParser::T__18);
+        antlrcpp::downCast<ComponentAreaStatementContext *>(_localctx)->mustOverlap = match(WoglacParser::T__18);
       }
       setState(285);
       _errHandler->sync(this);
@@ -1679,7 +2006,7 @@ WoglacParser::ComponentAreaStatementContext* WoglacParser::componentAreaStatemen
       _la = _input->LA(1);
       if (_la == WoglacParser::T__28) {
         setState(284);
-        dynamic_cast<ComponentAreaStatementContext *>(_localctx)->isVirtual = match(WoglacParser::T__28);
+        antlrcpp::downCast<ComponentAreaStatementContext *>(_localctx)->isVirtual = match(WoglacParser::T__28);
       }
       setState(287);
       match(WoglacParser::T__24);
@@ -1690,7 +2017,7 @@ WoglacParser::ComponentAreaStatementContext* WoglacParser::componentAreaStatemen
     _la = _input->LA(1);
     if (_la == WoglacParser::Identifier) {
       setState(290);
-      dynamic_cast<ComponentAreaStatementContext *>(_localctx)->name = match(WoglacParser::Identifier);
+      antlrcpp::downCast<ComponentAreaStatementContext *>(_localctx)->name = match(WoglacParser::Identifier);
     }
     setState(293);
     match(WoglacParser::T__7);
@@ -1749,7 +2076,11 @@ WoglacParser::ComponentBlockStatementContext* WoglacParser::componentBlockStatem
   enterRule(_localctx, 34, WoglacParser::RuleComponentBlockStatement);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -1762,24 +2093,24 @@ WoglacParser::ComponentBlockStatementContext* WoglacParser::componentBlockStatem
       setState(295);
       match(WoglacParser::T__3);
       setState(296);
-      dynamic_cast<ComponentBlockStatementContext *>(_localctx)->target = extendedIdentifier();
+      antlrcpp::downCast<ComponentBlockStatementContext *>(_localctx)->target = extendedIdentifier();
     }
     setState(299);
     match(WoglacParser::T__29);
     setState(300);
-    dynamic_cast<ComponentBlockStatementContext *>(_localctx)->startPos = positionExpression();
+    antlrcpp::downCast<ComponentBlockStatementContext *>(_localctx)->startPos = positionExpression();
     setState(302);
     _errHandler->sync(this);
 
     _la = _input->LA(1);
     if (_la == WoglacParser::T__21) {
       setState(301);
-      dynamic_cast<ComponentBlockStatementContext *>(_localctx)->endPos = positionExpression();
+      antlrcpp::downCast<ComponentBlockStatementContext *>(_localctx)->endPos = positionExpression();
     }
     setState(304);
     match(WoglacParser::T__9);
     setState(305);
-    dynamic_cast<ComponentBlockStatementContext *>(_localctx)->val = expression();
+    antlrcpp::downCast<ComponentBlockStatementContext *>(_localctx)->val = expression();
     setState(306);
     match(WoglacParser::T__7);
    
@@ -1833,7 +2164,11 @@ WoglacParser::ComponentIncludeStatementContext* WoglacParser::componentIncludeSt
   enterRule(_localctx, 36, WoglacParser::RuleComponentIncludeStatement);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -1843,7 +2178,7 @@ WoglacParser::ComponentIncludeStatementContext* WoglacParser::componentIncludeSt
     setState(309);
     match(WoglacParser::T__30);
     setState(310);
-    dynamic_cast<ComponentIncludeStatementContext *>(_localctx)->file = match(WoglacParser::StringLiteral);
+    antlrcpp::downCast<ComponentIncludeStatementContext *>(_localctx)->file = match(WoglacParser::StringLiteral);
     setState(311);
     match(WoglacParser::T__5);
     setState(315);
@@ -1851,8 +2186,8 @@ WoglacParser::ComponentIncludeStatementContext* WoglacParser::componentIncludeSt
     _la = _input->LA(1);
     while (_la == WoglacParser::NumericLiteral) {
       setState(312);
-      dynamic_cast<ComponentIncludeStatementContext *>(_localctx)->componentIncludeStatementParamContext = componentIncludeStatementParam();
-      dynamic_cast<ComponentIncludeStatementContext *>(_localctx)->content.push_back(dynamic_cast<ComponentIncludeStatementContext *>(_localctx)->componentIncludeStatementParamContext);
+      antlrcpp::downCast<ComponentIncludeStatementContext *>(_localctx)->componentIncludeStatementParamContext = componentIncludeStatementParam();
+      antlrcpp::downCast<ComponentIncludeStatementContext *>(_localctx)->content.push_back(antlrcpp::downCast<ComponentIncludeStatementContext *>(_localctx)->componentIncludeStatementParamContext);
       setState(317);
       _errHandler->sync(this);
       _la = _input->LA(1);
@@ -1905,7 +2240,11 @@ WoglacParser::ComponentIncludeStatementParamContext* WoglacParser::componentIncl
   ComponentIncludeStatementParamContext *_localctx = _tracker.createInstance<ComponentIncludeStatementParamContext>(_ctx, getState());
   enterRule(_localctx, 38, WoglacParser::RuleComponentIncludeStatementParam);
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -1915,17 +2254,19 @@ WoglacParser::ComponentIncludeStatementParamContext* WoglacParser::componentIncl
     case 1: {
       enterOuterAlt(_localctx, 1);
       setState(320);
-      dynamic_cast<ComponentIncludeStatementParamContext *>(_localctx)->block = componentIncludeStatementBlockParam();
+      antlrcpp::downCast<ComponentIncludeStatementParamContext *>(_localctx)->block = componentIncludeStatementBlockParam();
       break;
     }
 
     case 2: {
       enterOuterAlt(_localctx, 2);
       setState(321);
-      dynamic_cast<ComponentIncludeStatementParamContext *>(_localctx)->node = componentIncludeStatementNodeParam();
+      antlrcpp::downCast<ComponentIncludeStatementParamContext *>(_localctx)->node = componentIncludeStatementNodeParam();
       break;
     }
 
+    default:
+      break;
     }
    
   }
@@ -1973,19 +2314,23 @@ WoglacParser::ComponentIncludeStatementBlockParamContext* WoglacParser::componen
   ComponentIncludeStatementBlockParamContext *_localctx = _tracker.createInstance<ComponentIncludeStatementBlockParamContext>(_ctx, getState());
   enterRule(_localctx, 40, WoglacParser::RuleComponentIncludeStatementBlockParam);
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
     enterOuterAlt(_localctx, 1);
     setState(324);
-    dynamic_cast<ComponentIncludeStatementBlockParamContext *>(_localctx)->id = match(WoglacParser::NumericLiteral);
+    antlrcpp::downCast<ComponentIncludeStatementBlockParamContext *>(_localctx)->id = match(WoglacParser::NumericLiteral);
     setState(325);
     match(WoglacParser::T__15);
     setState(326);
     match(WoglacParser::T__29);
     setState(327);
-    dynamic_cast<ComponentIncludeStatementBlockParamContext *>(_localctx)->val = expression();
+    antlrcpp::downCast<ComponentIncludeStatementBlockParamContext *>(_localctx)->val = expression();
     setState(328);
     match(WoglacParser::T__7);
    
@@ -2034,19 +2379,23 @@ WoglacParser::ComponentIncludeStatementNodeParamContext* WoglacParser::component
   ComponentIncludeStatementNodeParamContext *_localctx = _tracker.createInstance<ComponentIncludeStatementNodeParamContext>(_ctx, getState());
   enterRule(_localctx, 42, WoglacParser::RuleComponentIncludeStatementNodeParam);
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
     enterOuterAlt(_localctx, 1);
     setState(330);
-    dynamic_cast<ComponentIncludeStatementNodeParamContext *>(_localctx)->id = match(WoglacParser::NumericLiteral);
+    antlrcpp::downCast<ComponentIncludeStatementNodeParamContext *>(_localctx)->id = match(WoglacParser::NumericLiteral);
     setState(331);
     match(WoglacParser::T__15);
     setState(332);
     match(WoglacParser::T__20);
     setState(333);
-    dynamic_cast<ComponentIncludeStatementNodeParamContext *>(_localctx)->com = componentNodeStatementCommonPart();
+    antlrcpp::downCast<ComponentIncludeStatementNodeParamContext *>(_localctx)->com = componentNodeStatementCommonPart();
    
   }
   catch (RecognitionException &e) {
@@ -2093,7 +2442,11 @@ WoglacParser::PositionExpressionContext* WoglacParser::positionExpression() {
   PositionExpressionContext *_localctx = _tracker.createInstance<PositionExpressionContext>(_ctx, getState());
   enterRule(_localctx, 44, WoglacParser::RulePositionExpression);
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -2105,24 +2458,26 @@ WoglacParser::PositionExpressionContext* WoglacParser::positionExpression() {
     switch (getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 41, _ctx)) {
     case 1: {
       setState(336);
-      dynamic_cast<PositionExpressionContext *>(_localctx)->x = expression();
+      antlrcpp::downCast<PositionExpressionContext *>(_localctx)->x = expression();
       setState(337);
       match(WoglacParser::T__31);
       setState(338);
-      dynamic_cast<PositionExpressionContext *>(_localctx)->y = expression();
+      antlrcpp::downCast<PositionExpressionContext *>(_localctx)->y = expression();
       setState(339);
       match(WoglacParser::T__31);
       setState(340);
-      dynamic_cast<PositionExpressionContext *>(_localctx)->z = expression();
+      antlrcpp::downCast<PositionExpressionContext *>(_localctx)->z = expression();
       break;
     }
 
     case 2: {
       setState(342);
-      dynamic_cast<PositionExpressionContext *>(_localctx)->vec = expression();
+      antlrcpp::downCast<PositionExpressionContext *>(_localctx)->vec = expression();
       break;
     }
 
+    default:
+      break;
     }
     setState(345);
     match(WoglacParser::T__24);
@@ -2168,13 +2523,17 @@ WoglacParser::ExpressionContext* WoglacParser::expression() {
   ExpressionContext *_localctx = _tracker.createInstance<ExpressionContext>(_ctx, getState());
   enterRule(_localctx, 46, WoglacParser::RuleExpression);
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
     enterOuterAlt(_localctx, 1);
     setState(347);
-    dynamic_cast<ExpressionContext *>(_localctx)->e = ternaryExpression();
+    antlrcpp::downCast<ExpressionContext *>(_localctx)->e = ternaryExpression();
    
   }
   catch (RecognitionException &e) {
@@ -2217,7 +2576,11 @@ WoglacParser::ParentExpressionContext* WoglacParser::parentExpression() {
   ParentExpressionContext *_localctx = _tracker.createInstance<ParentExpressionContext>(_ctx, getState());
   enterRule(_localctx, 48, WoglacParser::RuleParentExpression);
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -2225,7 +2588,7 @@ WoglacParser::ParentExpressionContext* WoglacParser::parentExpression() {
     setState(349);
     match(WoglacParser::T__21);
     setState(350);
-    dynamic_cast<ParentExpressionContext *>(_localctx)->e = expression();
+    antlrcpp::downCast<ParentExpressionContext *>(_localctx)->e = expression();
     setState(351);
     match(WoglacParser::T__24);
    
@@ -2279,7 +2642,11 @@ WoglacParser::TernaryExpressionContext* WoglacParser::ternaryExpression() {
   enterRule(_localctx, 50, WoglacParser::RuleTernaryExpression);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -2289,14 +2656,14 @@ WoglacParser::TernaryExpressionContext* WoglacParser::ternaryExpression() {
     case 1: {
       enterOuterAlt(_localctx, 1);
       setState(353);
-      dynamic_cast<TernaryExpressionContext *>(_localctx)->base = logicalExpression();
+      antlrcpp::downCast<TernaryExpressionContext *>(_localctx)->base = logicalExpression();
       break;
     }
 
     case 2: {
       enterOuterAlt(_localctx, 2);
       setState(354);
-      dynamic_cast<TernaryExpressionContext *>(_localctx)->condition = logicalExpression();
+      antlrcpp::downCast<TernaryExpressionContext *>(_localctx)->condition = logicalExpression();
       setState(355);
       match(WoglacParser::T__28);
       setState(357);
@@ -2317,15 +2684,17 @@ WoglacParser::TernaryExpressionContext* WoglacParser::ternaryExpression() {
         | (1ULL << WoglacParser::Identifier)
         | (1ULL << WoglacParser::NumericLiteral))) != 0)) {
         setState(356);
-        dynamic_cast<TernaryExpressionContext *>(_localctx)->thenBranch = logicalExpression();
+        antlrcpp::downCast<TernaryExpressionContext *>(_localctx)->thenBranch = logicalExpression();
       }
       setState(359);
       match(WoglacParser::T__19);
       setState(360);
-      dynamic_cast<TernaryExpressionContext *>(_localctx)->elseBranch = ternaryExpression();
+      antlrcpp::downCast<TernaryExpressionContext *>(_localctx)->elseBranch = ternaryExpression();
       break;
     }
 
+    default:
+      break;
     }
    
   }
@@ -2373,7 +2742,11 @@ WoglacParser::LogicalExpressionContext* WoglacParser::logicalExpression() {
   LogicalExpressionContext *_localctx = _tracker.createInstance<LogicalExpressionContext>(_ctx, getState());
   enterRule(_localctx, 52, WoglacParser::RuleLogicalExpression);
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -2383,17 +2756,19 @@ WoglacParser::LogicalExpressionContext* WoglacParser::logicalExpression() {
     case 1: {
       enterOuterAlt(_localctx, 1);
       setState(364);
-      dynamic_cast<LogicalExpressionContext *>(_localctx)->a = andExpression(0);
+      antlrcpp::downCast<LogicalExpressionContext *>(_localctx)->a = andExpression(0);
       break;
     }
 
     case 2: {
       enterOuterAlt(_localctx, 2);
       setState(365);
-      dynamic_cast<LogicalExpressionContext *>(_localctx)->o = orExpression(0);
+      antlrcpp::downCast<LogicalExpressionContext *>(_localctx)->o = orExpression(0);
       break;
     }
 
+    default:
+      break;
     }
    
   }
@@ -2453,14 +2828,18 @@ WoglacParser::AndExpressionContext* WoglacParser::andExpression(int precedence) 
 
     
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     unrollRecursionContexts(parentContext);
   });
   try {
     size_t alt;
     enterOuterAlt(_localctx, 1);
     setState(369);
-    dynamic_cast<AndExpressionContext *>(_localctx)->base = comparisonExpression();
+    antlrcpp::downCast<AndExpressionContext *>(_localctx)->base = comparisonExpression();
     _ctx->stop = _input->LT(-1);
     setState(376);
     _errHandler->sync(this);
@@ -2479,7 +2858,7 @@ WoglacParser::AndExpressionContext* WoglacParser::andExpression(int precedence) 
         setState(372);
         match(WoglacParser::T__32);
         setState(373);
-        dynamic_cast<AndExpressionContext *>(_localctx)->right = comparisonExpression(); 
+        antlrcpp::downCast<AndExpressionContext *>(_localctx)->right = comparisonExpression(); 
       }
       setState(378);
       _errHandler->sync(this);
@@ -2541,14 +2920,18 @@ WoglacParser::OrExpressionContext* WoglacParser::orExpression(int precedence) {
 
     
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     unrollRecursionContexts(parentContext);
   });
   try {
     size_t alt;
     enterOuterAlt(_localctx, 1);
     setState(380);
-    dynamic_cast<OrExpressionContext *>(_localctx)->base = comparisonExpression();
+    antlrcpp::downCast<OrExpressionContext *>(_localctx)->base = comparisonExpression();
     _ctx->stop = _input->LT(-1);
     setState(387);
     _errHandler->sync(this);
@@ -2567,7 +2950,7 @@ WoglacParser::OrExpressionContext* WoglacParser::orExpression(int precedence) {
         setState(383);
         match(WoglacParser::T__33);
         setState(384);
-        dynamic_cast<OrExpressionContext *>(_localctx)->right = comparisonExpression(); 
+        antlrcpp::downCast<OrExpressionContext *>(_localctx)->right = comparisonExpression(); 
       }
       setState(389);
       _errHandler->sync(this);
@@ -2621,7 +3004,11 @@ WoglacParser::ComparisonExpressionContext* WoglacParser::comparisonExpression() 
   ComparisonExpressionContext *_localctx = _tracker.createInstance<ComparisonExpressionContext>(_ctx, getState());
   enterRule(_localctx, 58, WoglacParser::RuleComparisonExpression);
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -2631,21 +3018,23 @@ WoglacParser::ComparisonExpressionContext* WoglacParser::comparisonExpression() 
     case 1: {
       enterOuterAlt(_localctx, 1);
       setState(390);
-      dynamic_cast<ComparisonExpressionContext *>(_localctx)->base = addExpression(0);
+      antlrcpp::downCast<ComparisonExpressionContext *>(_localctx)->base = addExpression(0);
       break;
     }
 
     case 2: {
       enterOuterAlt(_localctx, 2);
       setState(391);
-      dynamic_cast<ComparisonExpressionContext *>(_localctx)->left = addExpression(0);
+      antlrcpp::downCast<ComparisonExpressionContext *>(_localctx)->left = addExpression(0);
       setState(392);
-      dynamic_cast<ComparisonExpressionContext *>(_localctx)->op = match(WoglacParser::ComparisonOp);
+      antlrcpp::downCast<ComparisonExpressionContext *>(_localctx)->op = match(WoglacParser::ComparisonOp);
       setState(393);
-      dynamic_cast<ComparisonExpressionContext *>(_localctx)->right = addExpression(0);
+      antlrcpp::downCast<ComparisonExpressionContext *>(_localctx)->right = addExpression(0);
       break;
     }
 
+    default:
+      break;
     }
    
   }
@@ -2705,14 +3094,18 @@ WoglacParser::AddExpressionContext* WoglacParser::addExpression(int precedence) 
 
     size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     unrollRecursionContexts(parentContext);
   });
   try {
     size_t alt;
     enterOuterAlt(_localctx, 1);
     setState(398);
-    dynamic_cast<AddExpressionContext *>(_localctx)->base = multExpression(0);
+    antlrcpp::downCast<AddExpressionContext *>(_localctx)->base = multExpression(0);
     _ctx->stop = _input->LT(-1);
     setState(405);
     _errHandler->sync(this);
@@ -2729,19 +3122,19 @@ WoglacParser::AddExpressionContext* WoglacParser::addExpression(int precedence) 
 
         if (!(precpred(_ctx, 1))) throw FailedPredicateException(this, "precpred(_ctx, 1)");
         setState(401);
-        dynamic_cast<AddExpressionContext *>(_localctx)->op = _input->LT(1);
+        antlrcpp::downCast<AddExpressionContext *>(_localctx)->op = _input->LT(1);
         _la = _input->LA(1);
         if (!(_la == WoglacParser::T__23
 
         || _la == WoglacParser::T__25)) {
-          dynamic_cast<AddExpressionContext *>(_localctx)->op = _errHandler->recoverInline(this);
+          antlrcpp::downCast<AddExpressionContext *>(_localctx)->op = _errHandler->recoverInline(this);
         }
         else {
           _errHandler->reportMatch(this);
           consume();
         }
         setState(402);
-        dynamic_cast<AddExpressionContext *>(_localctx)->right = multExpression(0); 
+        antlrcpp::downCast<AddExpressionContext *>(_localctx)->right = multExpression(0); 
       }
       setState(407);
       _errHandler->sync(this);
@@ -2807,14 +3200,18 @@ WoglacParser::MultExpressionContext* WoglacParser::multExpression(int precedence
 
     
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     unrollRecursionContexts(parentContext);
   });
   try {
     size_t alt;
     enterOuterAlt(_localctx, 1);
     setState(409);
-    dynamic_cast<MultExpressionContext *>(_localctx)->base = unaryExpression();
+    antlrcpp::downCast<MultExpressionContext *>(_localctx)->base = unaryExpression();
     _ctx->stop = _input->LT(-1);
     setState(416);
     _errHandler->sync(this);
@@ -2831,9 +3228,9 @@ WoglacParser::MultExpressionContext* WoglacParser::multExpression(int precedence
 
         if (!(precpred(_ctx, 1))) throw FailedPredicateException(this, "precpred(_ctx, 1)");
         setState(412);
-        dynamic_cast<MultExpressionContext *>(_localctx)->op = match(WoglacParser::MultOp);
+        antlrcpp::downCast<MultExpressionContext *>(_localctx)->op = match(WoglacParser::MultOp);
         setState(413);
-        dynamic_cast<MultExpressionContext *>(_localctx)->right = unaryExpression(); 
+        antlrcpp::downCast<MultExpressionContext *>(_localctx)->right = unaryExpression(); 
       }
       setState(418);
       _errHandler->sync(this);
@@ -2880,7 +3277,11 @@ WoglacParser::UnaryExpressionContext* WoglacParser::unaryExpression() {
   enterRule(_localctx, 64, WoglacParser::RuleUnaryExpression);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -2898,7 +3299,7 @@ WoglacParser::UnaryExpressionContext* WoglacParser::unaryExpression() {
       case WoglacParser::NumericLiteral: {
         enterOuterAlt(_localctx, 1);
         setState(419);
-        dynamic_cast<UnaryExpressionContext *>(_localctx)->base = inlineFunctionCallExpression(0);
+        antlrcpp::downCast<UnaryExpressionContext *>(_localctx)->base = inlineFunctionCallExpression(0);
         break;
       }
 
@@ -2906,28 +3307,28 @@ WoglacParser::UnaryExpressionContext* WoglacParser::unaryExpression() {
       case WoglacParser::T__25: {
         enterOuterAlt(_localctx, 2);
         setState(420);
-        dynamic_cast<UnaryExpressionContext *>(_localctx)->op = _input->LT(1);
+        antlrcpp::downCast<UnaryExpressionContext *>(_localctx)->op = _input->LT(1);
         _la = _input->LA(1);
         if (!(_la == WoglacParser::T__23
 
         || _la == WoglacParser::T__25)) {
-          dynamic_cast<UnaryExpressionContext *>(_localctx)->op = _errHandler->recoverInline(this);
+          antlrcpp::downCast<UnaryExpressionContext *>(_localctx)->op = _errHandler->recoverInline(this);
         }
         else {
           _errHandler->reportMatch(this);
           consume();
         }
         setState(421);
-        dynamic_cast<UnaryExpressionContext *>(_localctx)->arg = inlineFunctionCallExpression(0);
+        antlrcpp::downCast<UnaryExpressionContext *>(_localctx)->arg = inlineFunctionCallExpression(0);
         break;
       }
 
       case WoglacParser::T__18: {
         enterOuterAlt(_localctx, 3);
         setState(422);
-        dynamic_cast<UnaryExpressionContext *>(_localctx)->op = match(WoglacParser::T__18);
+        antlrcpp::downCast<UnaryExpressionContext *>(_localctx)->op = match(WoglacParser::T__18);
         setState(423);
-        dynamic_cast<UnaryExpressionContext *>(_localctx)->arg = inlineFunctionCallExpression(0);
+        antlrcpp::downCast<UnaryExpressionContext *>(_localctx)->arg = inlineFunctionCallExpression(0);
         break;
       }
 
@@ -3000,14 +3401,18 @@ WoglacParser::InlineFunctionCallExpressionContext* WoglacParser::inlineFunctionC
 
     
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     unrollRecursionContexts(parentContext);
   });
   try {
     size_t alt;
     enterOuterAlt(_localctx, 1);
     setState(427);
-    dynamic_cast<InlineFunctionCallExpressionContext *>(_localctx)->base = atomicExpression();
+    antlrcpp::downCast<InlineFunctionCallExpressionContext *>(_localctx)->base = atomicExpression();
     _ctx->stop = _input->LT(-1);
     setState(435);
     _errHandler->sync(this);
@@ -3026,9 +3431,9 @@ WoglacParser::InlineFunctionCallExpressionContext* WoglacParser::inlineFunctionC
         setState(430);
         match(WoglacParser::T__16);
         setState(431);
-        dynamic_cast<InlineFunctionCallExpressionContext *>(_localctx)->id = match(WoglacParser::Identifier);
+        antlrcpp::downCast<InlineFunctionCallExpressionContext *>(_localctx)->id = match(WoglacParser::Identifier);
         setState(432);
-        dynamic_cast<InlineFunctionCallExpressionContext *>(_localctx)->args = arugmentListExpression(); 
+        antlrcpp::downCast<InlineFunctionCallExpressionContext *>(_localctx)->args = arugmentListExpression(); 
       }
       setState(437);
       _errHandler->sync(this);
@@ -3090,7 +3495,11 @@ WoglacParser::AtomicExpressionContext* WoglacParser::atomicExpression() {
   AtomicExpressionContext *_localctx = _tracker.createInstance<AtomicExpressionContext>(_ctx, getState());
   enterRule(_localctx, 68, WoglacParser::RuleAtomicExpression);
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -3100,38 +3509,40 @@ WoglacParser::AtomicExpressionContext* WoglacParser::atomicExpression() {
     case 1: {
       enterOuterAlt(_localctx, 1);
       setState(438);
-      dynamic_cast<AtomicExpressionContext *>(_localctx)->funcCall = functionCallExpression();
+      antlrcpp::downCast<AtomicExpressionContext *>(_localctx)->funcCall = functionCallExpression();
       break;
     }
 
     case 2: {
       enterOuterAlt(_localctx, 2);
       setState(439);
-      dynamic_cast<AtomicExpressionContext *>(_localctx)->lit = literalExpression();
+      antlrcpp::downCast<AtomicExpressionContext *>(_localctx)->lit = literalExpression();
       break;
     }
 
     case 3: {
       enterOuterAlt(_localctx, 3);
       setState(440);
-      dynamic_cast<AtomicExpressionContext *>(_localctx)->par = parentExpression();
+      antlrcpp::downCast<AtomicExpressionContext *>(_localctx)->par = parentExpression();
       break;
     }
 
     case 4: {
       enterOuterAlt(_localctx, 4);
       setState(441);
-      dynamic_cast<AtomicExpressionContext *>(_localctx)->bio = biomeParamExpression();
+      antlrcpp::downCast<AtomicExpressionContext *>(_localctx)->bio = biomeParamExpression();
       break;
     }
 
     case 5: {
       enterOuterAlt(_localctx, 5);
       setState(442);
-      dynamic_cast<AtomicExpressionContext *>(_localctx)->id = extendedIdentifier();
+      antlrcpp::downCast<AtomicExpressionContext *>(_localctx)->id = extendedIdentifier();
       break;
     }
 
+    default:
+      break;
     }
    
   }
@@ -3180,7 +3591,11 @@ WoglacParser::ArugmentListExpressionContext* WoglacParser::arugmentListExpressio
   enterRule(_localctx, 70, WoglacParser::RuleArugmentListExpression);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -3206,8 +3621,8 @@ WoglacParser::ArugmentListExpressionContext* WoglacParser::arugmentListExpressio
       | (1ULL << WoglacParser::Identifier)
       | (1ULL << WoglacParser::NumericLiteral))) != 0)) {
       setState(446);
-      dynamic_cast<ArugmentListExpressionContext *>(_localctx)->expressionContext = expression();
-      dynamic_cast<ArugmentListExpressionContext *>(_localctx)->args.push_back(dynamic_cast<ArugmentListExpressionContext *>(_localctx)->expressionContext);
+      antlrcpp::downCast<ArugmentListExpressionContext *>(_localctx)->expressionContext = expression();
+      antlrcpp::downCast<ArugmentListExpressionContext *>(_localctx)->args.push_back(antlrcpp::downCast<ArugmentListExpressionContext *>(_localctx)->expressionContext);
       setState(451);
       _errHandler->sync(this);
       alt = getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 53, _ctx);
@@ -3216,8 +3631,8 @@ WoglacParser::ArugmentListExpressionContext* WoglacParser::arugmentListExpressio
           setState(447);
           match(WoglacParser::T__31);
           setState(448);
-          dynamic_cast<ArugmentListExpressionContext *>(_localctx)->expressionContext = expression();
-          dynamic_cast<ArugmentListExpressionContext *>(_localctx)->args.push_back(dynamic_cast<ArugmentListExpressionContext *>(_localctx)->expressionContext); 
+          antlrcpp::downCast<ArugmentListExpressionContext *>(_localctx)->expressionContext = expression();
+          antlrcpp::downCast<ArugmentListExpressionContext *>(_localctx)->args.push_back(antlrcpp::downCast<ArugmentListExpressionContext *>(_localctx)->expressionContext); 
         }
         setState(453);
         _errHandler->sync(this);
@@ -3289,7 +3704,11 @@ WoglacParser::BiomeParamExpressionContext* WoglacParser::biomeParamExpression() 
   enterRule(_localctx, 72, WoglacParser::RuleBiomeParamExpression);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -3299,11 +3718,11 @@ WoglacParser::BiomeParamExpressionContext* WoglacParser::biomeParamExpression() 
     setState(462);
     match(WoglacParser::T__21);
     setState(463);
-    dynamic_cast<BiomeParamExpressionContext *>(_localctx)->param = extendedIdentifier();
+    antlrcpp::downCast<BiomeParamExpressionContext *>(_localctx)->param = extendedIdentifier();
     setState(464);
     match(WoglacParser::T__31);
     setState(465);
-    dynamic_cast<BiomeParamExpressionContext *>(_localctx)->method = match(WoglacParser::Identifier);
+    antlrcpp::downCast<BiomeParamExpressionContext *>(_localctx)->method = match(WoglacParser::Identifier);
     setState(470);
     _errHandler->sync(this);
     _la = _input->LA(1);
@@ -3311,8 +3730,8 @@ WoglacParser::BiomeParamExpressionContext* WoglacParser::biomeParamExpression() 
       setState(466);
       match(WoglacParser::T__31);
       setState(467);
-      dynamic_cast<BiomeParamExpressionContext *>(_localctx)->expressionContext = expression();
-      dynamic_cast<BiomeParamExpressionContext *>(_localctx)->params.push_back(dynamic_cast<BiomeParamExpressionContext *>(_localctx)->expressionContext);
+      antlrcpp::downCast<BiomeParamExpressionContext *>(_localctx)->expressionContext = expression();
+      antlrcpp::downCast<BiomeParamExpressionContext *>(_localctx)->params.push_back(antlrcpp::downCast<BiomeParamExpressionContext *>(_localctx)->expressionContext);
       setState(472);
       _errHandler->sync(this);
       _la = _input->LA(1);
@@ -3365,15 +3784,19 @@ WoglacParser::FunctionCallExpressionContext* WoglacParser::functionCallExpressio
   FunctionCallExpressionContext *_localctx = _tracker.createInstance<FunctionCallExpressionContext>(_ctx, getState());
   enterRule(_localctx, 74, WoglacParser::RuleFunctionCallExpression);
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
     enterOuterAlt(_localctx, 1);
     setState(475);
-    dynamic_cast<FunctionCallExpressionContext *>(_localctx)->id = match(WoglacParser::Identifier);
+    antlrcpp::downCast<FunctionCallExpressionContext *>(_localctx)->id = match(WoglacParser::Identifier);
     setState(476);
-    dynamic_cast<FunctionCallExpressionContext *>(_localctx)->args = arugmentListExpression();
+    antlrcpp::downCast<FunctionCallExpressionContext *>(_localctx)->args = arugmentListExpression();
    
   }
   catch (RecognitionException &e) {
@@ -3420,15 +3843,19 @@ WoglacParser::ExtendedIdentifierContext* WoglacParser::extendedIdentifier() {
   ExtendedIdentifierContext *_localctx = _tracker.createInstance<ExtendedIdentifierContext>(_ctx, getState());
   enterRule(_localctx, 76, WoglacParser::RuleExtendedIdentifier);
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
     size_t alt;
     enterOuterAlt(_localctx, 1);
     setState(478);
-    dynamic_cast<ExtendedIdentifierContext *>(_localctx)->identifierToken = match(WoglacParser::Identifier);
-    dynamic_cast<ExtendedIdentifierContext *>(_localctx)->id.push_back(dynamic_cast<ExtendedIdentifierContext *>(_localctx)->identifierToken);
+    antlrcpp::downCast<ExtendedIdentifierContext *>(_localctx)->identifierToken = match(WoglacParser::Identifier);
+    antlrcpp::downCast<ExtendedIdentifierContext *>(_localctx)->id.push_back(antlrcpp::downCast<ExtendedIdentifierContext *>(_localctx)->identifierToken);
     setState(483);
     _errHandler->sync(this);
     alt = getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 57, _ctx);
@@ -3437,8 +3864,8 @@ WoglacParser::ExtendedIdentifierContext* WoglacParser::extendedIdentifier() {
         setState(479);
         match(WoglacParser::T__34);
         setState(480);
-        dynamic_cast<ExtendedIdentifierContext *>(_localctx)->identifierToken = match(WoglacParser::Identifier);
-        dynamic_cast<ExtendedIdentifierContext *>(_localctx)->id.push_back(dynamic_cast<ExtendedIdentifierContext *>(_localctx)->identifierToken); 
+        antlrcpp::downCast<ExtendedIdentifierContext *>(_localctx)->identifierToken = match(WoglacParser::Identifier);
+        antlrcpp::downCast<ExtendedIdentifierContext *>(_localctx)->id.push_back(antlrcpp::downCast<ExtendedIdentifierContext *>(_localctx)->identifierToken); 
       }
       setState(485);
       _errHandler->sync(this);
@@ -3499,7 +3926,11 @@ WoglacParser::LiteralExpressionContext* WoglacParser::literalExpression() {
   enterRule(_localctx, 78, WoglacParser::RuleLiteralExpression);
   size_t _la = 0;
 
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
   auto onExit = finally([=] {
+#endif
     exitRule();
   });
   try {
@@ -3530,28 +3961,28 @@ WoglacParser::LiteralExpressionContext* WoglacParser::literalExpression() {
           }
         }
         setState(489);
-        dynamic_cast<LiteralExpressionContext *>(_localctx)->num = match(WoglacParser::NumericLiteral);
+        antlrcpp::downCast<LiteralExpressionContext *>(_localctx)->num = match(WoglacParser::NumericLiteral);
         break;
       }
 
       case WoglacParser::BlockLiteral: {
         enterOuterAlt(_localctx, 2);
         setState(490);
-        dynamic_cast<LiteralExpressionContext *>(_localctx)->block = match(WoglacParser::BlockLiteral);
+        antlrcpp::downCast<LiteralExpressionContext *>(_localctx)->block = match(WoglacParser::BlockLiteral);
         break;
       }
 
       case WoglacParser::BoolLiteral: {
         enterOuterAlt(_localctx, 3);
         setState(491);
-        dynamic_cast<LiteralExpressionContext *>(_localctx)->bool_ = match(WoglacParser::BoolLiteral);
+        antlrcpp::downCast<LiteralExpressionContext *>(_localctx)->bool_ = match(WoglacParser::BoolLiteral);
         break;
       }
 
       case WoglacParser::StringLiteral: {
         enterOuterAlt(_localctx, 4);
         setState(492);
-        dynamic_cast<LiteralExpressionContext *>(_localctx)->string = match(WoglacParser::StringLiteral);
+        antlrcpp::downCast<LiteralExpressionContext *>(_localctx)->string = match(WoglacParser::StringLiteral);
         break;
       }
 
@@ -3571,11 +4002,11 @@ WoglacParser::LiteralExpressionContext* WoglacParser::literalExpression() {
 
 bool WoglacParser::sempred(RuleContext *context, size_t ruleIndex, size_t predicateIndex) {
   switch (ruleIndex) {
-    case 27: return andExpressionSempred(dynamic_cast<AndExpressionContext *>(context), predicateIndex);
-    case 28: return orExpressionSempred(dynamic_cast<OrExpressionContext *>(context), predicateIndex);
-    case 30: return addExpressionSempred(dynamic_cast<AddExpressionContext *>(context), predicateIndex);
-    case 31: return multExpressionSempred(dynamic_cast<MultExpressionContext *>(context), predicateIndex);
-    case 33: return inlineFunctionCallExpressionSempred(dynamic_cast<InlineFunctionCallExpressionContext *>(context), predicateIndex);
+    case 27: return andExpressionSempred(antlrcpp::downCast<AndExpressionContext *>(context), predicateIndex);
+    case 28: return orExpressionSempred(antlrcpp::downCast<OrExpressionContext *>(context), predicateIndex);
+    case 30: return addExpressionSempred(antlrcpp::downCast<AddExpressionContext *>(context), predicateIndex);
+    case 31: return multExpressionSempred(antlrcpp::downCast<MultExpressionContext *>(context), predicateIndex);
+    case 33: return inlineFunctionCallExpressionSempred(antlrcpp::downCast<InlineFunctionCallExpressionContext *>(context), predicateIndex);
 
   default:
     break;
@@ -3633,422 +4064,6 @@ bool WoglacParser::inlineFunctionCallExpressionSempred(InlineFunctionCallExpress
   return true;
 }
 
-// Static vars and initialization.
-std::vector<dfa::DFA> WoglacParser::_decisionToDFA;
-atn::PredictionContextCache WoglacParser::_sharedContextCache;
-
-// We own the ATN which in turn owns the ATN states.
-atn::ATN WoglacParser::_atn;
-std::vector<uint16_t> WoglacParser::_serializedATN;
-
-std::vector<std::string> WoglacParser::_ruleNames = {
-  "module", "statement", "scope", "contentOrSemicolon", "pragmaStatement", 
-  "variableDefinition", "paramDefinition", "biomeParamDefinition", "paramSetStatement", 
-  "biomeConditionStatement", "structureConditionStatement", "ruleExpansionStatement", 
-  "componentNodeStatement", "componentNodeStatementCommonPart", "componentNodePropertiesSection", 
-  "componentNodeOrientationExpression", "componentAreaStatement", "componentBlockStatement", 
-  "componentIncludeStatement", "componentIncludeStatementParam", "componentIncludeStatementBlockParam", 
-  "componentIncludeStatementNodeParam", "positionExpression", "expression", 
-  "parentExpression", "ternaryExpression", "logicalExpression", "andExpression", 
-  "orExpression", "comparisonExpression", "addExpression", "multExpression", 
-  "unaryExpression", "inlineFunctionCallExpression", "atomicExpression", 
-  "arugmentListExpression", "biomeParamExpression", "functionCallExpression", 
-  "extendedIdentifier", "literalExpression"
-};
-
-std::vector<std::string> WoglacParser::_literalNames = {
-  "", "'extend'", "'namespace'", "'rule'", "'component'", "'biome'", "'{'", 
-  "'}'", "';'", "'pragma'", "'='", "'export'", "'param'", "'?='", "'condition'", 
-  "'+-'", "'->'", "'::'", "'void'", "'!'", "':'", "'node'", "'('", "'|'", 
-  "'-'", "')'", "'+'", "'area'", "'#'", "'?'", "'block'", "'include'", "','", 
-  "'&&'", "'||'", "'.'", "'~'"
-};
-
-std::vector<std::string> WoglacParser::_symbolicNames = {
-  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", 
-  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", 
-  "", "LineComment", "BlockComment", "Whitespace", "Type", "BlockLiteral", 
-  "ComparisonOp", "BoolLiteral", "StringLiteral", "MultOp", "Identifier", 
-  "NumericLiteral"
-};
-
-dfa::Vocabulary WoglacParser::_vocabulary(_literalNames, _symbolicNames);
-
-std::vector<std::string> WoglacParser::_tokenNames;
-
-WoglacParser::Initializer::Initializer() {
-	for (size_t i = 0; i < _symbolicNames.size(); ++i) {
-		std::string name = _vocabulary.getLiteralName(i);
-		if (name.empty()) {
-			name = _vocabulary.getSymbolicName(i);
-		}
-
-		if (name.empty()) {
-			_tokenNames.push_back("<INVALID>");
-		} else {
-      _tokenNames.push_back(name);
-    }
-	}
-
-  _serializedATN = {
-    0x3, 0x608b, 0xa72a, 0x8133, 0xb9ed, 0x417c, 0x3be7, 0x7786, 0x5964, 
-    0x3, 0x31, 0x1f2, 0x4, 0x2, 0x9, 0x2, 0x4, 0x3, 0x9, 0x3, 0x4, 0x4, 
-    0x9, 0x4, 0x4, 0x5, 0x9, 0x5, 0x4, 0x6, 0x9, 0x6, 0x4, 0x7, 0x9, 0x7, 
-    0x4, 0x8, 0x9, 0x8, 0x4, 0x9, 0x9, 0x9, 0x4, 0xa, 0x9, 0xa, 0x4, 0xb, 
-    0x9, 0xb, 0x4, 0xc, 0x9, 0xc, 0x4, 0xd, 0x9, 0xd, 0x4, 0xe, 0x9, 0xe, 
-    0x4, 0xf, 0x9, 0xf, 0x4, 0x10, 0x9, 0x10, 0x4, 0x11, 0x9, 0x11, 0x4, 
-    0x12, 0x9, 0x12, 0x4, 0x13, 0x9, 0x13, 0x4, 0x14, 0x9, 0x14, 0x4, 0x15, 
-    0x9, 0x15, 0x4, 0x16, 0x9, 0x16, 0x4, 0x17, 0x9, 0x17, 0x4, 0x18, 0x9, 
-    0x18, 0x4, 0x19, 0x9, 0x19, 0x4, 0x1a, 0x9, 0x1a, 0x4, 0x1b, 0x9, 0x1b, 
-    0x4, 0x1c, 0x9, 0x1c, 0x4, 0x1d, 0x9, 0x1d, 0x4, 0x1e, 0x9, 0x1e, 0x4, 
-    0x1f, 0x9, 0x1f, 0x4, 0x20, 0x9, 0x20, 0x4, 0x21, 0x9, 0x21, 0x4, 0x22, 
-    0x9, 0x22, 0x4, 0x23, 0x9, 0x23, 0x4, 0x24, 0x9, 0x24, 0x4, 0x25, 0x9, 
-    0x25, 0x4, 0x26, 0x9, 0x26, 0x4, 0x27, 0x9, 0x27, 0x4, 0x28, 0x9, 0x28, 
-    0x4, 0x29, 0x9, 0x29, 0x3, 0x2, 0x7, 0x2, 0x54, 0xa, 0x2, 0xc, 0x2, 
-    0xe, 0x2, 0x57, 0xb, 0x2, 0x3, 0x2, 0x3, 0x2, 0x3, 0x3, 0x3, 0x3, 0x3, 
-    0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 
-    0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, 0x5, 0x3, 0x68, 0xa, 0x3, 0x3, 0x4, 
-    0x5, 0x4, 0x6b, 0xa, 0x4, 0x3, 0x4, 0x3, 0x4, 0x3, 0x4, 0x3, 0x4, 0x3, 
-    0x4, 0x3, 0x4, 0x7, 0x4, 0x73, 0xa, 0x4, 0xc, 0x4, 0xe, 0x4, 0x76, 0xb, 
-    0x4, 0x3, 0x4, 0x5, 0x4, 0x79, 0xa, 0x4, 0x3, 0x5, 0x3, 0x5, 0x7, 0x5, 
-    0x7d, 0xa, 0x5, 0xc, 0x5, 0xe, 0x5, 0x80, 0xb, 0x5, 0x3, 0x5, 0x3, 0x5, 
-    0x5, 0x5, 0x84, 0xa, 0x5, 0x3, 0x6, 0x3, 0x6, 0x3, 0x6, 0x3, 0x6, 0x3, 
-    0x6, 0x5, 0x6, 0x8b, 0xa, 0x6, 0x5, 0x6, 0x8d, 0xa, 0x6, 0x3, 0x6, 0x3, 
-    0x6, 0x3, 0x7, 0x5, 0x7, 0x92, 0xa, 0x7, 0x3, 0x7, 0x3, 0x7, 0x3, 0x7, 
-    0x3, 0x7, 0x3, 0x7, 0x3, 0x7, 0x3, 0x8, 0x3, 0x8, 0x5, 0x8, 0x9c, 0xa, 
-    0x8, 0x5, 0x8, 0x9e, 0xa, 0x8, 0x3, 0x8, 0x3, 0x8, 0x3, 0x8, 0x3, 0x8, 
-    0x3, 0x8, 0x5, 0x8, 0xa5, 0xa, 0x8, 0x3, 0x8, 0x3, 0x8, 0x3, 0x9, 0x3, 
-    0x9, 0x3, 0x9, 0x3, 0x9, 0x3, 0x9, 0x3, 0x9, 0x3, 0x9, 0x3, 0x9, 0x3, 
-    0xa, 0x3, 0xa, 0x5, 0xa, 0xb3, 0xa, 0xa, 0x3, 0xa, 0x3, 0xa, 0x3, 0xa, 
-    0x3, 0xa, 0x3, 0xa, 0x3, 0xa, 0x3, 0xb, 0x3, 0xb, 0x5, 0xb, 0xbd, 0xa, 
-    0xb, 0x5, 0xb, 0xbf, 0xa, 0xb, 0x3, 0xb, 0x3, 0xb, 0x3, 0xb, 0x3, 0xb, 
-    0x3, 0xb, 0x3, 0xb, 0x3, 0xb, 0x3, 0xb, 0x3, 0xc, 0x3, 0xc, 0x5, 0xc, 
-    0xcb, 0xa, 0xc, 0x5, 0xc, 0xcd, 0xa, 0xc, 0x3, 0xc, 0x3, 0xc, 0x3, 0xc, 
-    0x3, 0xc, 0x3, 0xd, 0x3, 0xd, 0x5, 0xd, 0xd5, 0xa, 0xd, 0x3, 0xd, 0x3, 
-    0xd, 0x3, 0xd, 0x3, 0xd, 0x5, 0xd, 0xdb, 0xa, 0xd, 0x3, 0xd, 0x5, 0xd, 
-    0xde, 0xa, 0xd, 0x3, 0xd, 0x3, 0xd, 0x5, 0xd, 0xe2, 0xa, 0xd, 0x3, 0xd, 
-    0x3, 0xd, 0x5, 0xd, 0xe6, 0xa, 0xd, 0x3, 0xd, 0x3, 0xd, 0x3, 0xe, 0x3, 
-    0xe, 0x5, 0xe, 0xec, 0xa, 0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 0x3, 0xe, 
-    0x3, 0xf, 0x5, 0xf, 0xf3, 0xa, 0xf, 0x3, 0xf, 0x5, 0xf, 0xf6, 0xa, 0xf, 
-    0x3, 0xf, 0x3, 0xf, 0x5, 0xf, 0xfa, 0xa, 0xf, 0x3, 0xf, 0x3, 0xf, 0x3, 
-    0x10, 0x3, 0x10, 0x5, 0x10, 0x100, 0xa, 0x10, 0x3, 0x10, 0x5, 0x10, 
-    0x103, 0xa, 0x10, 0x3, 0x10, 0x5, 0x10, 0x106, 0xa, 0x10, 0x3, 0x10, 
-    0x3, 0x10, 0x5, 0x10, 0x10a, 0xa, 0x10, 0x3, 0x10, 0x3, 0x10, 0x3, 0x11, 
-    0x3, 0x11, 0x3, 0x11, 0x3, 0x12, 0x3, 0x12, 0x5, 0x12, 0x113, 0xa, 0x12, 
-    0x3, 0x12, 0x3, 0x12, 0x3, 0x12, 0x3, 0x12, 0x3, 0x12, 0x5, 0x12, 0x11a, 
-    0xa, 0x12, 0x3, 0x12, 0x5, 0x12, 0x11d, 0xa, 0x12, 0x3, 0x12, 0x5, 0x12, 
-    0x120, 0xa, 0x12, 0x3, 0x12, 0x5, 0x12, 0x123, 0xa, 0x12, 0x3, 0x12, 
-    0x5, 0x12, 0x126, 0xa, 0x12, 0x3, 0x12, 0x3, 0x12, 0x3, 0x13, 0x3, 0x13, 
-    0x5, 0x13, 0x12c, 0xa, 0x13, 0x3, 0x13, 0x3, 0x13, 0x3, 0x13, 0x5, 0x13, 
-    0x131, 0xa, 0x13, 0x3, 0x13, 0x3, 0x13, 0x3, 0x13, 0x3, 0x13, 0x3, 0x14, 
-    0x3, 0x14, 0x3, 0x14, 0x3, 0x14, 0x3, 0x14, 0x7, 0x14, 0x13c, 0xa, 0x14, 
-    0xc, 0x14, 0xe, 0x14, 0x13f, 0xb, 0x14, 0x3, 0x14, 0x3, 0x14, 0x3, 0x15, 
-    0x3, 0x15, 0x5, 0x15, 0x145, 0xa, 0x15, 0x3, 0x16, 0x3, 0x16, 0x3, 0x16, 
-    0x3, 0x16, 0x3, 0x16, 0x3, 0x16, 0x3, 0x17, 0x3, 0x17, 0x3, 0x17, 0x3, 
-    0x17, 0x3, 0x17, 0x3, 0x18, 0x3, 0x18, 0x3, 0x18, 0x3, 0x18, 0x3, 0x18, 
-    0x3, 0x18, 0x3, 0x18, 0x3, 0x18, 0x5, 0x18, 0x15a, 0xa, 0x18, 0x3, 0x18, 
-    0x3, 0x18, 0x3, 0x19, 0x3, 0x19, 0x3, 0x1a, 0x3, 0x1a, 0x3, 0x1a, 0x3, 
-    0x1a, 0x3, 0x1b, 0x3, 0x1b, 0x3, 0x1b, 0x3, 0x1b, 0x5, 0x1b, 0x168, 
-    0xa, 0x1b, 0x3, 0x1b, 0x3, 0x1b, 0x3, 0x1b, 0x5, 0x1b, 0x16d, 0xa, 0x1b, 
-    0x3, 0x1c, 0x3, 0x1c, 0x5, 0x1c, 0x171, 0xa, 0x1c, 0x3, 0x1d, 0x3, 0x1d, 
-    0x3, 0x1d, 0x3, 0x1d, 0x3, 0x1d, 0x3, 0x1d, 0x7, 0x1d, 0x179, 0xa, 0x1d, 
-    0xc, 0x1d, 0xe, 0x1d, 0x17c, 0xb, 0x1d, 0x3, 0x1e, 0x3, 0x1e, 0x3, 0x1e, 
-    0x3, 0x1e, 0x3, 0x1e, 0x3, 0x1e, 0x7, 0x1e, 0x184, 0xa, 0x1e, 0xc, 0x1e, 
-    0xe, 0x1e, 0x187, 0xb, 0x1e, 0x3, 0x1f, 0x3, 0x1f, 0x3, 0x1f, 0x3, 0x1f, 
-    0x3, 0x1f, 0x5, 0x1f, 0x18e, 0xa, 0x1f, 0x3, 0x20, 0x3, 0x20, 0x3, 0x20, 
-    0x3, 0x20, 0x3, 0x20, 0x3, 0x20, 0x7, 0x20, 0x196, 0xa, 0x20, 0xc, 0x20, 
-    0xe, 0x20, 0x199, 0xb, 0x20, 0x3, 0x21, 0x3, 0x21, 0x3, 0x21, 0x3, 0x21, 
-    0x3, 0x21, 0x3, 0x21, 0x7, 0x21, 0x1a1, 0xa, 0x21, 0xc, 0x21, 0xe, 0x21, 
-    0x1a4, 0xb, 0x21, 0x3, 0x22, 0x3, 0x22, 0x3, 0x22, 0x3, 0x22, 0x3, 0x22, 
-    0x5, 0x22, 0x1ab, 0xa, 0x22, 0x3, 0x23, 0x3, 0x23, 0x3, 0x23, 0x3, 0x23, 
-    0x3, 0x23, 0x3, 0x23, 0x3, 0x23, 0x7, 0x23, 0x1b4, 0xa, 0x23, 0xc, 0x23, 
-    0xe, 0x23, 0x1b7, 0xb, 0x23, 0x3, 0x24, 0x3, 0x24, 0x3, 0x24, 0x3, 0x24, 
-    0x3, 0x24, 0x5, 0x24, 0x1be, 0xa, 0x24, 0x3, 0x25, 0x3, 0x25, 0x3, 0x25, 
-    0x3, 0x25, 0x7, 0x25, 0x1c4, 0xa, 0x25, 0xc, 0x25, 0xe, 0x25, 0x1c7, 
-    0xb, 0x25, 0x3, 0x25, 0x5, 0x25, 0x1ca, 0xa, 0x25, 0x5, 0x25, 0x1cc, 
-    0xa, 0x25, 0x3, 0x25, 0x3, 0x25, 0x3, 0x26, 0x3, 0x26, 0x3, 0x26, 0x3, 
-    0x26, 0x3, 0x26, 0x3, 0x26, 0x3, 0x26, 0x7, 0x26, 0x1d7, 0xa, 0x26, 
-    0xc, 0x26, 0xe, 0x26, 0x1da, 0xb, 0x26, 0x3, 0x26, 0x3, 0x26, 0x3, 0x27, 
-    0x3, 0x27, 0x3, 0x27, 0x3, 0x28, 0x3, 0x28, 0x3, 0x28, 0x7, 0x28, 0x1e4, 
-    0xa, 0x28, 0xc, 0x28, 0xe, 0x28, 0x1e7, 0xb, 0x28, 0x3, 0x29, 0x5, 0x29, 
-    0x1ea, 0xa, 0x29, 0x3, 0x29, 0x3, 0x29, 0x3, 0x29, 0x3, 0x29, 0x5, 0x29, 
-    0x1f0, 0xa, 0x29, 0x3, 0x29, 0x2, 0x7, 0x38, 0x3a, 0x3e, 0x40, 0x44, 
-    0x2a, 0x2, 0x4, 0x6, 0x8, 0xa, 0xc, 0xe, 0x10, 0x12, 0x14, 0x16, 0x18, 
-    0x1a, 0x1c, 0x1e, 0x20, 0x22, 0x24, 0x26, 0x28, 0x2a, 0x2c, 0x2e, 0x30, 
-    0x32, 0x34, 0x36, 0x38, 0x3a, 0x3c, 0x3e, 0x40, 0x42, 0x44, 0x46, 0x48, 
-    0x4a, 0x4c, 0x4e, 0x50, 0x2, 0x7, 0x3, 0x2, 0x4, 0x7, 0x3, 0x2, 0x5, 
-    0x6, 0x3, 0x2, 0x5, 0x7, 0x4, 0x2, 0x1a, 0x1a, 0x1c, 0x1c, 0x4, 0x2, 
-    0x1e, 0x1e, 0x26, 0x26, 0x2, 0x216, 0x2, 0x55, 0x3, 0x2, 0x2, 0x2, 0x4, 
-    0x67, 0x3, 0x2, 0x2, 0x2, 0x6, 0x78, 0x3, 0x2, 0x2, 0x2, 0x8, 0x83, 
-    0x3, 0x2, 0x2, 0x2, 0xa, 0x85, 0x3, 0x2, 0x2, 0x2, 0xc, 0x91, 0x3, 0x2, 
-    0x2, 0x2, 0xe, 0x9d, 0x3, 0x2, 0x2, 0x2, 0x10, 0xa8, 0x3, 0x2, 0x2, 
-    0x2, 0x12, 0xb2, 0x3, 0x2, 0x2, 0x2, 0x14, 0xbe, 0x3, 0x2, 0x2, 0x2, 
-    0x16, 0xcc, 0x3, 0x2, 0x2, 0x2, 0x18, 0xd2, 0x3, 0x2, 0x2, 0x2, 0x1a, 
-    0xeb, 0x3, 0x2, 0x2, 0x2, 0x1c, 0xf2, 0x3, 0x2, 0x2, 0x2, 0x1e, 0xfd, 
-    0x3, 0x2, 0x2, 0x2, 0x20, 0x10d, 0x3, 0x2, 0x2, 0x2, 0x22, 0x112, 0x3, 
-    0x2, 0x2, 0x2, 0x24, 0x12b, 0x3, 0x2, 0x2, 0x2, 0x26, 0x136, 0x3, 0x2, 
-    0x2, 0x2, 0x28, 0x144, 0x3, 0x2, 0x2, 0x2, 0x2a, 0x146, 0x3, 0x2, 0x2, 
-    0x2, 0x2c, 0x14c, 0x3, 0x2, 0x2, 0x2, 0x2e, 0x151, 0x3, 0x2, 0x2, 0x2, 
-    0x30, 0x15d, 0x3, 0x2, 0x2, 0x2, 0x32, 0x15f, 0x3, 0x2, 0x2, 0x2, 0x34, 
-    0x16c, 0x3, 0x2, 0x2, 0x2, 0x36, 0x170, 0x3, 0x2, 0x2, 0x2, 0x38, 0x172, 
-    0x3, 0x2, 0x2, 0x2, 0x3a, 0x17d, 0x3, 0x2, 0x2, 0x2, 0x3c, 0x18d, 0x3, 
-    0x2, 0x2, 0x2, 0x3e, 0x18f, 0x3, 0x2, 0x2, 0x2, 0x40, 0x19a, 0x3, 0x2, 
-    0x2, 0x2, 0x42, 0x1aa, 0x3, 0x2, 0x2, 0x2, 0x44, 0x1ac, 0x3, 0x2, 0x2, 
-    0x2, 0x46, 0x1bd, 0x3, 0x2, 0x2, 0x2, 0x48, 0x1bf, 0x3, 0x2, 0x2, 0x2, 
-    0x4a, 0x1cf, 0x3, 0x2, 0x2, 0x2, 0x4c, 0x1dd, 0x3, 0x2, 0x2, 0x2, 0x4e, 
-    0x1e0, 0x3, 0x2, 0x2, 0x2, 0x50, 0x1ef, 0x3, 0x2, 0x2, 0x2, 0x52, 0x54, 
-    0x5, 0x4, 0x3, 0x2, 0x53, 0x52, 0x3, 0x2, 0x2, 0x2, 0x54, 0x57, 0x3, 
-    0x2, 0x2, 0x2, 0x55, 0x53, 0x3, 0x2, 0x2, 0x2, 0x55, 0x56, 0x3, 0x2, 
-    0x2, 0x2, 0x56, 0x58, 0x3, 0x2, 0x2, 0x2, 0x57, 0x55, 0x3, 0x2, 0x2, 
-    0x2, 0x58, 0x59, 0x7, 0x2, 0x2, 0x3, 0x59, 0x3, 0x3, 0x2, 0x2, 0x2, 
-    0x5a, 0x68, 0x5, 0xa, 0x6, 0x2, 0x5b, 0x68, 0x5, 0xe, 0x8, 0x2, 0x5c, 
-    0x68, 0x5, 0x10, 0x9, 0x2, 0x5d, 0x68, 0x5, 0x12, 0xa, 0x2, 0x5e, 0x68, 
-    0x5, 0x14, 0xb, 0x2, 0x5f, 0x68, 0x5, 0xc, 0x7, 0x2, 0x60, 0x68, 0x5, 
-    0x18, 0xd, 0x2, 0x61, 0x68, 0x5, 0x6, 0x4, 0x2, 0x62, 0x68, 0x5, 0x1a, 
-    0xe, 0x2, 0x63, 0x68, 0x5, 0x24, 0x13, 0x2, 0x64, 0x68, 0x5, 0x22, 0x12, 
-    0x2, 0x65, 0x68, 0x5, 0x16, 0xc, 0x2, 0x66, 0x68, 0x5, 0x26, 0x14, 0x2, 
-    0x67, 0x5a, 0x3, 0x2, 0x2, 0x2, 0x67, 0x5b, 0x3, 0x2, 0x2, 0x2, 0x67, 
-    0x5c, 0x3, 0x2, 0x2, 0x2, 0x67, 0x5d, 0x3, 0x2, 0x2, 0x2, 0x67, 0x5e, 
-    0x3, 0x2, 0x2, 0x2, 0x67, 0x5f, 0x3, 0x2, 0x2, 0x2, 0x67, 0x60, 0x3, 
-    0x2, 0x2, 0x2, 0x67, 0x61, 0x3, 0x2, 0x2, 0x2, 0x67, 0x62, 0x3, 0x2, 
-    0x2, 0x2, 0x67, 0x63, 0x3, 0x2, 0x2, 0x2, 0x67, 0x64, 0x3, 0x2, 0x2, 
-    0x2, 0x67, 0x65, 0x3, 0x2, 0x2, 0x2, 0x67, 0x66, 0x3, 0x2, 0x2, 0x2, 
-    0x68, 0x5, 0x3, 0x2, 0x2, 0x2, 0x69, 0x6b, 0x7, 0x3, 0x2, 0x2, 0x6a, 
-    0x69, 0x3, 0x2, 0x2, 0x2, 0x6a, 0x6b, 0x3, 0x2, 0x2, 0x2, 0x6b, 0x6c, 
-    0x3, 0x2, 0x2, 0x2, 0x6c, 0x6d, 0x9, 0x2, 0x2, 0x2, 0x6d, 0x6e, 0x5, 
-    0x4e, 0x28, 0x2, 0x6e, 0x6f, 0x5, 0x8, 0x5, 0x2, 0x6f, 0x79, 0x3, 0x2, 
-    0x2, 0x2, 0x70, 0x74, 0x7, 0x8, 0x2, 0x2, 0x71, 0x73, 0x5, 0x4, 0x3, 
-    0x2, 0x72, 0x71, 0x3, 0x2, 0x2, 0x2, 0x73, 0x76, 0x3, 0x2, 0x2, 0x2, 
-    0x74, 0x72, 0x3, 0x2, 0x2, 0x2, 0x74, 0x75, 0x3, 0x2, 0x2, 0x2, 0x75, 
-    0x77, 0x3, 0x2, 0x2, 0x2, 0x76, 0x74, 0x3, 0x2, 0x2, 0x2, 0x77, 0x79, 
-    0x7, 0x9, 0x2, 0x2, 0x78, 0x6a, 0x3, 0x2, 0x2, 0x2, 0x78, 0x70, 0x3, 
-    0x2, 0x2, 0x2, 0x79, 0x7, 0x3, 0x2, 0x2, 0x2, 0x7a, 0x7e, 0x7, 0x8, 
-    0x2, 0x2, 0x7b, 0x7d, 0x5, 0x4, 0x3, 0x2, 0x7c, 0x7b, 0x3, 0x2, 0x2, 
-    0x2, 0x7d, 0x80, 0x3, 0x2, 0x2, 0x2, 0x7e, 0x7c, 0x3, 0x2, 0x2, 0x2, 
-    0x7e, 0x7f, 0x3, 0x2, 0x2, 0x2, 0x7f, 0x81, 0x3, 0x2, 0x2, 0x2, 0x80, 
-    0x7e, 0x3, 0x2, 0x2, 0x2, 0x81, 0x84, 0x7, 0x9, 0x2, 0x2, 0x82, 0x84, 
-    0x7, 0xa, 0x2, 0x2, 0x83, 0x7a, 0x3, 0x2, 0x2, 0x2, 0x83, 0x82, 0x3, 
-    0x2, 0x2, 0x2, 0x84, 0x9, 0x3, 0x2, 0x2, 0x2, 0x85, 0x86, 0x7, 0xb, 
-    0x2, 0x2, 0x86, 0x8c, 0x5, 0x4e, 0x28, 0x2, 0x87, 0x8a, 0x7, 0xc, 0x2, 
-    0x2, 0x88, 0x8b, 0x5, 0x50, 0x29, 0x2, 0x89, 0x8b, 0x7, 0x30, 0x2, 0x2, 
-    0x8a, 0x88, 0x3, 0x2, 0x2, 0x2, 0x8a, 0x89, 0x3, 0x2, 0x2, 0x2, 0x8b, 
-    0x8d, 0x3, 0x2, 0x2, 0x2, 0x8c, 0x87, 0x3, 0x2, 0x2, 0x2, 0x8c, 0x8d, 
-    0x3, 0x2, 0x2, 0x2, 0x8d, 0x8e, 0x3, 0x2, 0x2, 0x2, 0x8e, 0x8f, 0x7, 
-    0xa, 0x2, 0x2, 0x8f, 0xb, 0x3, 0x2, 0x2, 0x2, 0x90, 0x92, 0x7, 0xd, 
-    0x2, 0x2, 0x91, 0x90, 0x3, 0x2, 0x2, 0x2, 0x91, 0x92, 0x3, 0x2, 0x2, 
-    0x2, 0x92, 0x93, 0x3, 0x2, 0x2, 0x2, 0x93, 0x94, 0x7, 0x2a, 0x2, 0x2, 
-    0x94, 0x95, 0x5, 0x4e, 0x28, 0x2, 0x95, 0x96, 0x7, 0xc, 0x2, 0x2, 0x96, 
-    0x97, 0x5, 0x30, 0x19, 0x2, 0x97, 0x98, 0x7, 0xa, 0x2, 0x2, 0x98, 0xd, 
-    0x3, 0x2, 0x2, 0x2, 0x99, 0x9b, 0x9, 0x3, 0x2, 0x2, 0x9a, 0x9c, 0x5, 
-    0x4e, 0x28, 0x2, 0x9b, 0x9a, 0x3, 0x2, 0x2, 0x2, 0x9b, 0x9c, 0x3, 0x2, 
-    0x2, 0x2, 0x9c, 0x9e, 0x3, 0x2, 0x2, 0x2, 0x9d, 0x99, 0x3, 0x2, 0x2, 
-    0x2, 0x9d, 0x9e, 0x3, 0x2, 0x2, 0x2, 0x9e, 0x9f, 0x3, 0x2, 0x2, 0x2, 
-    0x9f, 0xa0, 0x7, 0xe, 0x2, 0x2, 0xa0, 0xa1, 0x7, 0x2a, 0x2, 0x2, 0xa1, 
-    0xa4, 0x7, 0x30, 0x2, 0x2, 0xa2, 0xa3, 0x7, 0xf, 0x2, 0x2, 0xa3, 0xa5, 
-    0x5, 0x30, 0x19, 0x2, 0xa4, 0xa2, 0x3, 0x2, 0x2, 0x2, 0xa4, 0xa5, 0x3, 
-    0x2, 0x2, 0x2, 0xa5, 0xa6, 0x3, 0x2, 0x2, 0x2, 0xa6, 0xa7, 0x7, 0xa, 
-    0x2, 0x2, 0xa7, 0xf, 0x3, 0x2, 0x2, 0x2, 0xa8, 0xa9, 0x7, 0x7, 0x2, 
-    0x2, 0xa9, 0xaa, 0x7, 0xe, 0x2, 0x2, 0xaa, 0xab, 0x7, 0x2a, 0x2, 0x2, 
-    0xab, 0xac, 0x5, 0x4e, 0x28, 0x2, 0xac, 0xad, 0x7, 0xf, 0x2, 0x2, 0xad, 
-    0xae, 0x5, 0x30, 0x19, 0x2, 0xae, 0xaf, 0x7, 0xa, 0x2, 0x2, 0xaf, 0x11, 
-    0x3, 0x2, 0x2, 0x2, 0xb0, 0xb1, 0x9, 0x4, 0x2, 0x2, 0xb1, 0xb3, 0x5, 
-    0x4e, 0x28, 0x2, 0xb2, 0xb0, 0x3, 0x2, 0x2, 0x2, 0xb2, 0xb3, 0x3, 0x2, 
-    0x2, 0x2, 0xb3, 0xb4, 0x3, 0x2, 0x2, 0x2, 0xb4, 0xb5, 0x7, 0xe, 0x2, 
-    0x2, 0xb5, 0xb6, 0x5, 0x4e, 0x28, 0x2, 0xb6, 0xb7, 0x7, 0xc, 0x2, 0x2, 
-    0xb7, 0xb8, 0x5, 0x30, 0x19, 0x2, 0xb8, 0xb9, 0x7, 0xa, 0x2, 0x2, 0xb9, 
-    0x13, 0x3, 0x2, 0x2, 0x2, 0xba, 0xbc, 0x7, 0x7, 0x2, 0x2, 0xbb, 0xbd, 
-    0x5, 0x4e, 0x28, 0x2, 0xbc, 0xbb, 0x3, 0x2, 0x2, 0x2, 0xbc, 0xbd, 0x3, 
-    0x2, 0x2, 0x2, 0xbd, 0xbf, 0x3, 0x2, 0x2, 0x2, 0xbe, 0xba, 0x3, 0x2, 
-    0x2, 0x2, 0xbe, 0xbf, 0x3, 0x2, 0x2, 0x2, 0xbf, 0xc0, 0x3, 0x2, 0x2, 
-    0x2, 0xc0, 0xc1, 0x7, 0x10, 0x2, 0x2, 0xc1, 0xc2, 0x5, 0x4e, 0x28, 0x2, 
-    0xc2, 0xc3, 0x7, 0xc, 0x2, 0x2, 0xc3, 0xc4, 0x7, 0x31, 0x2, 0x2, 0xc4, 
-    0xc5, 0x7, 0x11, 0x2, 0x2, 0xc5, 0xc6, 0x7, 0x31, 0x2, 0x2, 0xc6, 0xc7, 
-    0x7, 0xa, 0x2, 0x2, 0xc7, 0x15, 0x3, 0x2, 0x2, 0x2, 0xc8, 0xca, 0x9, 
-    0x3, 0x2, 0x2, 0xc9, 0xcb, 0x5, 0x4e, 0x28, 0x2, 0xca, 0xc9, 0x3, 0x2, 
-    0x2, 0x2, 0xca, 0xcb, 0x3, 0x2, 0x2, 0x2, 0xcb, 0xcd, 0x3, 0x2, 0x2, 
-    0x2, 0xcc, 0xc8, 0x3, 0x2, 0x2, 0x2, 0xcc, 0xcd, 0x3, 0x2, 0x2, 0x2, 
-    0xcd, 0xce, 0x3, 0x2, 0x2, 0x2, 0xce, 0xcf, 0x7, 0x10, 0x2, 0x2, 0xcf, 
-    0xd0, 0x5, 0x30, 0x19, 0x2, 0xd0, 0xd1, 0x7, 0xa, 0x2, 0x2, 0xd1, 0x17, 
-    0x3, 0x2, 0x2, 0x2, 0xd2, 0xd4, 0x7, 0x5, 0x2, 0x2, 0xd3, 0xd5, 0x5, 
-    0x4e, 0x28, 0x2, 0xd4, 0xd3, 0x3, 0x2, 0x2, 0x2, 0xd4, 0xd5, 0x3, 0x2, 
-    0x2, 0x2, 0xd5, 0xd6, 0x3, 0x2, 0x2, 0x2, 0xd6, 0xdd, 0x7, 0x12, 0x2, 
-    0x2, 0xd7, 0xda, 0x5, 0x4e, 0x28, 0x2, 0xd8, 0xd9, 0x7, 0x13, 0x2, 0x2, 
-    0xd9, 0xdb, 0x7, 0x30, 0x2, 0x2, 0xda, 0xd8, 0x3, 0x2, 0x2, 0x2, 0xda, 
-    0xdb, 0x3, 0x2, 0x2, 0x2, 0xdb, 0xde, 0x3, 0x2, 0x2, 0x2, 0xdc, 0xde, 
-    0x7, 0x14, 0x2, 0x2, 0xdd, 0xd7, 0x3, 0x2, 0x2, 0x2, 0xdd, 0xdc, 0x3, 
-    0x2, 0x2, 0x2, 0xde, 0xe1, 0x3, 0x2, 0x2, 0x2, 0xdf, 0xe0, 0x7, 0x15, 
-    0x2, 0x2, 0xe0, 0xe2, 0x7, 0x31, 0x2, 0x2, 0xe1, 0xdf, 0x3, 0x2, 0x2, 
-    0x2, 0xe1, 0xe2, 0x3, 0x2, 0x2, 0x2, 0xe2, 0xe5, 0x3, 0x2, 0x2, 0x2, 
-    0xe3, 0xe4, 0x7, 0x16, 0x2, 0x2, 0xe4, 0xe6, 0x7, 0x31, 0x2, 0x2, 0xe5, 
-    0xe3, 0x3, 0x2, 0x2, 0x2, 0xe5, 0xe6, 0x3, 0x2, 0x2, 0x2, 0xe6, 0xe7, 
-    0x3, 0x2, 0x2, 0x2, 0xe7, 0xe8, 0x5, 0x8, 0x5, 0x2, 0xe8, 0x19, 0x3, 
-    0x2, 0x2, 0x2, 0xe9, 0xea, 0x7, 0x6, 0x2, 0x2, 0xea, 0xec, 0x5, 0x4e, 
-    0x28, 0x2, 0xeb, 0xe9, 0x3, 0x2, 0x2, 0x2, 0xeb, 0xec, 0x3, 0x2, 0x2, 
-    0x2, 0xec, 0xed, 0x3, 0x2, 0x2, 0x2, 0xed, 0xee, 0x7, 0x17, 0x2, 0x2, 
-    0xee, 0xef, 0x5, 0x2e, 0x18, 0x2, 0xef, 0xf0, 0x5, 0x1c, 0xf, 0x2, 0xf0, 
-    0x1b, 0x3, 0x2, 0x2, 0x2, 0xf1, 0xf3, 0x5, 0x1e, 0x10, 0x2, 0xf2, 0xf1, 
-    0x3, 0x2, 0x2, 0x2, 0xf2, 0xf3, 0x3, 0x2, 0x2, 0x2, 0xf3, 0xf5, 0x3, 
-    0x2, 0x2, 0x2, 0xf4, 0xf6, 0x7, 0x30, 0x2, 0x2, 0xf5, 0xf4, 0x3, 0x2, 
-    0x2, 0x2, 0xf5, 0xf6, 0x3, 0x2, 0x2, 0x2, 0xf6, 0xf9, 0x3, 0x2, 0x2, 
-    0x2, 0xf7, 0xf8, 0x7, 0x12, 0x2, 0x2, 0xf8, 0xfa, 0x5, 0x4e, 0x28, 0x2, 
-    0xf9, 0xf7, 0x3, 0x2, 0x2, 0x2, 0xf9, 0xfa, 0x3, 0x2, 0x2, 0x2, 0xfa, 
-    0xfb, 0x3, 0x2, 0x2, 0x2, 0xfb, 0xfc, 0x5, 0x8, 0x5, 0x2, 0xfc, 0x1d, 
-    0x3, 0x2, 0x2, 0x2, 0xfd, 0xff, 0x7, 0x18, 0x2, 0x2, 0xfe, 0x100, 0x7, 
-    0xc, 0x2, 0x2, 0xff, 0xfe, 0x3, 0x2, 0x2, 0x2, 0xff, 0x100, 0x3, 0x2, 
-    0x2, 0x2, 0x100, 0x102, 0x3, 0x2, 0x2, 0x2, 0x101, 0x103, 0x7, 0x19, 
-    0x2, 0x2, 0x102, 0x101, 0x3, 0x2, 0x2, 0x2, 0x102, 0x103, 0x3, 0x2, 
-    0x2, 0x2, 0x103, 0x105, 0x3, 0x2, 0x2, 0x2, 0x104, 0x106, 0x7, 0x1a, 
-    0x2, 0x2, 0x105, 0x104, 0x3, 0x2, 0x2, 0x2, 0x105, 0x106, 0x3, 0x2, 
-    0x2, 0x2, 0x106, 0x107, 0x3, 0x2, 0x2, 0x2, 0x107, 0x109, 0x5, 0x20, 
-    0x11, 0x2, 0x108, 0x10a, 0x5, 0x20, 0x11, 0x2, 0x109, 0x108, 0x3, 0x2, 
-    0x2, 0x2, 0x109, 0x10a, 0x3, 0x2, 0x2, 0x2, 0x10a, 0x10b, 0x3, 0x2, 
-    0x2, 0x2, 0x10b, 0x10c, 0x7, 0x1b, 0x2, 0x2, 0x10c, 0x1f, 0x3, 0x2, 
-    0x2, 0x2, 0x10d, 0x10e, 0x7, 0x30, 0x2, 0x2, 0x10e, 0x10f, 0x9, 0x5, 
-    0x2, 0x2, 0x10f, 0x21, 0x3, 0x2, 0x2, 0x2, 0x110, 0x111, 0x7, 0x6, 0x2, 
-    0x2, 0x111, 0x113, 0x5, 0x4e, 0x28, 0x2, 0x112, 0x110, 0x3, 0x2, 0x2, 
-    0x2, 0x112, 0x113, 0x3, 0x2, 0x2, 0x2, 0x113, 0x114, 0x3, 0x2, 0x2, 
-    0x2, 0x114, 0x115, 0x7, 0x1d, 0x2, 0x2, 0x115, 0x116, 0x5, 0x2e, 0x18, 
-    0x2, 0x116, 0x122, 0x5, 0x2e, 0x18, 0x2, 0x117, 0x119, 0x7, 0x18, 0x2, 
-    0x2, 0x118, 0x11a, 0x7, 0x1e, 0x2, 0x2, 0x119, 0x118, 0x3, 0x2, 0x2, 
-    0x2, 0x119, 0x11a, 0x3, 0x2, 0x2, 0x2, 0x11a, 0x11c, 0x3, 0x2, 0x2, 
-    0x2, 0x11b, 0x11d, 0x7, 0x15, 0x2, 0x2, 0x11c, 0x11b, 0x3, 0x2, 0x2, 
-    0x2, 0x11c, 0x11d, 0x3, 0x2, 0x2, 0x2, 0x11d, 0x11f, 0x3, 0x2, 0x2, 
-    0x2, 0x11e, 0x120, 0x7, 0x1f, 0x2, 0x2, 0x11f, 0x11e, 0x3, 0x2, 0x2, 
-    0x2, 0x11f, 0x120, 0x3, 0x2, 0x2, 0x2, 0x120, 0x121, 0x3, 0x2, 0x2, 
-    0x2, 0x121, 0x123, 0x7, 0x1b, 0x2, 0x2, 0x122, 0x117, 0x3, 0x2, 0x2, 
-    0x2, 0x122, 0x123, 0x3, 0x2, 0x2, 0x2, 0x123, 0x125, 0x3, 0x2, 0x2, 
-    0x2, 0x124, 0x126, 0x7, 0x30, 0x2, 0x2, 0x125, 0x124, 0x3, 0x2, 0x2, 
-    0x2, 0x125, 0x126, 0x3, 0x2, 0x2, 0x2, 0x126, 0x127, 0x3, 0x2, 0x2, 
-    0x2, 0x127, 0x128, 0x7, 0xa, 0x2, 0x2, 0x128, 0x23, 0x3, 0x2, 0x2, 0x2, 
-    0x129, 0x12a, 0x7, 0x6, 0x2, 0x2, 0x12a, 0x12c, 0x5, 0x4e, 0x28, 0x2, 
-    0x12b, 0x129, 0x3, 0x2, 0x2, 0x2, 0x12b, 0x12c, 0x3, 0x2, 0x2, 0x2, 
-    0x12c, 0x12d, 0x3, 0x2, 0x2, 0x2, 0x12d, 0x12e, 0x7, 0x20, 0x2, 0x2, 
-    0x12e, 0x130, 0x5, 0x2e, 0x18, 0x2, 0x12f, 0x131, 0x5, 0x2e, 0x18, 0x2, 
-    0x130, 0x12f, 0x3, 0x2, 0x2, 0x2, 0x130, 0x131, 0x3, 0x2, 0x2, 0x2, 
-    0x131, 0x132, 0x3, 0x2, 0x2, 0x2, 0x132, 0x133, 0x7, 0xc, 0x2, 0x2, 
-    0x133, 0x134, 0x5, 0x30, 0x19, 0x2, 0x134, 0x135, 0x7, 0xa, 0x2, 0x2, 
-    0x135, 0x25, 0x3, 0x2, 0x2, 0x2, 0x136, 0x137, 0x7, 0x6, 0x2, 0x2, 0x137, 
-    0x138, 0x7, 0x21, 0x2, 0x2, 0x138, 0x139, 0x7, 0x2e, 0x2, 0x2, 0x139, 
-    0x13d, 0x7, 0x8, 0x2, 0x2, 0x13a, 0x13c, 0x5, 0x28, 0x15, 0x2, 0x13b, 
-    0x13a, 0x3, 0x2, 0x2, 0x2, 0x13c, 0x13f, 0x3, 0x2, 0x2, 0x2, 0x13d, 
-    0x13b, 0x3, 0x2, 0x2, 0x2, 0x13d, 0x13e, 0x3, 0x2, 0x2, 0x2, 0x13e, 
-    0x140, 0x3, 0x2, 0x2, 0x2, 0x13f, 0x13d, 0x3, 0x2, 0x2, 0x2, 0x140, 
-    0x141, 0x7, 0x9, 0x2, 0x2, 0x141, 0x27, 0x3, 0x2, 0x2, 0x2, 0x142, 0x145, 
-    0x5, 0x2a, 0x16, 0x2, 0x143, 0x145, 0x5, 0x2c, 0x17, 0x2, 0x144, 0x142, 
-    0x3, 0x2, 0x2, 0x2, 0x144, 0x143, 0x3, 0x2, 0x2, 0x2, 0x145, 0x29, 0x3, 
-    0x2, 0x2, 0x2, 0x146, 0x147, 0x7, 0x31, 0x2, 0x2, 0x147, 0x148, 0x7, 
-    0x12, 0x2, 0x2, 0x148, 0x149, 0x7, 0x20, 0x2, 0x2, 0x149, 0x14a, 0x5, 
-    0x30, 0x19, 0x2, 0x14a, 0x14b, 0x7, 0xa, 0x2, 0x2, 0x14b, 0x2b, 0x3, 
-    0x2, 0x2, 0x2, 0x14c, 0x14d, 0x7, 0x31, 0x2, 0x2, 0x14d, 0x14e, 0x7, 
-    0x12, 0x2, 0x2, 0x14e, 0x14f, 0x7, 0x17, 0x2, 0x2, 0x14f, 0x150, 0x5, 
-    0x1c, 0xf, 0x2, 0x150, 0x2d, 0x3, 0x2, 0x2, 0x2, 0x151, 0x159, 0x7, 
-    0x18, 0x2, 0x2, 0x152, 0x153, 0x5, 0x30, 0x19, 0x2, 0x153, 0x154, 0x7, 
-    0x22, 0x2, 0x2, 0x154, 0x155, 0x5, 0x30, 0x19, 0x2, 0x155, 0x156, 0x7, 
-    0x22, 0x2, 0x2, 0x156, 0x157, 0x5, 0x30, 0x19, 0x2, 0x157, 0x15a, 0x3, 
-    0x2, 0x2, 0x2, 0x158, 0x15a, 0x5, 0x30, 0x19, 0x2, 0x159, 0x152, 0x3, 
-    0x2, 0x2, 0x2, 0x159, 0x158, 0x3, 0x2, 0x2, 0x2, 0x15a, 0x15b, 0x3, 
-    0x2, 0x2, 0x2, 0x15b, 0x15c, 0x7, 0x1b, 0x2, 0x2, 0x15c, 0x2f, 0x3, 
-    0x2, 0x2, 0x2, 0x15d, 0x15e, 0x5, 0x34, 0x1b, 0x2, 0x15e, 0x31, 0x3, 
-    0x2, 0x2, 0x2, 0x15f, 0x160, 0x7, 0x18, 0x2, 0x2, 0x160, 0x161, 0x5, 
-    0x30, 0x19, 0x2, 0x161, 0x162, 0x7, 0x1b, 0x2, 0x2, 0x162, 0x33, 0x3, 
-    0x2, 0x2, 0x2, 0x163, 0x16d, 0x5, 0x36, 0x1c, 0x2, 0x164, 0x165, 0x5, 
-    0x36, 0x1c, 0x2, 0x165, 0x167, 0x7, 0x1f, 0x2, 0x2, 0x166, 0x168, 0x5, 
-    0x36, 0x1c, 0x2, 0x167, 0x166, 0x3, 0x2, 0x2, 0x2, 0x167, 0x168, 0x3, 
-    0x2, 0x2, 0x2, 0x168, 0x169, 0x3, 0x2, 0x2, 0x2, 0x169, 0x16a, 0x7, 
-    0x16, 0x2, 0x2, 0x16a, 0x16b, 0x5, 0x34, 0x1b, 0x2, 0x16b, 0x16d, 0x3, 
-    0x2, 0x2, 0x2, 0x16c, 0x163, 0x3, 0x2, 0x2, 0x2, 0x16c, 0x164, 0x3, 
-    0x2, 0x2, 0x2, 0x16d, 0x35, 0x3, 0x2, 0x2, 0x2, 0x16e, 0x171, 0x5, 0x38, 
-    0x1d, 0x2, 0x16f, 0x171, 0x5, 0x3a, 0x1e, 0x2, 0x170, 0x16e, 0x3, 0x2, 
-    0x2, 0x2, 0x170, 0x16f, 0x3, 0x2, 0x2, 0x2, 0x171, 0x37, 0x3, 0x2, 0x2, 
-    0x2, 0x172, 0x173, 0x8, 0x1d, 0x1, 0x2, 0x173, 0x174, 0x5, 0x3c, 0x1f, 
-    0x2, 0x174, 0x17a, 0x3, 0x2, 0x2, 0x2, 0x175, 0x176, 0xc, 0x3, 0x2, 
-    0x2, 0x176, 0x177, 0x7, 0x23, 0x2, 0x2, 0x177, 0x179, 0x5, 0x3c, 0x1f, 
-    0x2, 0x178, 0x175, 0x3, 0x2, 0x2, 0x2, 0x179, 0x17c, 0x3, 0x2, 0x2, 
-    0x2, 0x17a, 0x178, 0x3, 0x2, 0x2, 0x2, 0x17a, 0x17b, 0x3, 0x2, 0x2, 
-    0x2, 0x17b, 0x39, 0x3, 0x2, 0x2, 0x2, 0x17c, 0x17a, 0x3, 0x2, 0x2, 0x2, 
-    0x17d, 0x17e, 0x8, 0x1e, 0x1, 0x2, 0x17e, 0x17f, 0x5, 0x3c, 0x1f, 0x2, 
-    0x17f, 0x185, 0x3, 0x2, 0x2, 0x2, 0x180, 0x181, 0xc, 0x3, 0x2, 0x2, 
-    0x181, 0x182, 0x7, 0x24, 0x2, 0x2, 0x182, 0x184, 0x5, 0x3c, 0x1f, 0x2, 
-    0x183, 0x180, 0x3, 0x2, 0x2, 0x2, 0x184, 0x187, 0x3, 0x2, 0x2, 0x2, 
-    0x185, 0x183, 0x3, 0x2, 0x2, 0x2, 0x185, 0x186, 0x3, 0x2, 0x2, 0x2, 
-    0x186, 0x3b, 0x3, 0x2, 0x2, 0x2, 0x187, 0x185, 0x3, 0x2, 0x2, 0x2, 0x188, 
-    0x18e, 0x5, 0x3e, 0x20, 0x2, 0x189, 0x18a, 0x5, 0x3e, 0x20, 0x2, 0x18a, 
-    0x18b, 0x7, 0x2c, 0x2, 0x2, 0x18b, 0x18c, 0x5, 0x3e, 0x20, 0x2, 0x18c, 
-    0x18e, 0x3, 0x2, 0x2, 0x2, 0x18d, 0x188, 0x3, 0x2, 0x2, 0x2, 0x18d, 
-    0x189, 0x3, 0x2, 0x2, 0x2, 0x18e, 0x3d, 0x3, 0x2, 0x2, 0x2, 0x18f, 0x190, 
-    0x8, 0x20, 0x1, 0x2, 0x190, 0x191, 0x5, 0x40, 0x21, 0x2, 0x191, 0x197, 
-    0x3, 0x2, 0x2, 0x2, 0x192, 0x193, 0xc, 0x3, 0x2, 0x2, 0x193, 0x194, 
-    0x9, 0x5, 0x2, 0x2, 0x194, 0x196, 0x5, 0x40, 0x21, 0x2, 0x195, 0x192, 
-    0x3, 0x2, 0x2, 0x2, 0x196, 0x199, 0x3, 0x2, 0x2, 0x2, 0x197, 0x195, 
-    0x3, 0x2, 0x2, 0x2, 0x197, 0x198, 0x3, 0x2, 0x2, 0x2, 0x198, 0x3f, 0x3, 
-    0x2, 0x2, 0x2, 0x199, 0x197, 0x3, 0x2, 0x2, 0x2, 0x19a, 0x19b, 0x8, 
-    0x21, 0x1, 0x2, 0x19b, 0x19c, 0x5, 0x42, 0x22, 0x2, 0x19c, 0x1a2, 0x3, 
-    0x2, 0x2, 0x2, 0x19d, 0x19e, 0xc, 0x3, 0x2, 0x2, 0x19e, 0x19f, 0x7, 
-    0x2f, 0x2, 0x2, 0x19f, 0x1a1, 0x5, 0x42, 0x22, 0x2, 0x1a0, 0x19d, 0x3, 
-    0x2, 0x2, 0x2, 0x1a1, 0x1a4, 0x3, 0x2, 0x2, 0x2, 0x1a2, 0x1a0, 0x3, 
-    0x2, 0x2, 0x2, 0x1a2, 0x1a3, 0x3, 0x2, 0x2, 0x2, 0x1a3, 0x41, 0x3, 0x2, 
-    0x2, 0x2, 0x1a4, 0x1a2, 0x3, 0x2, 0x2, 0x2, 0x1a5, 0x1ab, 0x5, 0x44, 
-    0x23, 0x2, 0x1a6, 0x1a7, 0x9, 0x5, 0x2, 0x2, 0x1a7, 0x1ab, 0x5, 0x44, 
-    0x23, 0x2, 0x1a8, 0x1a9, 0x7, 0x15, 0x2, 0x2, 0x1a9, 0x1ab, 0x5, 0x44, 
-    0x23, 0x2, 0x1aa, 0x1a5, 0x3, 0x2, 0x2, 0x2, 0x1aa, 0x1a6, 0x3, 0x2, 
-    0x2, 0x2, 0x1aa, 0x1a8, 0x3, 0x2, 0x2, 0x2, 0x1ab, 0x43, 0x3, 0x2, 0x2, 
-    0x2, 0x1ac, 0x1ad, 0x8, 0x23, 0x1, 0x2, 0x1ad, 0x1ae, 0x5, 0x46, 0x24, 
-    0x2, 0x1ae, 0x1b5, 0x3, 0x2, 0x2, 0x2, 0x1af, 0x1b0, 0xc, 0x3, 0x2, 
-    0x2, 0x1b0, 0x1b1, 0x7, 0x13, 0x2, 0x2, 0x1b1, 0x1b2, 0x7, 0x30, 0x2, 
-    0x2, 0x1b2, 0x1b4, 0x5, 0x48, 0x25, 0x2, 0x1b3, 0x1af, 0x3, 0x2, 0x2, 
-    0x2, 0x1b4, 0x1b7, 0x3, 0x2, 0x2, 0x2, 0x1b5, 0x1b3, 0x3, 0x2, 0x2, 
-    0x2, 0x1b5, 0x1b6, 0x3, 0x2, 0x2, 0x2, 0x1b6, 0x45, 0x3, 0x2, 0x2, 0x2, 
-    0x1b7, 0x1b5, 0x3, 0x2, 0x2, 0x2, 0x1b8, 0x1be, 0x5, 0x4c, 0x27, 0x2, 
-    0x1b9, 0x1be, 0x5, 0x50, 0x29, 0x2, 0x1ba, 0x1be, 0x5, 0x32, 0x1a, 0x2, 
-    0x1bb, 0x1be, 0x5, 0x4a, 0x26, 0x2, 0x1bc, 0x1be, 0x5, 0x4e, 0x28, 0x2, 
-    0x1bd, 0x1b8, 0x3, 0x2, 0x2, 0x2, 0x1bd, 0x1b9, 0x3, 0x2, 0x2, 0x2, 
-    0x1bd, 0x1ba, 0x3, 0x2, 0x2, 0x2, 0x1bd, 0x1bb, 0x3, 0x2, 0x2, 0x2, 
-    0x1bd, 0x1bc, 0x3, 0x2, 0x2, 0x2, 0x1be, 0x47, 0x3, 0x2, 0x2, 0x2, 0x1bf, 
-    0x1cb, 0x7, 0x18, 0x2, 0x2, 0x1c0, 0x1c5, 0x5, 0x30, 0x19, 0x2, 0x1c1, 
-    0x1c2, 0x7, 0x22, 0x2, 0x2, 0x1c2, 0x1c4, 0x5, 0x30, 0x19, 0x2, 0x1c3, 
-    0x1c1, 0x3, 0x2, 0x2, 0x2, 0x1c4, 0x1c7, 0x3, 0x2, 0x2, 0x2, 0x1c5, 
-    0x1c3, 0x3, 0x2, 0x2, 0x2, 0x1c5, 0x1c6, 0x3, 0x2, 0x2, 0x2, 0x1c6, 
-    0x1c9, 0x3, 0x2, 0x2, 0x2, 0x1c7, 0x1c5, 0x3, 0x2, 0x2, 0x2, 0x1c8, 
-    0x1ca, 0x7, 0x22, 0x2, 0x2, 0x1c9, 0x1c8, 0x3, 0x2, 0x2, 0x2, 0x1c9, 
-    0x1ca, 0x3, 0x2, 0x2, 0x2, 0x1ca, 0x1cc, 0x3, 0x2, 0x2, 0x2, 0x1cb, 
-    0x1c0, 0x3, 0x2, 0x2, 0x2, 0x1cb, 0x1cc, 0x3, 0x2, 0x2, 0x2, 0x1cc, 
-    0x1cd, 0x3, 0x2, 0x2, 0x2, 0x1cd, 0x1ce, 0x7, 0x1b, 0x2, 0x2, 0x1ce, 
-    0x49, 0x3, 0x2, 0x2, 0x2, 0x1cf, 0x1d0, 0x7, 0x7, 0x2, 0x2, 0x1d0, 0x1d1, 
-    0x7, 0x18, 0x2, 0x2, 0x1d1, 0x1d2, 0x5, 0x4e, 0x28, 0x2, 0x1d2, 0x1d3, 
-    0x7, 0x22, 0x2, 0x2, 0x1d3, 0x1d8, 0x7, 0x30, 0x2, 0x2, 0x1d4, 0x1d5, 
-    0x7, 0x22, 0x2, 0x2, 0x1d5, 0x1d7, 0x5, 0x30, 0x19, 0x2, 0x1d6, 0x1d4, 
-    0x3, 0x2, 0x2, 0x2, 0x1d7, 0x1da, 0x3, 0x2, 0x2, 0x2, 0x1d8, 0x1d6, 
-    0x3, 0x2, 0x2, 0x2, 0x1d8, 0x1d9, 0x3, 0x2, 0x2, 0x2, 0x1d9, 0x1db, 
-    0x3, 0x2, 0x2, 0x2, 0x1da, 0x1d8, 0x3, 0x2, 0x2, 0x2, 0x1db, 0x1dc, 
-    0x7, 0x1b, 0x2, 0x2, 0x1dc, 0x4b, 0x3, 0x2, 0x2, 0x2, 0x1dd, 0x1de, 
-    0x7, 0x30, 0x2, 0x2, 0x1de, 0x1df, 0x5, 0x48, 0x25, 0x2, 0x1df, 0x4d, 
-    0x3, 0x2, 0x2, 0x2, 0x1e0, 0x1e5, 0x7, 0x30, 0x2, 0x2, 0x1e1, 0x1e2, 
-    0x7, 0x25, 0x2, 0x2, 0x1e2, 0x1e4, 0x7, 0x30, 0x2, 0x2, 0x1e3, 0x1e1, 
-    0x3, 0x2, 0x2, 0x2, 0x1e4, 0x1e7, 0x3, 0x2, 0x2, 0x2, 0x1e5, 0x1e3, 
-    0x3, 0x2, 0x2, 0x2, 0x1e5, 0x1e6, 0x3, 0x2, 0x2, 0x2, 0x1e6, 0x4f, 0x3, 
-    0x2, 0x2, 0x2, 0x1e7, 0x1e5, 0x3, 0x2, 0x2, 0x2, 0x1e8, 0x1ea, 0x9, 
-    0x6, 0x2, 0x2, 0x1e9, 0x1e8, 0x3, 0x2, 0x2, 0x2, 0x1e9, 0x1ea, 0x3, 
-    0x2, 0x2, 0x2, 0x1ea, 0x1eb, 0x3, 0x2, 0x2, 0x2, 0x1eb, 0x1f0, 0x7, 
-    0x31, 0x2, 0x2, 0x1ec, 0x1f0, 0x7, 0x2b, 0x2, 0x2, 0x1ed, 0x1f0, 0x7, 
-    0x2d, 0x2, 0x2, 0x1ee, 0x1f0, 0x7, 0x2e, 0x2, 0x2, 0x1ef, 0x1e9, 0x3, 
-    0x2, 0x2, 0x2, 0x1ef, 0x1ec, 0x3, 0x2, 0x2, 0x2, 0x1ef, 0x1ed, 0x3, 
-    0x2, 0x2, 0x2, 0x1ef, 0x1ee, 0x3, 0x2, 0x2, 0x2, 0x1f0, 0x51, 0x3, 0x2, 
-    0x2, 0x2, 0x3e, 0x55, 0x67, 0x6a, 0x74, 0x78, 0x7e, 0x83, 0x8a, 0x8c, 
-    0x91, 0x9b, 0x9d, 0xa4, 0xb2, 0xbc, 0xbe, 0xca, 0xcc, 0xd4, 0xda, 0xdd, 
-    0xe1, 0xe5, 0xeb, 0xf2, 0xf5, 0xf9, 0xff, 0x102, 0x105, 0x109, 0x112, 
-    0x119, 0x11c, 0x11f, 0x122, 0x125, 0x12b, 0x130, 0x13d, 0x144, 0x159, 
-    0x167, 0x16c, 0x170, 0x17a, 0x185, 0x18d, 0x197, 0x1a2, 0x1aa, 0x1b5, 
-    0x1bd, 0x1c5, 0x1c9, 0x1cb, 0x1d8, 0x1e5, 0x1e9, 0x1ef, 
-  };
-
-  atn::ATNDeserializer deserializer;
-  _atn = deserializer.deserialize(_serializedATN);
-
-  size_t count = _atn.getNumberOfDecisions();
-  _decisionToDFA.reserve(count);
-  for (size_t i = 0; i < count; i++) { 
-    _decisionToDFA.emplace_back(_atn.getDecisionState(i), i);
-  }
+void WoglacParser::initialize() {
+  std::call_once(woglacParserOnceFlag, woglacParserInitialize);
 }
-
-WoglacParser::Initializer WoglacParser::_init;

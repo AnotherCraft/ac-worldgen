@@ -46,6 +46,7 @@ ExternalProject_Add(
         TEST_COMMAND ""
 
         CMAKE_ARGS ${EXTERNAL_ARGS}
+        -D ANTLR_BUILD_CPP_TESTS=OFF
         -D WITH_STATIC_CRT=OFF
         -D "CMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/install/antlr"
 )

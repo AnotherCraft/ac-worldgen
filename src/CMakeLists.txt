@@ -24,8 +24,9 @@ target_compile_definitions(${target} PRIVATE _USE_MATH_DEFINES)
 # ===========================================
 # Tracy
 # ===========================================
+find_package(Threads REQUIRED) # Dependency of Tracy
 find_package(tracy PATHS "${CMAKE_BASE_DIR}/install/tracy/share/Tracy" REQUIRED)
-target_link_libraries(ac_client PRIVATE tracy)
+target_link_libraries(ac_worldgen PRIVATE Tracy::TracyClient)
 
 # ===========================================
 # FastNoise2
