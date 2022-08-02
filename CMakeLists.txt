@@ -69,16 +69,19 @@ ExternalProject_Add(
 # ===========================================
 # Worldgen
 # ===========================================
-ExternalProject_Add(x_ac_worldgen
+ExternalProject_Add(ac_worldgen_nodeploy
         SOURCE_DIR "${PROJECT_SOURCE_DIR}/src"
-        BUILD_ALWAYS ON
         INSTALL_COMMAND ""
-        STEP_TARGETS build
+        EXCLUDE_FROM_ALL ON
         CMAKE_ARGS ${EXTERNAL_ARGS}
         )
 
-add_custom_target(ac_worldgen_nodeploy DEPENDS x_ac_worldgen-build)
-add_custom_target(ac_worldgen_deploy ALL DEPENDS antlr tracy fastNoise2 x_ac_worldgen)
+ExternalProject_Add(ac_worldgen_deploy
+        DEPENDS antlr tracy fastNoise2
+        SOURCE_DIR "${PROJECT_SOURCE_DIR}/src"
+        INSTALL_COMMAND ""
+        CMAKE_ARGS ${EXTERNAL_ARGS}
+        )
 
 # ===========================================
 # Dummy target for intellisense

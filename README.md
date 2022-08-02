@@ -54,6 +54,17 @@ Float terrainZ = 195;
 export Block resultBlock = z < terrainZ ? (rand2D(#342) < 0.5 ? block.core.dirt : block.core.grass) : block.air;
 ```
 
+## Building
+The build command might look something like this:
+```BASH
+git clone --recurse-submodules https://github.com/AnotherCraft/ac-worldgen
+cd ac-worldgen
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake --build .
+```
+
 ## Third-party resources
 * Antlr4
 * Tracy
